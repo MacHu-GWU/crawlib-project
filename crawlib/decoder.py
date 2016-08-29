@@ -5,6 +5,7 @@
 This module provide extended power to decode HTML you crawled.
 """
 
+from __future__ import unicode_literals
 import chardet
 
 
