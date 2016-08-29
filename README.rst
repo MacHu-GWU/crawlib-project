@@ -15,11 +15,11 @@ This is just a example project for demonstration purpose.
 **Quick Links**
 -------------------------------------------------------------------------------
 - `GitHub Homepage <https://github.com/MacHu-GWU/crawlib-project>`_
-- `Online Documentation <http://pythonhosted.org/crawlib>`_
+.. - `Online Documentation <http://pythonhosted.org/crawlib>`_
 - `PyPI download <https://pypi.python.org/pypi/crawlib>`_
 - `Install <install_>`_
 - `Issue submit and feature request <https://github.com/MacHu-GWU/crawlib-project/issues>`_
-- `API reference and source code <http://pythonhosted.org/crawlib/py-modindex.html>`_
+.. - `API reference and source code <http://pythonhosted.org/crawlib/py-modindex.html>`_
 
 
 .. _install:
