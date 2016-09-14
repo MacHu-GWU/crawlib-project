@@ -29,9 +29,10 @@ def get_domain_name(url):
 
 
 class NotDownloadError(Exception):
+
     """Error that an content of url are not successfully downloaded.
     """
-    
+
 
 class Spider(object):
 
@@ -46,23 +47,38 @@ class Spider(object):
       short period of time before making request.
     """
 
-    def __init__(self, default_timeout=None, default_sleeptime=0.0):
+    def __init__(self, default_headers=None, default_timeout=None, default_sleeptime=0.0, ):
+        self.default_headers = default_headers
         self.default_timeout = default_timeout
         self.default_sleeptime = default_sleeptime
         self.domain_encoding_table = dict()
 
-    def get_binary(self, url, timeout=None):
+    def i_am_browser(self):
+        self.default_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Encoding": "gzip, deflate, sdch",
+            "Accept-Language": "en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4",
+            "Content-Type": "text/html; charset=UTF-8",
+            "Connection": "close",
+            "Referer": None,
+        }
+
+    def get_binary(self, url, headers=None, timeout=None):
         """Get binary data of an url.
         """
+        if headers is None:
+            headers = self.default_headers
         if timeout is None:
             timeout = self.default_timeout
         time.sleep(self.default_sleeptime)
 
-        response = requests.get(url, timeout=timeout)  # Exception may raises
+        # Exception may raises
+        response = requests.get(url, headers=headers, timeout=timeout)
         binary = response.content
         return binary
 
-    def get_html(self, url, timeout=None, encoding=None, errors="strict"):
+    def get_html(self, url, headers=None, timeout=None, encoding=None, errors="strict"):
         """Get html source in text.
 
         :param url: url you want to crawl
@@ -70,11 +86,11 @@ class Spider(object):
         :param encoding: if not given, the encoding will be auto-detected
         :param strict: options "ignore", "strict"; encoding error parameter
         """
-        binary = self.get_binary(url, timeout)
+        binary = self.get_binary(url, headers=headers, timeout=timeout)
         if encoding is None:
             domain_name = get_domain_name(url)
             if domain_name in self.domain_encoding_table:
-                encoding = self.domain_encoding_table[root]
+                encoding = self.domain_encoding_table[domain_name]
                 html = binary.decode(encoding, errors=errors)
             else:
                 html, encoding, confidence = smart_decode(
@@ -123,6 +139,8 @@ class Spider(object):
 spider = Spider()
 
 #--- Unittest ---
+
+
 def test_get_domain_name():
     url = "https://www.python.org/doc/"
     assert get_domain_name(url) == "www.python.org"
