@@ -16,7 +16,7 @@ def test_get_domain_name():
 def test_get_html():
     url = "https://www.python.org/"
     html = spider.get_html(url)
-    sys.stderr.write(html)
+#     sys.stderr.write(html)
 
 
 def test_download():
