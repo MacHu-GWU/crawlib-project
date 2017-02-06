@@ -44,7 +44,7 @@ class ParseError(Exception):
     """
 
 
-class HtmlParser(object):
+class BaseHtmlParser(object):
 
     """Base Html Parser. Able to get useful data from html.
     """
@@ -81,7 +81,7 @@ class HtmlParser(object):
 
 if __name__ == "__main__":
     def test_htmlparser():
-        htmlparser = HtmlParser()
+        htmlparser = BaseHtmlParser()
         html = '<a class="header" href="www.python.org">Python</a>'
         data = htmlparser.get_data(html)
         assert data == {"name": "Python"}
