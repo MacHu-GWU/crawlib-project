@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from requests.compat import urlparse, urljoin
+from requests.compat import urlparse
+try:
+    from .helpers import url_join
+except:
+    from crawlib.helpers import url_join
 
 
 class BaseUrlEncoder(object):
@@ -14,8 +18,8 @@ class BaseUrlEncoder(object):
         result = urlparse(self.domain)
         self.domain = "%s://%s" % (result.scheme, result.netloc)        
     
-    def join(self, *parts):
-        return urljoin(self.domain, *parts)
+    def url_join(self, *parts):
+        return url_join(self.domain, *parts)
 
     def get_url(self, *args, **kwargs):
         """An example method, takes argument and return url.
@@ -29,6 +33,6 @@ if __name__ == "__main__":
             domain = "https://www.python.org"
 
         urlencoder = PythonOrgUrlEncoder()
-        assert urlencoder.join("/about/") == "https://www.python.org/about/"
+        assert urlencoder.url_join("/about/") == "https://www.python.org/about"
 
     test_urlencoder()
