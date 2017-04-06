@@ -8,12 +8,17 @@
 
 
 Welcome to crawlib Documentation
-===============================================================================
-This is just a example project for demonstration purpose.
+================================
+``crawlib`` is a crawler project building block to simplify:
+
+1. url encoding
+2. html parse
+3. error handling
+4. download html and file
 
 
 **Quick Links**
--------------------------------------------------------------------------------
+---------------
 - `GitHub Homepage <https://github.com/MacHu-GWU/crawlib-project>`_
 - `Online Documentation <http://pythonhosted.org/crawlib>`_
 - `PyPI download <https://pypi.python.org/pypi/crawlib>`_
@@ -25,7 +30,7 @@ This is just a example project for demonstration purpose.
 .. _install:
 
 Install
--------------------------------------------------------------------------------
+-------
 
 ``crawlib`` is released on PyPI, so all you need is:
 
