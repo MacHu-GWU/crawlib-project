@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from constant import Constant
+try:
+    from .pkg.constant import Constant
+except:
+    from crawlib.pkg.constant import Constant
 
 
 class Status(Constant):

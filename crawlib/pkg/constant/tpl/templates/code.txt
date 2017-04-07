@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from {{ import_from }}.base import Base
+
+{% for cd in class_def.all_class_def -%}
+{{ cd.code_class_def }}
+{% endfor -%}
+
+{% for cd in class_def.all_class_def -%}
+{{ cd.code_collection_class_def }}
+{% endfor -%}
+
+{{ class_def.variable_name_col }} = {{ class_def.classname }}Col()

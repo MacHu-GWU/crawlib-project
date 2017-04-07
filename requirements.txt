@@ -1,4 +1,3 @@
 chardet
 requests
 beautifulsoup4
-constant

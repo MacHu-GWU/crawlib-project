@@ -1,0 +1,11 @@
+class {{ class_def.classname }}(Base):
+    __attrs__ = {{ class_def.attrs }}
+
+    def __init__(self{{ class_def.kwargs_text }}):
+        {% if class_def.attrs|length == 0 -%}
+        pass
+        {% else -%}
+        {% for attr in class_def.attrs -%}
+        self.{{ attr }} = {{ attr }}
+        {% endfor -%}
+        {% endif -%}

@@ -1,0 +1,16 @@
+# {{ class_def.classname }}
+{% for cd in class_def.collection -%}
+{{ class_def.code_new_instance_varname(class_def.classname, class_def.keys[0], cd.data.get(class_def.keys[0])) }} = {{ class_def.code_new_instance(cd.classnameCol, class_def.attrs, cd.data) }}
+{% endfor %}
+
+class {{ class_def.classname }}Col({{ class_def.inherit_from }}):
+    _collection = list()
+    
+    {% for cd in class_def.collection -%}
+    {% set varname = class_def.code_new_instance_varname(class_def.classname, class_def.keys[0], cd.data.get(class_def.keys[0])) -%}
+    _collection.append({{ varname }})
+    {% for key in class_def.keys -%}
+    {{ key }}____{{ name_convention.to_index_key(cd.data.get(key)) }} = {{ varname }}
+    {% endfor %}
+    {% endfor -%}
+    
