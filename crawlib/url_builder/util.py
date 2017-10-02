@@ -39,9 +39,6 @@ def join_all(domain, *parts):
     :param parts: Other parts, example: "/doc", "/py27"
     :return: url
     """
-    if " " in ([domain, ] + list(parts)):
-        raise Exception("empty string is not allowed in url!")
-
     l = list()
 
     if domain.endswith("/"):

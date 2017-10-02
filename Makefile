@@ -55,7 +55,7 @@ PACKAGE_NAME="crawlib"
 # Python version Used for Development
 PY_VER_MAJOR="2"
 PY_VER_MINOR="7"
-PY_VER_MICRO="10"
+PY_VER_MICRO="13"
 
 #  Other Python Version You Want to Test With
 # (Only useful when you use tox locally)

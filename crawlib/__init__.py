@@ -12,7 +12,13 @@ __github_username__ = "MacHu-GWU"
 
 
 try:
+    from . import exc
     from .url_builder import BaseUrlBuilder, util
     from .html_parser import ParseResult, BaseHtmlParser
-except ImportError: # pragma: no cover
+    from .spider.requests_spider import (
+        spider as requests_spider,
+    )
+    from .status import Status
+    from .header_builder import Headers
+except ImportError:  # pragma: no cover
     pass

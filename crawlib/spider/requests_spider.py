@@ -6,10 +6,12 @@ import time
 import requests
 from fake_useragent import UserAgent
 try:
+    from .. import helper
     from .base import BaseSpider
     from ..decode import smart_decode
     from ..url_builder import util
-except: # pragma: no cover
+except:  # pragma: no cover
+    from crawlib import helper
     from crawlib.spider.base import BaseSpider
     from crawlib.decode import smart_decode
     from crawlib.url_builder import util
@@ -25,6 +27,7 @@ class Spider(BaseSpider):
     """
 
     """
+
     def __init__(self,
                  default_timeout=None,
                  default_headers=None,
@@ -46,10 +49,10 @@ class Spider(BaseSpider):
         """
         headers = self.prepare_headers(headers)
         timeout = self.prepare_timeout(timeout)
-        _ = self.prepare_wait_time(wait_time)
+        wait_time = self.prepare_wait_time(wait_time)
 
-        if timeout:
-            time.sleep(timeout)
+        if wait_time:
+            self.sleep(wait_time)
 
         response = requests.get(
             url,
@@ -75,9 +78,9 @@ class Spider(BaseSpider):
             params=params,
             headers=headers,
             timeout=timeout,
+            wait_time=wait_time,
             **kwargs
         )
-
         if encoding is None:
             domain = util.get_domain(url)
             if domain in self.domain_encoding_table:
@@ -94,7 +97,7 @@ class Spider(BaseSpider):
         return html
 
     def download(self, url, dst, headers=None, timeout=None,
-                 minimal_size=-1, maximum_size=1024**3,
+                 minimal_size=-1, maximum_size=1024**6,
                  wait_time=None, **kwargs):
         """
         Download binary content to destination.
@@ -109,7 +112,10 @@ class Spider(BaseSpider):
         """
         headers = self.prepare_headers(headers)
         timeout = self.prepare_timeout(timeout)
-        _ = self.prepare_wait_time(wait_time)
+        wait_time = self.prepare_wait_time(wait_time)
+
+        if wait_time:
+            self.sleep(wait_time)
 
         response = requests.get(
             url,
@@ -134,8 +140,12 @@ class Spider(BaseSpider):
                 os.remove(dst)
             except:
                 pass
-            msg = "resource at %s's size doesn't fall into (%s, %s) KB!" % (
-                url, minimal_size, maximum_size,
+            msg = "resource at %s's size doesn't fall into %s to %s!" % (
+                url,
+                helper.repr_data_size(minimal_size),
+                helper.repr_data_size(maximum_size),
             )
             raise DownloadOversizeError(msg)
 
+
+spider = Spider()

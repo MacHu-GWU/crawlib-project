@@ -28,9 +28,11 @@ class BaseSpider(object):
             time.sleep(wait_time)
         return wait_time
 
+    def sleep(self, sleep_time):
+        time.sleep(sleep_time)
+
     def get_html(self, url, *args, **kwargs):
         raise NotImplementedError
 
     def download(self, url, *args, **kwargs):
         raise NotImplementedError
-

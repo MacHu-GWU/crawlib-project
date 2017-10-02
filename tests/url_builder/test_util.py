@@ -16,13 +16,14 @@ def test_get_domain():
 
 
 def test_join_all():
-    domain = "https://www.python.org"
+    domain = "https://www.python.org/"
     assert util.join_all(domain, "a", "b") == "https://www.python.org/a/b"
     assert util.join_all(domain, "/a", "/b") == "https://www.python.org/a/b"
     assert util.join_all(domain, "a/", "b/") == "https://www.python.org/a/b"
     assert util.join_all(domain, "/a/", "/b/") == "https://www.python.org/a/b"
     assert util.join_all(domain, "a/b") == "https://www.python.org/a/b"
     assert util.join_all(domain, "/a/b/") == "https://www.python.org/a/b"
+    assert util.join_all(domain, "") == "https://www.python.org"
 
 
 def test_add_params():

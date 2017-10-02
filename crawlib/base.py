@@ -4,7 +4,7 @@
 import six
 try:
     from .url_builder import util
-except:
+except:  # pragma: no cover
     from crawlib.url_builder import util
 
 

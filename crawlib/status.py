@@ -3,7 +3,7 @@
 
 try:
     from .pkg.constant2 import Constant
-except:
+except:  # pragma: no cover
     from crawlib.pkg.constant2 import Constant
 
 

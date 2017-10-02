@@ -7,8 +7,8 @@ Exceptions.
 
 from requests import Timeout as TimeoutError
 try:
-    from .spider import NotDownloadError
-    from .htmlparser import SoupError, CaptchaError, WrongHtmlError, ParseError
-except:
-    from crawlib.spider import NotDownloadError
-    from crawlib.htmlparser import SoupError, CaptchaError, WrongHtmlError, ParseError
+    from .spider.requests_spider import DownloadOversizeError
+    from .html_parser.parser import SoupError, CaptchaError, WrongHtmlError, ParseError
+except:  # pragma: no cover
+    from crawlib.spider.requests_spider import DownloadOversizeError
+    from crawlib.html_parser.parser import SoupError, CaptchaError, WrongHtmlError, ParseError

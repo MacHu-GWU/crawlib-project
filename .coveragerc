@@ -3,6 +3,7 @@
 [run]
 omit =
     crawlib/pkg/*
+    crawlib/spider/selenium_spider.py
     crawlib/zzz_ezinstall.py
 
 [report]
