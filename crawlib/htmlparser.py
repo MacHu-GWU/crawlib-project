@@ -44,6 +44,23 @@ class ParseError(Exception):
     """
 
 
+
+def deco(parser_method):
+    """
+
+    :param parser_method:
+    :return:
+    """
+    def wrapper(html, *args, **kwargs):
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+        except:
+            pass
+
+
+
+
+
 class BaseHtmlParser(object):
 
     """Base Html Parser. Able to get useful data from html.

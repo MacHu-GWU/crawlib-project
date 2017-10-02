@@ -1,3 +1,7 @@
+six
 chardet
 requests
+selenium
 beautifulsoup4
+attrs
+fake-useragent

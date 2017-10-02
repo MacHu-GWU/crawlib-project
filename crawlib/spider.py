@@ -13,9 +13,9 @@ except:
     from urllib.parse import urlparse
 
 try:
-    from .decoder import smart_decode
+    from .decode import smart_decode
 except:
-    from crawlib.decoder import smart_decode
+    from crawlib.decode import smart_decode
 
 
 def get_domain_name(url):
