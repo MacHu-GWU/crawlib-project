@@ -25,6 +25,9 @@ class BaseSeleniumSpider(BaseSpider):
         self.domain_encoding_table = dict()
 
     def get_html(self, url, wait_time=None):
+        """
+        Get html source in text.
+        """
         wait_time = self.prepare_wait_time(wait_time)
         if wait_time:
             self.sleep(wait_time)

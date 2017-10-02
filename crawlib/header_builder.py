@@ -7,6 +7,9 @@ ua = fake_useragent.UserAgent()
 
 
 class Headers(object):
+    """
+    Frequent used request header.
+    """
     class UserAgent(object):
         KEY = "User-Agent"
 
