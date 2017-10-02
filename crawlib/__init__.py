@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __version__ = "0.0.7"
-__short_description__ = "Crawl library."
+__short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
 __author_email__ = "husanhe@gmail.com"
