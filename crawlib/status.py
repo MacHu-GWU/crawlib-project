@@ -14,39 +14,52 @@ class Status(Constant):
     class S0_ToDo:
         id = 0
         description = "To do"
-        description_cn = "刚获得Primary Key, 还未尝试过抓取"
+        description_cn = "还未对以该Primary Key为基准生成的Url尝试过抓取。"
 
-    class S1_UrlError:
-        id = 1
-        description = "Failed to build url endpoint"
-        description_cn = "生成Url的过程出现了错误"
-
-    class S2_HttpError:
-        id = 2
-        description = "Failed to build url endpoint"
-        description_cn = "执行spider.get_html(url)失败, 可能是超时, 也可能是Url错误"
-
-    class S3_WrongPage:
-        id = 3
-        description = "Failed to build url endpoint"
-        description_cn = "成功获得了Html, 但Html不是我们想要的, 可能是url出错, 也可能服务器返回了错误页面"
-
-    class S4_ParseError:
-        id = 4
-        description = "Failed to build url endpoint"
-        description_cn = "从Html提取数据时出现异常, 导致无法提取数据下去"
-
-    class S5_InCompleteData:
+    class S5_UrlError:
         id = 5
         description = "Failed to build url endpoint"
-        description_cn = "成功提取了数据, 虽然没有出现异常, 但是某些数据点出现了错误, 结果可能不完整"
+        description_cn = "生成Url的过程出现了错误。"
 
-    class S8_Finished:
-        id = 8
-        description = "Failed to build url endpoint"
+    class S10_HttpError:
+        id = 10
+        description = "Failed to make a http request."
+        description_cn = "执行spider.get_html(url)失败，无法获得响应。"
+
+    class S20_WrongPage:
+        id = 20
+        description = ("Successfully get http request, but get the wrong html"
+                       "could be due to Banned, server temporarily not available.")
+        description_cn = ("成功获得了Html, 但Html不是我们想要的，"
+                          "可能是由于被Ban, 服务器临时出错等情况，"
+                          "使得服务器返回了错误的页面。")
+
+    class S30_ParseError:
+        id = 30
+        description = "Html parser method failed."
+        description_cn = "在从Html提取数据时出现异常，导致程序失败。"
+
+    class S40_InCompleteData:
+        id = 40
+        description = "Html parser method success, but data is wrong."
+        description_cn = ("提取数据的函数被成功运行，虽然没有出现异常，"
+                          "但是某些数据点出现了错误, 结果可能不完整。")
+
+    class S50_Finished:
+        """
+        break point, status code greater than this should be consider as 'Finished'.
+        """
+        id = 50
+        description = "Finished."
         description_cn = "成功的抓取了所有数据"
 
-    class S9_Finalized:
-        id = 9
-        description = "Failed to build url endpoint"
-        description_cn = "人工对其进行过编辑, 最终确定了, 不会再进行任何的修改"
+    class S60_ServerSideError:
+        id = 60
+        description = "Serverside error, so we temporarily mark it as 'finished'."
+        description_cn = ("服务器端出现问题，导致该Url是不可能被抓取的，"
+                          "我们暂时将其标记为完成，但以后可能再次进行尝试。")
+
+    class S99_Finalized:
+        id = 99
+        description = "Finalized, will nolonger be crawled / changed."
+        description_cn = "强制禁止对其进行任何的修改和抓取，通常是由于有人工修改介入。"
