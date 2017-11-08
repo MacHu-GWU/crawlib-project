@@ -6,6 +6,7 @@ from pytest import raises, approx
 from crawlib.spider.requests_spider import (
     spider, DownloadOversizeError,
 )
+from crawlib.header_builder import Headers
 
 
 def teardown_module(module):
@@ -23,7 +24,14 @@ class TestRequestsSpider(object):
     def test_get_html(self):
         html1 = spider.get_html("https://www.python.org/")
         html2 = spider.get_html("https://www.python.org/", encoding="utf-8")
-        assert html1 == html2
+        html3 = spider.get_html("https://www.python.org/",
+                                encoding="utf-8",
+                                headers={
+                                    Headers.UserAgent.KEY: Headers.UserAgent.chrome
+                                },
+                                wait_time=0.01,
+                                timeout=10)
+        assert html1 == html2 == html3
 
     def test_download(self):
         spider.download("https://www.python.org/", "www.python.org.html")

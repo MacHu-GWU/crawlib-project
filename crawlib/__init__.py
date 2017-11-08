@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -20,5 +20,6 @@ try:
     )
     from .status import Status
     from .header_builder import Headers
+    from .cache import CacheBackedSpider
 except ImportError:  # pragma: no cover
     pass

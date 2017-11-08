@@ -66,7 +66,7 @@ class ParseResult(object):
     data = attr.ib(default=attr.Factory(dict))
     errors = attr.ib(default=attr.Factory(dict))
 
-    def to_dict(self):
+    def to_dict(self):  # pragma: no cover
         return attr.asdict(self)
 
 
@@ -87,5 +87,5 @@ class BaseHtmlParser(BaseDomainSpecifiedKlass):
         """
         try:
             return BeautifulSoup(html, "html.parser")
-        except:
+        except:  # pragma: no cover
             return BeautifulSoup(html)
