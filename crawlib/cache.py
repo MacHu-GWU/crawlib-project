@@ -55,6 +55,7 @@ class CacheBackedSpider(object):
             disk=CompressStringDisk,
             disk_compress_level=compress_level,
         )
+        self.expire = expire
 
     def close(self):
         self.cache.close()
