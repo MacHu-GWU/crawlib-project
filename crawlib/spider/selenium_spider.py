@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from selenium import webdriver
+
 try:
     from .base import BaseSpider
 except:  # pragma: no cover

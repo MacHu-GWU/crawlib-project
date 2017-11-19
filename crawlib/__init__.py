@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.10"
+__version__ = "0.0.11"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -18,8 +18,11 @@ try:
     from .spider.requests_spider import (
         spider as requests_spider,
     )
+    from .spider.selenium_spider import (
+        ChromeSpider,
+    )
     from .status import Status
     from .header_builder import Headers
-    from .cache import CacheBackedSpider
+    from .cache import create_cache, CacheBackedSpider
 except ImportError:  # pragma: no cover
     pass

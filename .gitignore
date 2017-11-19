@@ -2,7 +2,6 @@
 crawlib_venv/
 crawlib.egg-info/
 crawlib-*/
-index.rst
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,12 +7,17 @@ again.
 """
 
 import zlib
+import requests
 import diskcache
+
+from . import exc
+from .decode import decoder
 
 
 class CompressStringDisk(diskcache.Disk):  # pragma: no cover
     """
-    Serialization Layer.
+    Serialization Layer. Value has to be bytes or string type, and will be
+    compressed using zlib before stored to disk.
 
     - Key: str, url.
     - Value: str, html.
@@ -32,11 +37,21 @@ class CompressStringDisk(diskcache.Disk):  # pragma: no cover
         return super(CompressStringDisk, self).store(value, read)
 
     def fetch(self, mode, filename, value, read):
-        data = super(CompressStringDisk, self).\
+        data = super(CompressStringDisk, self). \
             fetch(mode, filename, value, read)
         if not read:
             data = zlib.decompress(data).decode("utf-8")
         return data
+
+
+def create_cache(directory, compress_level=6, **kwargs):
+    cache = diskcache.Cache(
+        directory,
+        disk=CompressStringDisk,
+        disk_compress_level=compress_level,
+        **kwargs
+    )
+    return cache
 
 
 class CacheBackedSpider(object):
@@ -50,11 +65,7 @@ class CacheBackedSpider(object):
     """
 
     def __init__(self, directory, compress_level=6, expire=None):
-        self.cache = diskcache.Cache(
-            directory,
-            disk=CompressStringDisk,
-            disk_compress_level=compress_level,
-        )
+        self.cache = create_cache(directory, compress_level)
         self.expire = expire
 
     def close(self):
@@ -66,9 +77,46 @@ class CacheBackedSpider(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def get_html(self, url, expire=None, ignore_cache=False, update_cache=True,
+    def get_html(self,
+                 url,
+                 encoding=None,
+                 decode_errors="ignore",
+                 expire=None,
+                 ignore_cache=False,
+                 update_cache=True,
                  **kwargs):
         """
-        Please implement this method.
+        Get html from url endpoint, if it is in cache, use cached html.
+
+        :param url: url endpoing.
+        :param encoding: html charset for decoding.
+        :param decode_errors: how do you want to handle decode error,
+            one of 'strict', 'ignore' and 'replace'.
+        :param expire: seconds until item expires.
+        :param ignore_cache: if ``True``, then hit the real website anyway.
+        :param update_cache: by default, the html will be cached only if
+            200 ~ 299 status code is returned. But, if ``False``,
+            then it will not be cached.
         """
-        raise NotImplementedError
+        if expire is None:
+            expire = self.expire
+
+        if ignore_cache:
+            req = requests.get(url, **kwargs)
+        else:
+            if url in self.cache:
+                return self.cache[url]
+            else:
+                req = requests.get(url, **kwargs)
+        if 200 <= req.status_code < 300:
+            html = decoder.decode(
+                binary=req.content,
+                url=url,
+                encoding=encoding,
+                errors=decode_errors,
+            )
+            if update_cache:
+                self.cache.set(url, html, expire=expire)
+            return html
+        else:  # pragma: no cover
+            raise exc.WrongHtmlError(url)

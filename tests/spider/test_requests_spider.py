@@ -31,7 +31,7 @@ class TestRequestsSpider(object):
                                 },
                                 wait_time=0.01,
                                 timeout=10)
-        assert html1 == html2 == html3
+        assert html2 == html3
 
     def test_download(self):
         spider.download("https://www.python.org/", "www.python.org.html")

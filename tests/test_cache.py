@@ -3,25 +3,25 @@
 
 import pytest
 import os
+import shutil
 from crawlib.cache import CacheBackedSpider
 
 cache_dir = os.path.join(os.path.dirname(__file__), ".cache")
 
 
-class Spider(CacheBackedSpider):
-    def get_html(self, url):
-        if url in self.cache:
-            return self.cache[url]
-        else:
-            html = "Hello World" * 10000
-            self.cache.set(url, html)
-            return html
+def setup_module():
+    try:
+        shutil.rmtree(cache_dir)
+    except:
+        pass
 
 
 def test_CacheBackedSpider():
-    with Spider(cache_dir, expire=60) as spider:
-        html = spider.get_html("https://pypi.python.org/pypi/crawlib/")
-        html = spider.get_html("https://pypi.python.org/pypi/crawlib/")
+    with CacheBackedSpider(cache_dir, expire=60) as spider:
+        html = spider.get_html(
+            "https://pypi.python.org/pypi/crawlib/", update_cache=False)
+        html = spider.get_html(
+            "https://pypi.python.org/pypi/crawlib/", ignore_cache=True)
         html = spider.get_html("https://pypi.python.org/pypi/crawlib/")
 
 

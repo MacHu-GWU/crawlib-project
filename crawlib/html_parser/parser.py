@@ -11,7 +11,8 @@ except:  # pragma: no cover
 
 
 class SoupError(Exception):
-    """Failed to convert html to beatifulsoup.
+    """
+    Failed to convert html to beatifulsoup.
 
     **中文文档**
 
@@ -20,7 +21,10 @@ class SoupError(Exception):
 
 
 class CaptchaError(Exception):
-    """Encounter a captcha page.
+    """
+    Encounter a captcha page.
+
+    code 403
 
     **中文文档**
 
@@ -28,8 +32,21 @@ class CaptchaError(Exception):
     """
 
 
+class ForbiddenError(Exception):
+    """
+    Banned from server.
+
+    code 403
+
+    **中文文档**
+
+    被服务器禁止访问。
+    """
+
+
 class WrongHtmlError(Exception):
-    """The html is not the one we desired.
+    """
+    The html is not the one we desired.
 
     **中文文档**
 
@@ -53,6 +70,8 @@ class ParseError(Exception):
 class ServerSideError(Exception):
     """
     Server side problem.
+
+    code 404
 
     **中文文档**
 
