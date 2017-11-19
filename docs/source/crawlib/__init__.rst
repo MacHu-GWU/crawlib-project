@@ -14,6 +14,7 @@ sub packages and modules
     spider <spider/__init__>
     url_builder <url_builder/__init__>
     base <base>
+    cache <cache>
     decode <decode>
     exc <exc>
     header_builder <header_builder>
