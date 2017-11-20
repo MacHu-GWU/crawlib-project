@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Use diskcache to store url and its html. To avoid hit single url again and
-again.
+A disk cache layer to store url and its html.
 """
 
 import zlib
@@ -45,6 +44,14 @@ class CompressStringDisk(diskcache.Disk):  # pragma: no cover
 
 
 def create_cache(directory, compress_level=6, **kwargs):
+    """
+    Create a html cache. Html string will be automatically compressed.
+
+    :param directory: path for the cache directory.
+    :param compress_level: 0 ~ 9, 9 is slowest and smallest.
+    :param kwargs: other arguments.
+    :return: a `diskcache.Cache()`
+    """
     cache = diskcache.Cache(
         directory,
         disk=CompressStringDisk,
@@ -108,6 +115,7 @@ class CacheBackedSpider(object):
                 return self.cache[url]
             else:
                 req = requests.get(url, **kwargs)
+
         if 200 <= req.status_code < 300:
             html = decoder.decode(
                 binary=req.content,

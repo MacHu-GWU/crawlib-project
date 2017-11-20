@@ -19,22 +19,23 @@
 
 Welcome to ``crawlib`` Documentation
 ==============================================================================
-``crawlib`` is a crawler project building block to simplify:
+Crawl library provides crawler project building block to simplify:
 
-1. url encoding
-2. html parse
-3. error handling
-4. download html and file
+1. url encoding.
+2. html parse.
+3. error handling.
+4. download html and file.
+5. request cache.
 
 
 Quick Links
 ------------------------------------------------------------------------------
 
 - .. image:: https://img.shields.io/badge/Link-Document-red.svg
-      :target: http://www.wbh-doc.com.s3.amazonaws.com/crawlib/index.html
+      :target: https://crawlib.readthedocs.io/index.html
 
 - .. image:: https://img.shields.io/badge/Link-API_Reference_and_Source_Code-red.svg
-      :target: API reference and source code <http://www.wbh-doc.com.s3.amazonaws.com/crawlib/py-modindex.html
+      :target: API reference and source code <https://crawlib.readthedocs.io/py-modindex.html
 
 - .. image:: https://img.shields.io/badge/Link-Install-red.svg
       :target: `install`_

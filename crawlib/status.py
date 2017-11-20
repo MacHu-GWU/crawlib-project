@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-try:
-    from .pkg.constant2 import Constant
-except:  # pragma: no cover
-    from crawlib.pkg.constant2 import Constant
 
-
-class Status(Constant):
+class Status(object):
     """
     Crawler Status Code Map.
     """
@@ -57,6 +52,7 @@ class Status(Constant):
         id = 60
         description = "Serverside error, so we temporarily mark it as 'finished'."
         description_cn = ("服务器端出现问题，导致该Url是不可能被抓取的，"
+                          "或是目前的数据不是我们最终想要的，但是可以凑活暂时用，"
                           "我们暂时将其标记为完成，但以后可能再次进行尝试。")
 
     class S99_Finalized:

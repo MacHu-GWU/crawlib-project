@@ -6,15 +6,10 @@ Exceptions.
 """
 
 from requests import Timeout as TimeoutError
-try:
-    from .spider.requests_spider import DownloadOversizeError
-    from .html_parser.parser import (
-        SoupError, CaptchaError, ForbiddenError,
-        WrongHtmlError, ParseError, ServerSideError,
-    )
-except:  # pragma: no cover
-    from crawlib.spider.requests_spider import DownloadOversizeError
-    from crawlib.html_parser.parser import (
-        SoupError, CaptchaError, ForbiddenError,
-        WrongHtmlError, ParseError, ServerSideError,
-    )
+from .spider.requests_spider import DownloadOversizeError
+from .html_parser.parser import (
+    CaptchaError, ForbiddenError,
+    WrongHtmlError, SoupError,
+    ParseError, IncompleteDataError,
+    ServerSideError,
+)

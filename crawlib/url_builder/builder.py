@@ -15,7 +15,7 @@ class BaseUrlBuilder(BaseDomainSpecifiedKlass):
 
     You have to:
 
-    - define a ``domain`` class variable.
+    - define a ``domain`` class variable, for example: "https://www.apple.com/"
     """
 
     def join_all(self, *parts):
