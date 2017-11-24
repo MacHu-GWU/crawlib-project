@@ -103,6 +103,7 @@ class ServerSideError(Exception):
 class ParseResult(object):
     kwargs = attr.ib(default=attr.Factory(dict))
     data = attr.ib(default=attr.Factory(dict))
+    status = attr.ib(default=None)
     errors = attr.ib(default=attr.Factory(dict))
 
     def to_dict(self):  # pragma: no cover
