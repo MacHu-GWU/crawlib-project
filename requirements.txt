@@ -5,4 +5,4 @@ selenium
 beautifulsoup4
 attrs
 fake-useragent
-diskcache
+diskcache<3.0.0

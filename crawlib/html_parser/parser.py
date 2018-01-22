@@ -101,6 +101,13 @@ class ServerSideError(Exception):
 
 @attr.s
 class ParseResult(object):
+    """Html Parse Result.
+
+    :param kwargs: parse function parameters.
+    :param data: parsed data.
+    :param status: int, status code.
+    :param errors: error dictionary.
+    """
     kwargs = attr.ib(default=attr.Factory(dict))
     data = attr.ib(default=attr.Factory(dict))
     status = attr.ib(default=None)
