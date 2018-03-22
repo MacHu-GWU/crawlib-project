@@ -5,6 +5,8 @@
 A disk cache layer to store url and its html.
 """
 
+from __future__ import print_function
+
 import zlib
 import requests
 import diskcache
@@ -71,9 +73,14 @@ class CacheBackedSpider(object):
     :param expire: seconds that the cache will be expired.
     """
 
-    def __init__(self, directory, compress_level=6, expire=None):
+    def __init__(self,
+                 directory,
+                 compress_level=6,
+                 expire=None,
+                 cache_miss_warning=True):
         self.cache = create_cache(directory, compress_level)
         self.expire = expire
+        self.cache_miss_warning = cache_miss_warning
 
     def close(self):
         self.cache.close()
@@ -108,13 +115,20 @@ class CacheBackedSpider(object):
         if expire is None:
             expire = self.expire
 
+        cache_missed = False
         if ignore_cache:
             req = requests.get(url, **kwargs)
         else:
             if url in self.cache:
                 return self.cache[url]
             else:
+                cache_missed = True
                 req = requests.get(url, **kwargs)
+
+        if cache_missed:
+            if self.cache_miss_warning:
+                msg = "Cache miss warn: {} doesn't hit cache!".format(url)
+                print(msg)
 
         if 200 <= req.status_code < 300:
             html = decoder.decode(
