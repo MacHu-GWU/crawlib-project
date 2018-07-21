@@ -11,5 +11,4 @@ sub packages and modules
    :maxdepth: 1
 
     builder <builder>
-    util <util>
     

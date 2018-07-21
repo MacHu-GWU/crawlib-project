@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import attr
-from bs4 import BeautifulSoup
-
 try:
-    from ..base import BaseDomainSpecifiedKlass
     from ..status import Status
 except:  # pragma: no cover
-    from crawlib.base import BaseDomainSpecifiedKlass
     from crawlib.status import Status
 
 
@@ -97,35 +92,3 @@ class ServerSideError(Exception):
     2. 因为服务器的缘故, 上面的数据不是我们想要的, 但是我们可以暂时用着, 以后可能要重新抓取。
     """
     code = Status.S60_ServerSideError.id
-
-
-@attr.s
-class ParseResult(object):
-    """Html Parse Result.
-
-    :param params: parser function parameters. parser函数的所有参数.
-    :param data: parsed data. 解析出的数据.
-    :param status: int, status code. 抓取状态码
-    :param log: error dictionary.
-    """
-    params = attr.ib(default=attr.Factory(dict))
-    data = attr.ib(default=attr.Factory(dict))
-    status = attr.ib(default=None)
-    log = attr.ib(default=attr.Factory(dict))
-
-    def to_dict(self):  # pragma: no cover
-        return attr.asdict(self)
-
-
-class BaseHtmlParser(BaseDomainSpecifiedKlass):
-    """
-    Html Parser is to parse
-
-    Base Html Parser. Able to get useful data from html.
-
-    You have to:
-
-    - define a ``domain`` class variable.
-    """
-
-    __skip_implementation_check = True

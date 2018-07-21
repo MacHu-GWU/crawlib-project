@@ -6,15 +6,13 @@ import time
 import requests
 
 try:
-    from .. import helper
+    from .. import helper, util
     from .base import BaseSpider
     from ..decode import decoder
-    from ..url_builder import util
 except:  # pragma: no cover
-    from crawlib import helper
+    from crawlib import helper, util
     from crawlib.spider.base import BaseSpider
     from crawlib.decode import decoder
-    from crawlib.url_builder import util
 
 
 class DownloadOversizeError(Exception):

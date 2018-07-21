@@ -2,22 +2,17 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from . import util
+    from .. import util
     from ..base import BaseDomainSpecifiedKlass
 except:  # pragma: no cover
-    from crawlib.url_builder import util
+    from crawlib import util
     from crawlib.base import BaseDomainSpecifiedKlass
 
 
 class BaseUrlBuilder(BaseDomainSpecifiedKlass):
     """
     Base url builder. Provide functional interface to create url.
-
-    You have to:
-
-    - define a ``domain`` class variable, for example: "https://www.apple.com/"
     """
-
     def join_all(self, *parts):
         """
         Join all parts with domain. Example domain: https://www.python.org

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.16"
+__version__ = "0.0.17"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -12,12 +12,12 @@ __github_username__ = "MacHu-GWU"
 
 
 try:
-    from . import exc
+    from . import exc, util
     from .cache import create_cache, CacheBackedSpider
     from .decode import smart_decode, decoder
     from .header_builder import Headers
     from .status import Status
-    from .url_builder import BaseUrlBuilder, util
+    from .url_builder import BaseUrlBuilder
     from .html_parser import ParseResult, BaseHtmlParser
     from .spider.requests_spider import (
         spider as requests_spider,
@@ -25,5 +25,6 @@ try:
     from .spider.selenium_spider import (
         ChromeSpider,
     )
-except ImportError:  # pragma: no cover
+except ImportError as e:  # pragma: no cover
+    print(e)
     pass

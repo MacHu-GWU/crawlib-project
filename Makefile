@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Auto generated from pygitrepo 0.0.20
 #
 # This Makefile is a dev-ops tool set.
 # Compatible with:
@@ -143,7 +144,8 @@ BIN_TOX="${BIN_DIR}/tox"
 
 
 S3_PREFIX="s3://${BUCKET_NAME}/${PACKAGE_NAME}"
-DOC_URL="http://${BUCKET_NAME}.s3.amazonaws.com/${PACKAGE_NAME}/index.html"
+RTD_DOC_URL="https://crawlib.readthedocs.io/index.html"
+AWS_DOC_URL="http://${BUCKET_NAME}.s3.amazonaws.com/${PACKAGE_NAME}/index.html"
 
 PY_VERSION="${PY_VER_MAJOR}.${PY_VER_MINOR}.${PY_VER_MICRO}"
 
@@ -159,7 +161,8 @@ info: ## ** Show information about python, pip in this environment
 	@echo - venv: ${VENV_DIR_REAL} "\n"
 	@echo - python executable: ${BIN_PYTHON} "\n"
 	@echo - pip executable: ${BIN_PIP} "\n"
-	@echo - document: ${DOC_URL} "\n"
+	@echo - document on rtd: ${RTD_DOC_URL} "\n"
+	@echo - document on s3: ${AWS_DOC_URL} "\n"
 	@echo - site-packages: ${SITE_PACKAGES} "\n"
 
 
@@ -216,7 +219,7 @@ ifeq (${USE_PYENV}, "Y")
 	pyenv install ${PY_VERSION} -s
 	pyenv rehash
 
-	-pyenv virtualenv ${VENV_NAME}
+	-pyenv virtualenv ${PY_VERSION} ${VENV_NAME}
 else
 	virtualenv -p ${GLOBAL_PYTHON} ${VENV_NAME}
 endif

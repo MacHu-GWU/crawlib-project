@@ -10,5 +10,7 @@ sub packages and modules
 .. toctree::
    :maxdepth: 1
 
+    test <test>
     parser <parser>
+    errors <errors>
     
