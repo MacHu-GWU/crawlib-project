@@ -4,7 +4,7 @@
 import pytest
 import os
 import shutil
-from crawlib.cache import CacheBackedSpider
+from crawlib.cache import create_cache, CacheBackedSpider
 
 cache_dir = os.path.join(os.path.dirname(__file__), ".cache")
 
@@ -14,6 +14,22 @@ def setup_module():
         shutil.rmtree(cache_dir)
     except:
         pass
+
+
+def test_create_cache():
+    key = "https://www.python.org"
+    value = '<div class="header">Python is awesome!</div>'
+    cache = create_cache(cache_dir)
+
+    # value is unicode
+    cache.set(key, value)
+    assert cache[key] == value
+
+    # value is bytes
+    cache.set(key, value.encode("utf-8"))
+    assert cache[key] == value.encode("utf-8")
+
+    cache.close()
 
 
 def test_CacheBackedSpider():

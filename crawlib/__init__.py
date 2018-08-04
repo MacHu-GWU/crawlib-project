@@ -16,15 +16,20 @@ try:
     from .cache import create_cache, CacheBackedSpider
     from .decode import smart_decode, decoder
     from .header_builder import Headers
-    from .status import Status
-    from .url_builder import BaseUrlBuilder
-    from .html_parser import ParseResult, BaseHtmlParser
+    from .status import Status, FINISHED_STATUS_CODE
+    from .url_builder.builder import BaseUrlBuilder
+    from .html_parser import (
+        ExtendedItem, ParseResult, BaseHtmlParser,
+        soupify, access_binary, auto_decode_and_soupify
+    )
     from .spider.requests_spider import (
         spider as requests_spider,
     )
     from .spider.selenium_spider import (
         ChromeSpider,
     )
+    from .pipeline import mongodb, rds
+    from .timestamp import epoch, x_seconds_before_now, x_seconds_after_now
 except ImportError as e:  # pragma: no cover
     print(e)
     pass

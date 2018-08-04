@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from pytest import raises, approx
-from crawlib.url_builder import util
+from crawlib import util
 
 
 def test_get_netloc():

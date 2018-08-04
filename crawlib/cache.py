@@ -91,6 +91,15 @@ class CacheBackedSpider(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
+    # def get(self,
+    #         url,
+    #         encoding=None,
+    #         decode_errors="ignore",
+    #         expire=None,
+    #         ignore_cache=False,
+    #         update_cache=True,
+    #         **kwargs):
+
     def get_html(self,
                  url,
                  encoding=None,

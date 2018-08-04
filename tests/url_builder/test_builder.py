@@ -7,10 +7,10 @@ from crawlib.url_builder.builder import BaseUrlBuilder
 
 
 class PythonOrgUrlBuilder(BaseUrlBuilder):
-    domain = "https://www.python.org"
+    pass
 
 
-url_builder = PythonOrgUrlBuilder()
+url_builder = PythonOrgUrlBuilder(domain="https://www.python.org")
 
 
 def test_join_all():

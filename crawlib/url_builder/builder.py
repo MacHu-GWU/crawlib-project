@@ -13,6 +13,7 @@ class BaseUrlBuilder(BaseDomainSpecifiedKlass):
     """
     Base url builder. Provide functional interface to create url.
     """
+
     def join_all(self, *parts):
         """
         Join all parts with domain. Example domain: https://www.python.org

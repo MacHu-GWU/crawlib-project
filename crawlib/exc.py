@@ -11,6 +11,7 @@ from .html_parser.errors import (
     CaptchaError,
     ForbiddenError,
     WrongHtmlError,
+    DecodeError,
     SoupError,
     ParseError,
     IncompleteDataError,

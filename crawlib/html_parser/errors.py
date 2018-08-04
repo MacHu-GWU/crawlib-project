@@ -48,6 +48,13 @@ class WrongHtmlError(Exception):
     code = Status.S20_WrongPage.id
 
 
+class DecodeError(Exception):
+    """
+    Failed to decode binary response.
+    """
+    code = Status.S25_DecodeError.id
+
+
 class SoupError(Exception):
     """
     Failed to convert html to beatifulsoup.

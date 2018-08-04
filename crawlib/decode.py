@@ -25,12 +25,14 @@ def smart_decode(binary, errors="strict"):
     return text, encoding, confidence
 
 
-class PerDomainDecoder(object):
+class UrlSpecifiedDecoder(object):
     """
     Designed for automatically decoding html from binary content of an url.
 
     First, `chardet.detect` is very expensive in time.
     Second, usually each website (per domain) only use one encoding algorithm.
+
+    This class avoid perform `chardet.detect` twice on the same domain.
 
     :param domain_encoding_table: dict, key is root domain, and value is the
         domain's default encoding.
@@ -71,4 +73,5 @@ class PerDomainDecoder(object):
         return html
 
 
-decoder = PerDomainDecoder()
+url_specified_decoder = UrlSpecifiedDecoder()
+decoder = url_specified_decoder
