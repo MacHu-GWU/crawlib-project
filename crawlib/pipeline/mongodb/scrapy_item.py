@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+TRAIL: dynamically create an ``scrapy.Item`` class that having same structure of
+the specified ``mongoengine.Document``.
+"""
+
 from scrapy import Item, Field
 
 

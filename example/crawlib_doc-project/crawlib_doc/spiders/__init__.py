@@ -3,9 +3,8 @@
 
 
 from scrapy import Spider, Request
-from crawlib_doc.html_parser import html_parser, ParseResult
-from crawlib_doc.model import State, City, Zipcode
-from crawlib.pipeline import mongodb
+from crawlib_doc.html_parser import html_parser
+from crawlib_doc.mongo_model import State, City, Zipcode
 
 
 class StateListpage(Spider):
@@ -13,13 +12,17 @@ class StateListpage(Spider):
 
     def start_requests(self):
         url = "https://crawlib.readthedocs.io/_static/state-list.html"
-        yield Request(url, callback=self.parse_state)
+        req = Request(url, callback=self.parse_state)
+        yield req
 
     def parse_state(self, response):
-        res = html_parser.parse(response, data_model=State)
-        res.item.process()
-        self.logger.info(res.item)
-        yield res.item
+        parse_result = html_parser.parse_use_mongoengine(
+            response=response,
+            child_class=State,
+        )
+        parse_result.process_item()
+        self.logger.info(parse_result.item)
+        yield parse_result.item
 
 
 class CityListpage(Spider):
@@ -28,13 +31,19 @@ class CityListpage(Spider):
     def start_requests(self):
         self.logger.info(str(State.get_all_unfinished()))
         for state in State.get_all_unfinished():
-            yield Request(state.build_url(), callback=self.parse_city)
+            req = Request(state.build_url(), callback=self.parse_city)
+            req.meta["parent"] = state
+            yield req
 
     def parse_city(self, response):
-        res = html_parser.parse(response, data_model=City)
-        res.item.process()
-        self.logger.info(res.item)
-        yield res.item
+        parse_result = html_parser.parse_use_mongoengine(
+            response=response,
+            parent=response.meta["parent"],
+            child_class=City,
+        )
+        parse_result.process_item()
+        self.logger.info(parse_result.item)
+        yield parse_result.item
 
 
 class ZipcodeListpage(Spider):
@@ -42,10 +51,16 @@ class ZipcodeListpage(Spider):
 
     def start_requests(self):
         for city in City.get_all_unfinished():
-            yield Request(city.build_url(), callback=self.parse_zipcode)
+            req = Request(city.build_url(), callback=self.parse_zipcode)
+            req.meta["parent"] = city
+            yield req
 
     def parse_zipcode(self, response):
-        res = html_parser.parse(response, data_model=Zipcode)
-        res.item.process()
-        self.logger.info(res.item)
-        yield res.item
+        parse_result = html_parser.parse_use_mongoengine(
+            response=response,
+            parent=response.meta["parent"],
+            child_class=Zipcode,
+        )
+        parse_result.process_item()
+        self.logger.info(parse_result.item)
+        yield parse_result.item

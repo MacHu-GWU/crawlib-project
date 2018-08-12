@@ -49,7 +49,12 @@ def access_binary(response):
 
 _auto_decode_and_soupify_implementation_ok_mapper = dict()
 
+
 def validate_implementation_for_auto_decode_and_soupify(func):
+    """
+    Validate that :func:`auto_decode_and_soupify` is applicable to this
+    function. If not applicable, a ``NotImplmentedError`` will be raised.
+    """
     arg_spec = inspect.getargspec(func)
     for arg in ["response", "html", "soup"]:
         if arg not in arg_spec.args:
@@ -73,7 +78,7 @@ def auto_decode_and_soupify(encoding=None, errors=decoder.ErrorsHandle.strict):
         ``response``.
 
     Usage::
-    
+
         @auto_decode_and_soupify()
         def parse(response, html, soup):
             ...
@@ -88,11 +93,11 @@ def auto_decode_and_soupify(encoding=None, errors=decoder.ErrorsHandle.strict):
     def deco(func):
         func_hash = hash(func)
         if not _auto_decode_and_soupify_implementation_ok_mapper \
-            .get(func_hash, False):
+                .get(func_hash, False):
             validate_implementation_for_auto_decode_and_soupify(func)
             _auto_decode_and_soupify_implementation_ok_mapper[func_hash] = True
 
-        def wrapper(**kwargs):
+        def wrapper(*args, **kwargs):
             try:
                 response = kwargs.get("response")
                 html = kwargs.get("html")
@@ -120,7 +125,7 @@ def auto_decode_and_soupify(encoding=None, errors=decoder.ErrorsHandle.strict):
                 soup = soupify(html)
                 kwargs["soup"] = soup
 
-            return func(**kwargs)
+            return func(*args, **kwargs)
 
         return wrapper
 

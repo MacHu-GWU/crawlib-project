@@ -32,10 +32,10 @@ class CompressStringDisk(diskcache.Disk):  # pragma: no cover
         data = super(CompressStringDisk, self).get(key, raw)
         return zlib.decompress(data).decode("utf-8")
 
-    def store(self, value, read):
+    def store(self, value, read, **kwargs):
         if not read:
             value = zlib.compress(value.encode("utf-8"), self.compress_level)
-        return super(CompressStringDisk, self).store(value, read)
+        return super(CompressStringDisk, self).store(value, read, **kwargs)
 
     def fetch(self, mode, filename, value, read):
         data = super(CompressStringDisk, self). \
@@ -90,15 +90,6 @@ class CacheBackedSpider(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
-
-    # def get(self,
-    #         url,
-    #         encoding=None,
-    #         decode_errors="ignore",
-    #         expire=None,
-    #         ignore_cache=False,
-    #         update_cache=True,
-    #         **kwargs):
 
     def get_html(self,
                  url,

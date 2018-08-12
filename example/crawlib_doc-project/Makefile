@@ -55,7 +55,7 @@
 
 
 #--- User Defined Variable ---
-PACKAGE_NAME="crawlib"
+PACKAGE_NAME="crawlib_doc"
 
 # Python version Used for Development
 PY_VER_MAJOR="2"
@@ -69,7 +69,7 @@ TEST_PY_VER4="3.5.3"
 TEST_PY_VER5="3.6.2"
 
 # Virtualenv Name
-VENV_NAME="${PACKAGE_NAME}_venv"
+VENV_NAME="crawlib_venv"
 
 # If you use pyenv-virtualenv, set to "Y"
 USE_PYENV="Y"

@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+**中文文档**
+
+与Scheduler相关的Mongodb Query.
+"""
+
 try:
     from ...timestamp import x_seconds_before_now
     from ...status import FINISHED_STATUS_CODE
-except:
+except:  # pragma: no cover
     from crawlib.timestamp import x_seconds_before_now
     from crawlib.status import FINISHED_STATUS_CODE
 
@@ -36,7 +42,7 @@ def finished(finished_status,
     }
 
 
-def finished_50(update_interval, status_key, edit_at_key):
+def finished_50(update_interval, status_key, edit_at_key):  # pragma: no cover
     return finished(
         FINISHED_STATUS_CODE,
         update_interval, status_key, edit_at_key
@@ -71,7 +77,7 @@ def unfinished(finished_status,
     }
 
 
-def unfinished_50(update_interval, status_key, edit_at_key):
+def unfinished_50(update_interval, status_key, edit_at_key):  # pragma: no cover
     return unfinished(
         FINISHED_STATUS_CODE,
         update_interval, status_key, edit_at_key,

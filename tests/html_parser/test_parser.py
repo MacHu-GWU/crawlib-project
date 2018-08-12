@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from crawlib.html_parser.parser import ExtendedItem, ParseResult, BaseHtmlParser
+from crawlib.html_parser.parser import BaseHtmlParser
 
 if __name__ == "__main__":
     import os

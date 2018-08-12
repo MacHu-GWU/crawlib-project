@@ -17,6 +17,12 @@ def connect_mlabs():
     return client, db
 
 
+def connect_local():
+    client = connect(dbname, alias=dbname, host="localhost")
+    db = client[dbname]
+    return client, db
+
+
 def connect_mongomock():
     client = connect(dbname, alias=dbname, host="mongomock://localhost")
     client.drop_database(dbname)
@@ -25,4 +31,5 @@ def connect_mongomock():
 
 
 # client, db = connect_mongomock()
-client, db = connect_mlabs()
+client, db = connect_local()
+# client, db = connect_mlabs()

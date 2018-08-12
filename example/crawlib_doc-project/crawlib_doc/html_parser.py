@@ -1,60 +1,69 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from crawlib import (
+    BaseHtmlParser,
+    OneToManyMongoEngineItem,
+    OneToManyRdsItem,
+    ParseResult,
+    auto_decode_and_soupify,
+    Status,
+)
+
 try:
     from .constant import DOMAIN
-    from .model import State, City, Zipcode
 except:
     from crawlib_doc.constant import DOMAIN
-    from crawlib_doc.model import State, City, Zipcode
-
-import attr
-from crawlib import (
-    BaseHtmlParser, ParseResult, auto_decode_and_soupify, Status
-)
-from pymongo_mate import smart_insert
-from scrapy import Item, Field
 
 
-class ListpageItem(Item):
-    parent_class = Field()
-    parent = Field()
-    child_class = Field()
-    child_list = Field()
-    parse_result = Field()
+class MongoengineItem(OneToManyMongoEngineItem):
+    _settings_NUMBER_OF_CHILD_TYPES_required = 1
+    _settings_N_CHILD_1_KEY_optional = "n_child"
 
-    def process(self):
-        if self["parse_result"].is_finished():
-            self["child_class"].smart_insert(self["child_list"])
-        self["parse_result"]
+
+MongoengineItem.validate_implementation()
+
+
+class RdsItem(OneToManyRdsItem):
+    _settings_NUMBER_OF_CHILD_TYPES_required = 1
+    _settings_N_CHILD_1_KEY_optional = "n_child"
+
+
+RdsItem.validate_implementation()
 
 
 class HtmlParser(BaseHtmlParser):
     @auto_decode_and_soupify()
     def parse(self,
-              response,
+              response=None,
               html=None,
               soup=None,
-              data_model=None,
+              parent=None,
+              child_class=None,
+              item_class=None,
               **kwargs):
-        res = ParseResult(
-            params=dict(url=response.url, html=html),
-            status=Status.S0_ToDo.id,
-        )
-        res.item = ListpageItem(
+        res = ParseResult()
+        if parent is None:
+            parent_class = None
+        else:
+            parent_class = parent.__class__
 
-            child_class=data_model,
-            child_list=list(),
-            parse_result=res,
+        item = item_class(
+            parent_class=parent_class,
+            parent=parent,
+            child_class_1=child_class,
         )
+        res.item = item
+
+        item.post_init()
         for a in soup.find_all("a"):
-            state = data_model(
+            state_city_or_zipcode = child_class(
                 _id=a["href"].split(".")[0],
                 name=a.text,
             )
-            res.item["item_list"].append(state)
+            item.append_child(state_city_or_zipcode, nth=1)
 
-        if len(res.item["item_list"]) > 0:
+        if item.get_n_child(nth=1) > 0:
             res.status = Status.S50_Finished.id
         else:
             res.status = Status.S40_InCompleteData.id
@@ -67,22 +76,38 @@ html_parser = HtmlParser(domain=DOMAIN)
 if __name__ == "__main__":
     import requests
     from crawlib_doc.url_builder import url_builder
+    from crawlib_doc.mongo_model import (
+        State as StateMongo,
+        City as CityMongo,
+        Zipcode as ZipcodeMongo,
+    )
+    from crawlib_doc.rds_model import (
+        State as StateRds,
+        City as CityRds,
+        Zipcode as ZipcodeRds,
+    )
 
     res = html_parser.parse(
         response=requests.get(url_builder.build_state_listpage()),
-        data_model=State,
+        child_class=StateMongo,
+        item_class=MongoengineItem,
+    )
+    res = html_parser.parse(
+        response=requests.get(url_builder.build_state_listpage()),
+        child_class=StateRds,
+        item_class=RdsItem,
     )
     print(res.item)
 
+    #
     # res = html_parser.parse(
     #     response=requests.get(url_builder.build_city_listpage("ca")),
-    #     data_model=City,
+    #     child_class=CityMongo,
     # )
     # print(res.item)
     #
     # res = html_parser.parse(
     #     response=requests.get(url_builder.build_zipcode_listpage("san-francisco")),
-    #     data_model=Zipcode,
+    #     child_class=ZipcodeMongo,
     # )
     # print(res.item)
-

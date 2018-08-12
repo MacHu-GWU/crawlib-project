@@ -5,7 +5,7 @@ selenium
 beautifulsoup4
 attrs
 fake-useragent
-diskcache<3.0.0
+diskcache
 sqlalchemy_mate
 pymongo_mate
 mongoengine_mate

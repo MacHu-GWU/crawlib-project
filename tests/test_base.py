@@ -6,8 +6,6 @@ from pytest import raises, approx
 from crawlib import base
 
 
-
-
 if __name__ == "__main__":
     import os
 

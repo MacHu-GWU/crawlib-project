@@ -4,6 +4,7 @@
 omit =
     crawlib/pkg/*
     crawlib/spider/selenium_spider.py
+    crawlib/pipeline/mongodb/scrapy_item.py
     crawlib/zzz_ezinstall.py
 
 [report]

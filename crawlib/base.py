@@ -10,5 +10,6 @@ except:  # pragma: no cover
 class BaseDomainSpecifiedKlass(object):
     """
     """
+
     def __init__(self, domain):
         self.domain = util.get_domain(domain)

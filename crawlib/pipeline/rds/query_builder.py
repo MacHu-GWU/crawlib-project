@@ -6,7 +6,7 @@ from sqlalchemy import select, and_, or_
 try:
     from ...timestamp import x_seconds_before_now
     from ...status import FINISHED_STATUS_CODE
-except:
+except:  # pragma: no cover
     from crawlib.timestamp import x_seconds_before_now
     from crawlib.status import FINISHED_STATUS_CODE
 
@@ -41,7 +41,7 @@ def finished(finished_status,
 def finished_50(update_interval,
                 table,
                 status_column,
-                edit_at_column):
+                edit_at_column):  # pragma: no cover
     return finished(
         FINISHED_STATUS_CODE,
         update_interval, table, status_column, edit_at_column,
@@ -79,7 +79,7 @@ def unfinished(finished_status,
 def unfinished_50(update_interval,
                   table,
                   status_column,
-                  edit_at_column):
+                  edit_at_column):  # pragma: no cover
     return unfinished(
         FINISHED_STATUS_CODE,
         update_interval, table, status_column, edit_at_column,
