@@ -3,10 +3,11 @@
 
 import pytest
 from pytest import raises, approx
-from crawlib.data_class import ExtendedItem, OneToManyMongoEngineItem, ParseResult
+from crawlib.data_class import (
+    ExtendedItem, OneToManyMongoEngineItem, ParseResult, Field,
+)
 from crawlib.pipeline.mongodb.orm import ExtendedDocument
 from mongoengine import fields
-from scrapy import Field
 
 
 class UserItem(ExtendedItem):

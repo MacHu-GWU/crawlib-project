@@ -20,8 +20,12 @@ This module bridge the gap.
 
 import inspect
 from bs4 import BeautifulSoup
-from scrapy.http import Response as ScrapyResponse
 from requests import Response as RequestsResponse
+
+try:
+    from scrapy.http import Response as ScrapyResponse
+except:
+    pass
 
 from ..decode import decoder
 from .errors import DecodeError, SoupError
@@ -38,10 +42,10 @@ def soupify(html):
 
 
 def access_binary(response):
-    if isinstance(response, ScrapyResponse):
-        binary = response.body
-    elif isinstance(response, RequestsResponse):
+    if isinstance(response, RequestsResponse):
         binary = response.content
+    elif isinstance(response, ScrapyResponse):
+        binary = response.body
     else:
         raise TypeError("It only support ScrapyResponse or RequestsResponse!")
     return binary

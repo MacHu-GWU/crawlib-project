@@ -22,7 +22,10 @@
 
 import attr
 from datetime import datetime
-from scrapy import Item, Field
+try:
+    from scrapy import Item, Field
+except:
+    from ._scrapy_item import Item, Field
 try:
     from .status import Status
 except:  # pragma: no cover

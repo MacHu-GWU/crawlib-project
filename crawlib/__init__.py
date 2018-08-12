@@ -12,6 +12,12 @@ __github_username__ = "MacHu-GWU"
 
 
 try:
+    import scrapy
+    _has_scrapy = True
+except:
+    _has_scrapy = False
+
+try:
     from . import exc, util
     from .cache import create_cache, CacheBackedSpider
     from .data_class import ExtendedItem, ParseResult, Field
