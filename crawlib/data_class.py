@@ -209,7 +209,10 @@ class ParseResult(object):
     def is_finished(self):
         """
         """
-        return self.status >= self._settings_FINISHED_STATUS_CODE_required
+        try:
+            return self.status >= self._settings_FINISHED_STATUS_CODE_required
+        except:
+            return False
 
     def process_item(self, **kwargs):
         """

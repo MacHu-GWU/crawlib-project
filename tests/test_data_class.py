@@ -66,6 +66,10 @@ class TestParseResult(object):
             ParseResult(item=1)
 
     def test_is_finished(self):
+        assert ParseResult(
+            status=ParseResult._settings_FINISHED_STATUS_CODE_required) \
+                .is_finished() is True
+        assert ParseResult(status=0).is_finished() is False
         assert ParseResult().is_finished() is False
 
     def test_process_item(self):
