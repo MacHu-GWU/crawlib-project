@@ -15,37 +15,60 @@ from . import exc
 from .decode import decoder
 
 
-class CompressStringDisk(diskcache.Disk):  # pragma: no cover
+class CompressedDisk(diskcache.Disk):  # pragma: no cover
     """
     Serialization Layer. Value has to be bytes or string type, and will be
     compressed using zlib before stored to disk.
 
     - Key: str, url.
-    - Value: str, html.
+    - Value: str or bytes, html or binary content.
     """
 
-    def __init__(self, directory, compress_level=6, **kwargs):
+    def __init__(self,
+                 directory,
+                 compress_level=6,
+                 value_type_is_binary=False,
+                 **kwargs):
         self.compress_level = compress_level
-        super(CompressStringDisk, self).__init__(directory, **kwargs)
+        self.value_type_is_binary = value_type_is_binary
+        if value_type_is_binary:
+            self._decompress = self._decompress_return_bytes
+            self._compress = self._compress_bytes
+        else:
+            self._decompress = self._decompress_return_str
+            self._compress = self._compress_str
+        super(CompressedDisk, self).__init__(directory, **kwargs)
+
+    def _decompress_return_str(self, data):
+        return zlib.decompress(data).decode("utf-8")
+
+    def _decompress_return_bytes(self, data):
+        return zlib.decompress(data)
+
+    def _compress_str(self, data):
+        return zlib.compress(data.encode("utf-8"), self.compress_level)
+
+    def _compress_bytes(self, data):
+        return zlib.compress(data, self.compress_level)
 
     def get(self, key, raw):
-        data = super(CompressStringDisk, self).get(key, raw)
-        return zlib.decompress(data).decode("utf-8")
+        data = super(CompressedDisk, self).get(key, raw)
+        return self._decompress(data)
 
     def store(self, value, read, **kwargs):
         if not read:
-            value = zlib.compress(value.encode("utf-8"), self.compress_level)
-        return super(CompressStringDisk, self).store(value, read, **kwargs)
+            value = self._compress(value)
+        return super(CompressedDisk, self).store(value, read, **kwargs)
 
     def fetch(self, mode, filename, value, read):
-        data = super(CompressStringDisk, self). \
+        data = super(CompressedDisk, self). \
             fetch(mode, filename, value, read)
         if not read:
-            data = zlib.decompress(data).decode("utf-8")
+            data = self._decompress(data)
         return data
 
 
-def create_cache(directory, compress_level=6, **kwargs):
+def create_cache(directory, compress_level=6, value_type_is_binary=False, **kwargs):
     """
     Create a html cache. Html string will be automatically compressed.
 
@@ -56,8 +79,9 @@ def create_cache(directory, compress_level=6, **kwargs):
     """
     cache = diskcache.Cache(
         directory,
-        disk=CompressStringDisk,
+        disk=CompressedDisk,
         disk_compress_level=compress_level,
+        disk_value_type_is_binary=value_type_is_binary,
         **kwargs
     )
     return cache

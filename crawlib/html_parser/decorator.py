@@ -28,7 +28,7 @@ except:
     pass
 
 from ..decode import decoder
-from .errors import DecodeError, SoupError
+from ..exc import DecodeError, SoupError
 
 
 def soupify(html):

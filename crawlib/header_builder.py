@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import random
 import fake_useragent
 
 ua = fake_useragent.UserAgent()
@@ -17,6 +18,27 @@ class Headers(object):
         chrome = ua.chrome
         firefox = ua.firefox
         safari = ua.safari
+
+        _all = [
+            ua.ie,
+            ua.msie,
+            ua['Internet Explorer'],
+            ua.opera,
+            ua.chrome,
+            ua.google,
+            ua['google chrome'],
+            ua.firefox,
+            ua.ff,
+            ua.safari,
+        ]
+
+        @classmethod
+        def random_by_statistic(cls):
+            return ua.random
+
+        @classmethod
+        def random(cls):
+            return random.choice(cls._all)
 
     class ContentType(object):
         KEY = "Content-Type"

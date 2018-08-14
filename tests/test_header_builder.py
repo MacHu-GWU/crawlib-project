@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from pytest import raises, approx
 from crawlib.header_builder import Headers
 
 
@@ -11,6 +10,8 @@ def test_Headers():
         Headers.UserAgent.KEY: Headers.UserAgent.chrome,
         Headers.Connection.KEY: Headers.Connection.keep_alive,
     }
+    Headers.UserAgent.random_by_statistic()
+    Headers.UserAgent.random()
 
 
 test_Headers()

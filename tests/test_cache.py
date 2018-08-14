@@ -19,16 +19,17 @@ def setup_module():
 def test_create_cache():
     key = "https://www.python.org"
     value = '<div class="header">Python is awesome!</div>'
-    cache = create_cache(cache_dir)
 
     # value is unicode
+    cache = create_cache(cache_dir, value_type_is_binary=False)
     cache.set(key, value)
     assert cache[key] == value
+    cache.close()
 
     # value is bytes
-    # cache.set(key, value.encode("utf-8"))
-    # assert cache[key] == value.encode("utf-8")
-
+    cache = create_cache(cache_dir, value_type_is_binary=True)
+    cache.set(key, value.encode("utf-8"))
+    assert cache[key] == value.encode("utf-8")
     cache.close()
 
 

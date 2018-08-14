@@ -24,8 +24,10 @@ class ItemMeta(ABCMeta):
 
     def __new__(mcs, class_name, bases, attrs):
         classcell = attrs.pop('__classcell__', None)
-        new_bases = tuple(base._class for base in bases if hasattr(base, '_class'))
-        _class = super(ItemMeta, mcs).__new__(mcs, 'x_' + class_name, new_bases, attrs)
+        new_bases = tuple(
+            base._class for base in bases if hasattr(base, '_class'))
+        _class = super(ItemMeta, mcs).__new__(
+            mcs, 'x_' + class_name, new_bases, attrs)
 
         fields = getattr(_class, 'fields', {})
         new_attrs = {}
@@ -61,7 +63,7 @@ class DictItem(MutableMapping, BaseItem):
             self._values[key] = value
         else:
             raise KeyError("%s does not support field: %s" %
-                (self.__class__.__name__, key))
+                           (self.__class__.__name__, key))
 
     def __delitem__(self, key):
         del self._values[key]
@@ -74,7 +76,7 @@ class DictItem(MutableMapping, BaseItem):
     def __setattr__(self, name, value):
         if not name.startswith('_'):
             raise AttributeError("Use item[%r] = %r to set field value" %
-                (name, value))
+                                 (name, value))
         super(DictItem, self).__setattr__(name, value)
 
     def __len__(self):

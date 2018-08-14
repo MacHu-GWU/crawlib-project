@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.18 (TODO)
+0.0.19  (TODO)
 ~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.18 (2018-08-14)
+~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- add a downloader middleware, integrate with auto rotate headers, disk cache, tor network support.
 
 
 0.0.17 (Milestone)
