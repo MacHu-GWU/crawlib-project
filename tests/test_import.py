@@ -7,12 +7,21 @@ import pytest
 def test():
     import crawlib
 
+    crawlib.RequestsDownloader
     crawlib.BaseUrlBuilder
-    crawlib.ParseResult
     crawlib.BaseHtmlParser
+
+    crawlib.ExtendedItem
+    crawlib.OneToManyRdsItem
+    crawlib.OneToManyRdsItem
+    crawlib.ParseResult
+
     crawlib.util
     crawlib.Status
     crawlib.Headers
+
+    crawlib.create_cache
+    crawlib.CacheBackedSpider
 
     exc = crawlib.exc
     exc.DownloadOversizeError
@@ -21,6 +30,7 @@ def test():
     exc.CaptchaError
     exc.WrongHtmlError
     exc.ParseError
+    exc.DecodeError
 
 
 if __name__ == "__main__":

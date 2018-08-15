@@ -2,8 +2,8 @@ Release and Version History
 ===========================
 
 
-0.0.19  (TODO)
-~~~~~~~~~~~~~~~~~~
+0.0.20 (TODO)
+~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
 **Minor Improvements**
@@ -11,6 +11,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.19 (2018-08-14)
+~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- allow user to customize the cache behavior. ``RequestsDownloader.read_cache_first``, ``RequestsDownloader.always_update_cache`` these two option variable can be used to adjust cache behavior.
 
 
 0.0.18 (2018-08-14)

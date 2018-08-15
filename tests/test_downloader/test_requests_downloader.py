@@ -3,38 +3,57 @@
 
 from __future__ import unicode_literals
 import os
+import shutil
 import pytest
 from pathlib_mate import Path
-from crawlib import create_cache
 from crawlib.downloader.requests_downloader import RequestsDownloader
 
 cache_dir = Path(__file__).change(new_basename=".cache").abspath
-cache = create_cache(cache_dir)
-
-dl = RequestsDownloader(
-    cache_on=True,
-    cache_dir=cache_dir,
-    cache_expire=24 * 3600,
-    random_user_agent=True,
-)
-
 dl_dst = Path(__file__).change(new_basename="python.org.html").abspath
 
 
-def teardown_module(module):
+def reset():
+    try:
+        shutil.rmtree(cache_dir)
+    except:
+        pass
+
     try:
         os.remove(dl_dst)
     except:
         pass
 
 
+def teardown_module(module):
+    reset()
+
+
 class TestRequestsDownloader(object):
     def test(self):
+        reset()
+
+        dl = RequestsDownloader(
+            cache_on=True,
+            read_cache_first=False,
+            cache_dir=cache_dir,
+            cache_expire=24 * 3600,
+            random_user_agent=True,
+        )
+
         url = "https://www.python.org/"
-        html = dl.get_html(url)
+        assert url not in dl.cache
+        html = dl.get_html(url, cache_cb=lambda res: True)
+        assert url in dl.cache
         assert dl.cache[url].decode("utf-8") == html
 
+        dl.read_cache_first = True
+        res = dl.get(url)
+        assert res.status_code is None
+
+        dl.read_cache_first = False
         dl.download(url, dl_dst)
+
+        dl.close()
 
 
 if __name__ == "__main__":

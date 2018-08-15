@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.18"
+__version__ = "0.0.19"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -31,6 +31,7 @@ try:
     from .timestamp import epoch, x_seconds_before_now, x_seconds_after_now
 
     # subpackage
+    from .downloader import RequestsDownloader
     from .html_parser import (
         BaseHtmlParser,
         soupify, access_binary, auto_decode_and_soupify
