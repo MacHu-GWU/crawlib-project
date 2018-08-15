@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.19"
+__version__ = "0.0.20"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -10,11 +10,11 @@ __maintainer__ = "Sanhe Hu"
 __maintainer_email__ = "husanhe@gmail.com"
 __github_username__ = "MacHu-GWU"
 
-
 try:
     import scrapy
+
     _has_scrapy = True
-except:
+except:  # pragma: no cover
     _has_scrapy = False
 
 try:
@@ -27,6 +27,7 @@ try:
     )
     from .decode import smart_decode, decoder
     from .header_builder import Headers
+    from .logger import SpiderLogger
     from .status import Status, FINISHED_STATUS_CODE
     from .timestamp import epoch, x_seconds_before_now, x_seconds_after_now
 

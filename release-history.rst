@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.20 (TODO)
+0.0.21 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,22 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.20 (2018-08-15)
+~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- add ``SpiderLogger`` class.
+
+**Minor Improvements**
+
+- add some ``set_status`` methods for ``ParseResult``.
+- improve tet coverage.
+
+**Bugfixes**
+
+- it should call ``requests.Session`` instead of ``requests.session`` in ``RequestsDownloader``.
 
 
 0.0.19 (2018-08-14)

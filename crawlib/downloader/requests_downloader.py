@@ -46,7 +46,7 @@ class RequestsDownloader(object):
             raise ValueError
 
         if use_session is True:
-            self.ses = requests.sessions()
+            self.ses = requests.Sessions()
         else:
             self.ses = requests
 

@@ -22,6 +22,7 @@
 
 import attr
 from datetime import datetime
+
 try:
     from scrapy import Item, Field
 except:
@@ -90,6 +91,7 @@ class OneToManyItem(ExtendedItem):
     """
     Don't change this class variable!
     """
+
     @classmethod
     def validate_implementation(cls):
         if cls._settings_NUMBER_OF_CHILD_TYPES_required > cls._max_number_of_child_types:
@@ -164,10 +166,16 @@ class OneToManyRdsItem(OneToManyItem):  # pragma: no cover
 
             # update parent
             if not (parent is None):
-                setattr(parent, parent._settings_STATUS_KEY_required,
-                        parse_result.status)
-                setattr(parent, parent._settings_EDIT_AT_KEY_required,
-                        parse_result.create_at)
+                setattr(
+                    parent,
+                    parent._settings_STATUS_KEY_required,
+                    parse_result.status,
+                )
+                setattr(
+                    parent,
+                    parent._settings_EDIT_AT_KEY_required,
+                    parse_result.create_at,
+                )
                 parent.update_all(engine, parent)
 
 
@@ -208,6 +216,18 @@ class ParseResult(object):
 
     def to_dict(self):  # pragma: no cover
         return attr.asdict(self)
+
+    def set_status_wrong_page(self):
+        self.status = Status.S20_WrongPage.id
+
+    def set_status_parse_error(self):
+        self.status = Status.S30_ParseError.id
+
+    def set_status_finished(self):
+        self.status = self._settings_FINISHED_STATUS_CODE_required
+
+    def set_status_server_side_error(self):
+        self.status = Status.S60_ServerSideError.id
 
     def is_finished(self):
         """
