@@ -12,5 +12,4 @@ sub packages and modules
 
     decorator <decorator>
     parser <parser>
-    errors <errors>
     

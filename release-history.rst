@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.21 (TODO)
+0.0.22 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.21 (2018-08-16)
+~~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- Fix a fetal bug in creating proxy for session in ``RequestsDownloader.__init__``.
 
 
 0.0.20 (2018-08-15)

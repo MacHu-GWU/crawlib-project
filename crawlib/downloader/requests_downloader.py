@@ -43,7 +43,7 @@ class RequestsDownloader(object):
 
         # session and tor
         if (use_session is False) and (use_tor is True):
-            raise ValueError
+            raise ValueError("You have to use session when you want to use tor.")
 
         if use_session is True:
             self.ses = requests.Sessions()
@@ -51,14 +51,16 @@ class RequestsDownloader(object):
             self.ses = requests
 
         if use_tor is True:
-            self.proxies = {
+            self.ses.proxies = {
                 "http": "socks5h://localhost:{tor_port}".format(tor_port=tor_port),
                 "https": "socks5h://localhost:{tor_port}".format(tor_port=tor_port),
             }
 
         # cache
         if (read_cache_first is True) and (cache_dir is None):
-            raise ValueError("Please specify the `cache_dir`!")
+            raise ValueError("Please specify the `cache_dir` to read response from cache!")
+        if (always_update_cache is True) and (cache_dir is None):
+            raise ValueError("Please specify the `cache_dir` to save response to cache!")
         if cache_dir:
             self.cache = create_cache(cache_dir, value_type_is_binary=True)
         self.cache_expire = cache_expire
