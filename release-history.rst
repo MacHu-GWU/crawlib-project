@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.22 (TODO)
+0.0.23 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,17 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.22 (2018-08-19)
+~~~~~~~~~~~~~~~~~~~
+**Minor Improvements**
+
+- Add ``RequestDownload.alert_when_cache_missing`` option, allow it print alert when cache is missing. Of course you need to turn on ``RequestDownload.read_cache_first = True``.
+
+**Bugfixes**
+
+- Fix a fetal type bug in creating proxy for session in ``RequestDownload.__init__`.
 
 
 0.0.21 (2018-08-16)

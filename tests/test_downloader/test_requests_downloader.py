@@ -33,11 +33,10 @@ class TestRequestsDownloader(object):
         reset()
 
         dl = RequestsDownloader(
-            cache_on=True,
-            read_cache_first=False,
             cache_dir=cache_dir,
+            read_cache_first=False,
             cache_expire=24 * 3600,
-            random_user_agent=True,
+            use_random_user_agent=True,
         )
 
         url = "https://www.python.org/"
@@ -55,9 +54,26 @@ class TestRequestsDownloader(object):
 
         dl.close()
 
+    def test_alert_when_cache_missing(self):
+        reset()
+
+        dl = RequestsDownloader(
+            use_session=True,
+            cache_dir=cache_dir,
+            read_cache_first=True,
+            alert_when_cache_missing=True,
+            always_update_cache=True,
+            cache_expire=24 * 3600,
+            use_random_user_agent=True,
+        )
+
+        url = "https://www.python.org/downloads/"
+        assert url not in dl.cache
+        html = dl.get_html(url, decoder_encoding="utf-8")
+        assert url in dl.cache
+        html = dl.get_html(url, decoder_encoding="utf-8")
+
 
 if __name__ == "__main__":
-    import os
-
     basename = os.path.basename(__file__)
     pytest.main([basename, "-s", "--tb=native"])

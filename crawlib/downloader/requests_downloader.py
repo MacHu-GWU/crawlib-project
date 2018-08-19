@@ -8,6 +8,7 @@ downloader middleware using ``requests``.
 from __future__ import unicode_literals
 import os
 import requests
+import sys
 from six import PY2
 from ..util import add_params
 from ..header_builder import Headers
@@ -19,7 +20,23 @@ from ..exc import DownloadOversizeError
 
 class RequestsDownloader(object):
     """
+    Rich feature downloader for making http request.
 
+    :param use_session: bool, whether you use session to communicate.
+    :param use_tor: bool, whether you use tor network. For information
+        about installation for tor, see
+        https://www.torproject.org/docs/tor-doc-osx.html.en
+    :param tor_port: int, By default, is 9050.
+    :param cache_dir: str, diskCache directory.
+    :param read_cache_first: bool, If true, downloader will try read binary
+        content from cache.
+    :param alert_when_cache_missing: bool, If true, a log message will be
+        displayed when url has not been seen in cache.
+    :param always_update_cache: bool, If true, the response content will be
+        saved to cache anyway.
+    :param cache_expire: int, number seconds to expire.
+    :param use_random_user_agent: bool, if true, a random user agent will be
+        used for http request.
     """
 
     def __init__(self,
@@ -28,6 +45,7 @@ class RequestsDownloader(object):
                  tor_port=9050,
                  cache_dir=None,
                  read_cache_first=False,
+                 alert_when_cache_missing=False,
                  always_update_cache=False,
                  cache_expire=None,
                  use_random_user_agent=True,
@@ -37,6 +55,7 @@ class RequestsDownloader(object):
         self.tor_port = 9050
         self.cache_dir = cache_dir
         self.read_cache_first = read_cache_first
+        self.alert_when_cache_missing = alert_when_cache_missing
         self.always_update_cache = always_update_cache
         self.cache_expire = cache_expire
         self.use_random_user_agent = use_random_user_agent
@@ -46,7 +65,7 @@ class RequestsDownloader(object):
             raise ValueError("You have to use session when you want to use tor.")
 
         if use_session is True:
-            self.ses = requests.Sessions()
+            self.ses = requests.Session()
         else:
             self.ses = requests
 
@@ -59,6 +78,8 @@ class RequestsDownloader(object):
         # cache
         if (read_cache_first is True) and (cache_dir is None):
             raise ValueError("Please specify the `cache_dir` to read response from cache!")
+        if (read_cache_first is False) and (alert_when_cache_missing is True):
+            raise ValueError("Please turn on `read_cache_first = True` to enable alert when cache missing!")
         if (always_update_cache is True) and (cache_dir is None):
             raise ValueError("Please specify the `cache_dir` to save response to cache!")
         if cache_dir:
@@ -83,7 +104,10 @@ class RequestsDownloader(object):
         self.close()
 
     def read_cache(self, url):
-        pass
+        response = requests.Response()
+        response.url= url
+        response._content = self.cache[url]
+        return response
 
     def get(self,
             url,
@@ -112,10 +136,12 @@ class RequestsDownloader(object):
         _cache_comsumted = False
         if self.read_cache_first:
             if url in self.cache:
-                response = requests.Response()
-                response.url = url
-                response._content = self.cache[url]
+                response = self.read_cache(url)
                 _cache_comsumted = True
+            else:
+                if self.alert_when_cache_missing:
+                    msg = "{} doesn't hit cache!".format(url)
+                    sys.stdout.write(msg)
 
         if _cache_comsumted is False:
             response = self.ses.get(url, **kwargs)
