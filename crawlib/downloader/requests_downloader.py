@@ -140,7 +140,7 @@ class RequestsDownloader(object):
                 _cache_comsumted = True
             else:
                 if self.alert_when_cache_missing:
-                    msg = "{} doesn't hit cache!".format(url)
+                    msg = "\n{} doesn't hit cache!".format(url)
                     sys.stdout.write(msg)
 
         if _cache_comsumted is False:

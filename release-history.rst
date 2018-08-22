@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.23 (TODO)
+0.0.24 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.23 (2018-08-21)
+~~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- add ``\n`` at the head of each line of ``sys.stdout.write(line)``.
 
 
 0.0.22 (2018-08-19)
