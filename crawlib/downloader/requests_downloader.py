@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import os
 import requests
 import sys
+from atomicwrites import atomic_write
 from six import PY2
 from ..util import add_params
 from ..header_builder import Headers
@@ -62,7 +63,8 @@ class RequestsDownloader(object):
 
         # session and tor
         if (use_session is False) and (use_tor is True):
-            raise ValueError("You have to use session when you want to use tor.")
+            raise ValueError(
+                "You have to use session when you want to use tor.")
 
         if use_session is True:
             self.ses = requests.Session()
@@ -77,11 +79,14 @@ class RequestsDownloader(object):
 
         # cache
         if (read_cache_first is True) and (cache_dir is None):
-            raise ValueError("Please specify the `cache_dir` to read response from cache!")
+            raise ValueError(
+                "Please specify the `cache_dir` to read response from cache!")
         if (read_cache_first is False) and (alert_when_cache_missing is True):
-            raise ValueError("Please turn on `read_cache_first = True` to enable alert when cache missing!")
+            raise ValueError(
+                "Please turn on `read_cache_first = True` to enable alert when cache missing!")
         if (always_update_cache is True) and (cache_dir is None):
-            raise ValueError("Please specify the `cache_dir` to save response to cache!")
+            raise ValueError(
+                "Please specify the `cache_dir` to save response to cache!")
         if cache_dir:
             self.cache = create_cache(cache_dir, value_type_is_binary=True)
         self.cache_expire = cache_expire
@@ -105,7 +110,7 @@ class RequestsDownloader(object):
 
     def read_cache(self, url):
         response = requests.Response()
-        response.url= url
+        response.url = url
         response._content = self.cache[url]
         return response
 
@@ -176,11 +181,26 @@ class RequestsDownloader(object):
             errors=decoder_errors,
         )
 
+    def raise_download_oversize_error(self,
+                                      url,
+                                      downloaded_size,
+                                      minimal_size,
+                                      maximum_size):
+        msg = "resource at %s's size is %s, doesn't fall into %s to %s!" % (
+            url,
+            repr_data_size(downloaded_size),
+            repr_data_size(minimal_size),
+            repr_data_size(maximum_size),
+        )
+        raise DownloadOversizeError(msg)
+
     def download(self,
                  url,
                  dst,
                  params=None,
                  cache_cb=None,
+                 overwrite=False,
+                 stream=False,
                  minimal_size=-1,
                  maximum_size=1024 ** 6,
                  **kwargs):
@@ -189,6 +209,11 @@ class RequestsDownloader(object):
 
         :param url: binary content url
         :param dst: path to the 'save_as' file
+        :param cache_cb: (optional) a function that taking requests.Response
+            as input, and returns a bool flag, indicate whether should update the cache.
+        :param overwrite: bool,
+        :param stream: bool, whether we load everything into memory at once, or read
+            the data chunk by chunk
         :param minimal_size: default -1, if response content smaller than
           minimal_size, then delete what just download.
         :param maximum_size: default 1GB, if response content greater than
@@ -198,30 +223,35 @@ class RequestsDownloader(object):
             url,
             params=params,
             cache_cb=cache_cb,
+            stream=stream,
             **kwargs
         )
 
-        chunk_size = 1024 * 1024
-        downloaded_size = 0
+        if not overwrite:
+            if os.path.exists(dst):
+                raise OSError("'%s' exists!" % dst)
 
-        with open(dst, "wb") as f:
-            for chunk in response.iter_content(chunk_size):
-                if not chunk:  # pragma: no cover
-                    break
-                f.write(chunk)
-                downloaded_size += chunk_size
-
-        if (downloaded_size < minimal_size) or (downloaded_size > maximum_size):
-            try:
-                os.remove(dst)
-            except:  # pragma: no cover
-                pass
-            msg = "resource at %s's size doesn't fall into %s to %s!" % (
-                url,
-                repr_data_size(minimal_size),
-                repr_data_size(maximum_size),
-            )
-            raise DownloadOversizeError(msg)
+        if stream:
+            chunk_size = 1024 * 1024
+            downloaded_size = 0
+            with atomic_write(dst, mode="wb") as f:
+                for chunk in response.iter_content(chunk_size):
+                    if not chunk:  # pragma: no cover
+                        break
+                    f.write(chunk)
+                    downloaded_size += chunk_size
+                if (downloaded_size < minimal_size) or (downloaded_size > maximum_size):
+                    self.raise_download_oversize_error(
+                        url, downloaded_size, minimal_size, maximum_size)
+        else:
+            content = response.content
+            downloaded_size = sys.getsizeof(content)
+            if (downloaded_size < minimal_size) or (downloaded_size > maximum_size):
+                self.raise_download_oversize_error(
+                    url, downloaded_size, minimal_size, maximum_size)
+            else:
+                with atomic_write(dst, mode="wb") as f:
+                    f.write(content)
 
     def _should_we_update_cache(self, response, cache_cb, cache_consumed_flag):
         """

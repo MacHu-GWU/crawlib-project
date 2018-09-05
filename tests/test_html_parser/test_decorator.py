@@ -85,6 +85,12 @@ class TestAutoDecodeAndSoupify(object):
             )
             self.run_parse_function(test_response)
 
+    def test_bade_case(self):
+        with raises(NotImplementedError):
+            @decorator.auto_decode_and_soupify()
+            def parse_bad_case1():
+                pass
+
 
 if __name__ == "__main__":
     import os

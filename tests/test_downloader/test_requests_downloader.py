@@ -5,8 +5,11 @@ from __future__ import unicode_literals
 import os
 import shutil
 import pytest
+from pytest import raises
 from pathlib_mate import Path
-from crawlib.downloader.requests_downloader import RequestsDownloader
+from crawlib.downloader.requests_downloader import (
+    RequestsDownloader, DownloadOversizeError,
+)
 
 cache_dir = Path(__file__).change(new_basename=".cache").abspath
 dl_dst = Path(__file__).change(new_basename="python.org.html").abspath
@@ -50,7 +53,13 @@ class TestRequestsDownloader(object):
         assert res.status_code is None
 
         dl.read_cache_first = False
-        dl.download(url, dl_dst)
+        dl.download(url, dl_dst, overwrite=True)
+
+        with raises(DownloadOversizeError):
+            dl.download(url, dl_dst, overwrite=True, maximum_size=1024)
+        with raises(DownloadOversizeError):
+            dl.download(url, dl_dst, overwrite=True,
+                        stream=True, maximum_size=1024)
 
         dl.close()
 

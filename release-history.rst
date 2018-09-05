@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.24 (TODO)
+0.0.25 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,14 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.24 (2018-09-05)
+~~~~~~~~~~~~~~~~~~~
+**Minor Improvements**
+
+- now allows ``OneToManyItem._settings_N_CHILD_1_KEY_optional`` to be None. Then ``{n_child}`` field will not be updated.
+- improve code coverage.
 
 
 0.0.23 (2018-08-21)

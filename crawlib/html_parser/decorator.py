@@ -24,7 +24,7 @@ from requests import Response as RequestsResponse
 
 try:
     from scrapy.http import Response as ScrapyResponse
-except:
+except:  # pragma: no cover
     pass
 
 from ..decode import decoder
@@ -46,7 +46,7 @@ def access_binary(response):
         binary = response.content
     elif isinstance(response, ScrapyResponse):
         binary = response.body
-    else:
+    else:  # pragma: no cover
         raise TypeError("It only support ScrapyResponse or RequestsResponse!")
     return binary
 
@@ -107,7 +107,7 @@ def auto_decode_and_soupify(encoding=None, errors=decoder.ErrorsHandle.strict):
                 html = kwargs.get("html")
                 soup = kwargs.get("soup")
             except KeyError as e:
-                raise KeyError(
+                raise NotImplementedError(
                     ("{func} method has to take the keyword syntax input: "
                      "{e}").format(func=func, e=e)
                 )
@@ -121,7 +121,7 @@ def auto_decode_and_soupify(encoding=None, errors=decoder.ErrorsHandle.strict):
                         encoding=encoding,
                         errors=errors,
                     )
-                except Exception as e:
+                except Exception as e:  # pragma: no cover
                     raise DecodeError(str(e))
                 kwargs["html"] = html
 

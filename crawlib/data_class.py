@@ -25,7 +25,7 @@ from datetime import datetime
 
 try:
     from scrapy import Item, Field
-except:
+except:  # pragma: no cover
     from ._scrapy_item import Item, Field
 try:
     from .status import Status
@@ -61,9 +61,13 @@ class ExtendedItem(Item):
 
 class OneToManyItem(ExtendedItem):
     """
+    One To
 
     :param parent_class: a :class:`mongoengine.Document` class.
     :param parent: instance of :class:`mongoengine.Document`.
+
+    **中文文档**
+
     """
     _settings_NUMBER_OF_CHILD_TYPES_required = None
     _settings_N_CHILD_1_KEY_optional = None
@@ -92,13 +96,16 @@ class OneToManyItem(ExtendedItem):
     Don't change this class variable!
     """
 
+    def __init__(self, *args, **kwargs):
+        super(OneToManyItem, self).__init__(*args, **kwargs)
+        self.post_init()
+
     @classmethod
     def validate_implementation(cls):
-        if cls._settings_NUMBER_OF_CHILD_TYPES_required > cls._max_number_of_child_types:
-            raise ValueError()
-        for nth in range(1, cls._settings_NUMBER_OF_CHILD_TYPES_required + 1):
-            if getattr(cls, "_settings_N_CHILD_%s_KEY_optional" % nth) is None:
-                raise ValueError()
+        if cls._settings_NUMBER_OF_CHILD_TYPES_required not in range(cls._max_number_of_child_types + 1):
+            msg = ("`_settings_NUMBER_OF_CHILD_TYPES_required` has to be "
+                   "equal to or less than `_max_number_of_child_types`!")
+            raise ValueError(msg)
 
     def post_init(self):
         for nth in range(1, self._settings_NUMBER_OF_CHILD_TYPES_required + 1):
@@ -124,11 +131,14 @@ class OneToManyMongoEngineItem(OneToManyItem):  # pragma: no cover
             if not (parent is None):
                 # update `n_child` field
                 for nth in range(1, 1 + self._settings_NUMBER_OF_CHILD_TYPES_required):
-                    setattr(
-                        parent,
-                        getattr(self, "_settings_N_CHILD_%s_KEY_optional" % nth),
-                        self.get_n_child(nth),
-                    )
+                    n_child_key = getattr(
+                        self, "_settings_N_CHILD_%s_KEY_optional" % nth)
+                    if n_child_key is not None:
+                        setattr(
+                            parent,
+                            n_child_key,
+                            self.get_n_child(nth),
+                        )
 
             # smart insert children
             for nth in range(1, 1 + self._settings_NUMBER_OF_CHILD_TYPES_required):
@@ -152,11 +162,14 @@ class OneToManyRdsItem(OneToManyItem):  # pragma: no cover
             if not (parent is None):
                 # update `n_child` field
                 for nth in range(1, 1 + self._settings_NUMBER_OF_CHILD_TYPES_required):
-                    setattr(
-                        parent,
-                        getattr(self, "_settings_N_CHILD_%s_KEY_optional" % nth),
-                        self.get_n_child(nth),
-                    )
+                    n_child_key = getattr(
+                        self, "_settings_N_CHILD_%s_KEY_optional" % nth)
+                    if n_child_key is not None:
+                        setattr(
+                            parent,
+                            n_child_key,
+                            self.get_n_child(nth),
+                        )
 
             # smart insert children
             for nth in range(1, 1 + self._settings_NUMBER_OF_CHILD_TYPES_required):
@@ -217,6 +230,9 @@ class ParseResult(object):
     def to_dict(self):  # pragma: no cover
         return attr.asdict(self)
 
+    def set_status_todo(self):
+        self.status = Status.S0_ToDo.id
+
     def set_status_wrong_page(self):
         self.status = Status.S20_WrongPage.id
 
@@ -231,13 +247,15 @@ class ParseResult(object):
 
     def is_finished(self):
         """
+        test if the status should be marked as `finished`.
         """
         try:
             return self.status >= self._settings_FINISHED_STATUS_CODE_required
-        except:
+        except:  # pragma: no cover
             return False
 
     def process_item(self, **kwargs):
         """
+        Could be used for item pipeline in scrapy framework.
         """
         self.item.process(parse_result=self, **kwargs)

@@ -4,22 +4,52 @@
 import pytest
 from pytest import raises, approx
 from crawlib.data_class import (
-    ExtendedItem, OneToManyMongoEngineItem, ParseResult, Field,
+    ExtendedItem, OneToManyItem,
+    OneToManyMongoEngineItem,
+    OneToManyRdsItem,
+    ParseResult, Field,
 )
 from crawlib.pipeline.mongodb.orm import ExtendedDocument
 from mongoengine import fields
+
+
+class User(object):
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
 
 
 class UserItem(ExtendedItem):
     id = Field()
     name = Field()
 
+    _settings_MONGOENGZINE_CLASS_optional = User
+    _settings_SQLALCHEMY_ORM_CLASS_optional = User
+
 
 class TestExtendedItem(object):
-    pass
+    def test_to_me_orm(self):
+        user_item = UserItem(id=1, name="Alice")
+        user = user_item.to_me_orm()
+        assert (user.id == 1) and (user.name == "Alice")
+
+    def test_to_sa_orm(self):
+        user_item = UserItem(id=1, name="Alice")
+        user = user_item.to_sa_orm()
+        assert (user.id == 1) and (user.name == "Alice")
+
+
+class TestOneToManyItem(object):
+    def test_validate_implementation(self):
+        class WrongImplementedItem(OneToManyItem):
+            pass
+
+        with raises(ValueError):
+            WrongImplementedItem.validate_implementation()
 
 
 class TestOneToManyMongoEngineItem(object):
+
     def test(self):
         # define some example
         class State(ExtendedDocument):
@@ -72,6 +102,19 @@ class TestParseResult(object):
             .is_finished() is True
         assert ParseResult(status=0).is_finished() is False
         assert ParseResult().is_finished() is False
+
+        res = ParseResult()
+
+        res.set_status_finished()
+        assert res.is_finished() is True
+
+        res.set_status_parse_error()
+        res.set_status_wrong_page()
+        res.set_status_todo()
+        assert res.is_finished() is False
+
+        res.set_status_server_side_error()
+        assert res.is_finished() is True
 
     def test_process_item(self):
         parse_result = ParseResult(item=UserItem(id=1, name="Alice"))

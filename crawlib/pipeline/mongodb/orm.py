@@ -18,7 +18,7 @@ class ExtendedDocument(mongoengine_mate.ExtendedDocument):
     }
 
     @classmethod
-    def get_all_unfinished(cls):
+    def get_all_unfinished(cls):  # pragma: no cover
         filters = query_builder.unfinished(
             finished_status=cls._settings_FINISHED_STATUS_required,
             update_interval=cls._settings_UPDATE_INTERVAL_required,
@@ -28,7 +28,7 @@ class ExtendedDocument(mongoengine_mate.ExtendedDocument):
         return cls.by_filter(filters)
 
     @classmethod
-    def get_all_finished(cls):
+    def get_all_finished(cls):  # pragma: no cover
         filters = query_builder.finished(
             finished_status=cls._settings_FINISHED_STATUS_required,
             update_interval=cls._settings_UPDATE_INTERVAL_required,

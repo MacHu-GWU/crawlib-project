@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.23"
+__version__ = "0.0.24"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
