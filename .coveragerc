@@ -3,10 +3,10 @@
 [run]
 omit =
     crawlib/pkg/*
-    crawlib/spider/selenium_spider.py
+    crawlib/downloader/selenium_downloader.py
     crawlib/pipeline/mongodb/scrapy_item.py
+    crawlib/pipeline/mongodb/spider.py
     crawlib/_scrapy_item.py
-    crawlib/zzz_ezinstall.py
 
 [report]
 # Regexes for lines to exclude from consideration

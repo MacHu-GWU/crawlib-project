@@ -13,13 +13,14 @@ from atomicwrites import atomic_write
 from six import PY2
 from ..util import add_params
 from ..header_builder import Headers
-from ..cache import create_cache
+from ..cache import CacheBackedDownloader
 from ..decode import url_specified_decoder
 from ..helper import repr_data_size
 from ..exc import DownloadOversizeError
+from .base_downloader import DownloaderABC
 
 
-class RequestsDownloader(object):
+class RequestsDownloader(DownloaderABC, CacheBackedDownloader):
     """
     Rich feature downloader for making http request.
 
@@ -54,11 +55,7 @@ class RequestsDownloader(object):
         self.use_session = use_session
         self.use_tor = use_tor
         self.tor_port = 9050
-        self.cache_dir = cache_dir
-        self.read_cache_first = read_cache_first
-        self.alert_when_cache_missing = alert_when_cache_missing
-        self.always_update_cache = always_update_cache
-        self.cache_expire = cache_expire
+
         self.use_random_user_agent = use_random_user_agent
 
         # session and tor
@@ -71,48 +68,37 @@ class RequestsDownloader(object):
         else:
             self.ses = requests
 
-        if use_tor is True:
+        if use_tor is True:  # pragma: no cover
             self.ses.proxies = {
                 "http": "socks5h://localhost:{tor_port}".format(tor_port=tor_port),
                 "https": "socks5h://localhost:{tor_port}".format(tor_port=tor_port),
             }
 
-        # cache
-        if (read_cache_first is True) and (cache_dir is None):
-            raise ValueError(
-                "Please specify the `cache_dir` to read response from cache!")
-        if (read_cache_first is False) and (alert_when_cache_missing is True):
-            raise ValueError(
-                "Please turn on `read_cache_first = True` to enable alert when cache missing!")
-        if (always_update_cache is True) and (cache_dir is None):
-            raise ValueError(
-                "Please specify the `cache_dir` to save response to cache!")
-        if cache_dir:
-            self.cache = create_cache(cache_dir, value_type_is_binary=True)
-        self.cache_expire = cache_expire
+        super(RequestsDownloader, self).__init__(
+            cache_dir=cache_dir,
+            read_cache_first=read_cache_first,
+            alert_when_cache_missing=alert_when_cache_missing,
+            always_update_cache=always_update_cache,
+            cache_expire=cache_expire,
+            cache_value_type_is_binary=True,
+            cache_compress_level=6,
+        )
 
-    def close(self):
-        try:
-            self.cache.close()
-        except:
-            pass
-
+    def close_session(self):
         try:
             self.ses.close()
         except:
             pass
+
+    def close(self):
+        self.close_cache()
+        self.close_session()
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
-
-    def read_cache(self, url):
-        response = requests.Response()
-        response.url = url
-        response._content = self.cache[url]
-        return response
 
     def get(self,
             url,
@@ -138,20 +124,15 @@ class RequestsDownloader(object):
         if PY2:
             url = unicode(url)
 
-        _cache_comsumted = False
-        if self.read_cache_first:
-            if url in self.cache:
-                response = self.read_cache(url)
-                _cache_comsumted = True
-            else:
-                if self.alert_when_cache_missing:
-                    msg = "\n{} doesn't hit cache!".format(url)
-                    sys.stdout.write(msg)
-
-        if _cache_comsumted is False:
+        cache_consumed, value = self.try_read_cache(url)
+        if cache_consumed:
+            response = requests.Response()
+            response.url = url
+            response._content = value
+        else:
             response = self.ses.get(url, **kwargs)
 
-        if self._should_we_update_cache(response, cache_cb, _cache_comsumted):
+        if self.should_we_update_cache(response, cache_cb, cache_consumed):
             self.cache.set(
                 url, response.content,
                 expire=kwargs.get("cache_expire", self.cache_expire),
@@ -163,7 +144,7 @@ class RequestsDownloader(object):
                  params=None,
                  cache_cb=None,
                  decoder_encoding=None,
-                 decoder_errors="strict",
+                 decoder_errors=url_specified_decoder.ErrorsHandle.strict,
                  **kwargs):
         """
         Get html of an url.
@@ -253,34 +234,7 @@ class RequestsDownloader(object):
                 with atomic_write(dst, mode="wb") as f:
                     f.write(content)
 
-    def _should_we_update_cache(self, response, cache_cb, cache_consumed_flag):
-        """
-
-        :param response:
-        :param cache_cb:
-        :return:
-
-        **中文文档**
-
-        1. 如果 ``cache_consumed_flag`` 为 True, 那么说明已经从cache中读取过数据了,
-            再存也没有意义.
-        2. 如果 ``self.always_update_cache`` 为 True, 那么强制更新cache. 我们不用担心
-            发生已经读取过cache, 然后再强制更新的情况, 因为之前我们已经检查过
-            ``cache_consumed_flag`` 了.
-        3. 如果没有指定 ``cache_cb`` 函数, 那么默认不更新cache.
-        """
-        if cache_consumed_flag:
-            return False
-
-        if self.always_update_cache:
-            return True
-
-        if cache_cb is None:
-            return False
-        else:
-            return cache_cb(response)
-
-    def cache_cb_status_code_2xx(self, response):
+    def cache_cb_status_code_2xx(self, response):  # pragma: no cover
         if 200 <= response.status_code < 300:
             return True
         else:

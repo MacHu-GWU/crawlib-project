@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.25 (TODO)
+0.0.26 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,23 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.25 (2018-09-06)
+~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- add ``crawlib.downloader.selenium_downloader`` module
+- move disk cache relative code into ``crawlib.cache.CacheBackedDownloader``
+- add a job executor function for mongodb backed, one-to-one, one-to-many architecture.
+
+**Minor Improvements**
+
+- add more methods for ``crawlib.logger.SpiderLogger``
+
+**Miscellaneous**
+
+- remove ``crawlib.spider`` sub package.
 
 
 0.0.24 (2018-09-05)

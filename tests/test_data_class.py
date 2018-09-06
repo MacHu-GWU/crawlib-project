@@ -98,8 +98,8 @@ class TestParseResult(object):
 
     def test_is_finished(self):
         assert ParseResult(
-            status=ParseResult._settings_FINISHED_STATUS_CODE_required) \
-            .is_finished() is True
+            status=ParseResult._settings_FINISHED_STATUS_CODE_required,
+        ).is_finished() is True
         assert ParseResult(status=0).is_finished() is False
         assert ParseResult().is_finished() is False
 
@@ -108,12 +108,16 @@ class TestParseResult(object):
         res.set_status_finished()
         assert res.is_finished() is True
 
+        res.set_status_incomplete_data()
         res.set_status_parse_error()
         res.set_status_wrong_page()
+        res.set_status_http_error()
+        res.set_status_url_error()
         res.set_status_todo()
         assert res.is_finished() is False
 
         res.set_status_server_side_error()
+        res.set_status_finalized()
         assert res.is_finished() is True
 
     def test_process_item(self):

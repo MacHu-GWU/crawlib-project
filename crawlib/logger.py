@@ -36,3 +36,6 @@ class SpiderLogger(object):  # pragma: no cover
         msg = "status: {}, log: {}".format(
             parse_result.status, parse_result.log)
         self.logger.info(msg, 1)
+
+    def log_error(self, e):
+        self.logger.info(str(e), 1)

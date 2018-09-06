@@ -32,7 +32,11 @@ def teardown_module(module):
 
 
 class TestRequestsDownloader(object):
-    def test(self):
+    def test_arg_validator(self):
+        with raises(ValueError):
+            RequestsDownloader(use_session=False, use_tor=True)
+
+    def test_make_request(self):
         reset()
 
         dl = RequestsDownloader(
@@ -66,21 +70,20 @@ class TestRequestsDownloader(object):
     def test_alert_when_cache_missing(self):
         reset()
 
-        dl = RequestsDownloader(
-            use_session=True,
-            cache_dir=cache_dir,
-            read_cache_first=True,
-            alert_when_cache_missing=True,
-            always_update_cache=True,
-            cache_expire=24 * 3600,
-            use_random_user_agent=True,
-        )
-
-        url = "https://www.python.org/downloads/"
-        assert url not in dl.cache
-        html = dl.get_html(url, decoder_encoding="utf-8")
-        assert url in dl.cache
-        html = dl.get_html(url, decoder_encoding="utf-8")
+        with RequestsDownloader(
+                use_session=True,
+                cache_dir=cache_dir,
+                read_cache_first=True,
+                alert_when_cache_missing=True,
+                always_update_cache=True,
+                cache_expire=24 * 3600,
+                use_random_user_agent=True,
+        ) as dl:
+            url = "https://www.python.org/downloads/"
+            assert url not in dl.cache
+            html = dl.get_html(url, decoder_encoding="utf-8")
+            assert url in dl.cache
+            html = dl.get_html(url, decoder_encoding="utf-8")
 
 
 if __name__ == "__main__":

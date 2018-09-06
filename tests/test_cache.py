@@ -4,7 +4,7 @@
 import pytest
 import os
 import shutil
-from crawlib.cache import create_cache, CacheBackedSpider
+from crawlib.cache import create_cache, CacheBackedDownloader
 
 cache_dir = os.path.join(os.path.dirname(__file__), ".cache")
 
@@ -33,13 +33,20 @@ def test_create_cache():
     cache.close()
 
 
-def test_CacheBackedSpider():
-    with CacheBackedSpider(cache_dir, expire=60) as spider:
-        html = spider.get_html(
-            "https://pypi.python.org/pypi/crawlib/", update_cache=False)
-        html = spider.get_html(
-            "https://pypi.python.org/pypi/crawlib/", ignore_cache=True)
-        html = spider.get_html("https://pypi.python.org/pypi/crawlib/")
+class TestCacheBackedDownloader(object):
+    def test_arg_validator(self):
+        with pytest.raises(ValueError):
+            CacheBackedDownloader(read_cache_first=True)
+
+        with pytest.raises(ValueError):
+            CacheBackedDownloader(alert_when_cache_missing=True)
+
+        with pytest.raises(ValueError):
+            CacheBackedDownloader(always_update_cache=True)
+
+        with pytest.raises(ValueError):
+            CacheBackedDownloader(read_cache_first=False,
+                                  always_update_cache=True)
 
 
 if __name__ == "__main__":

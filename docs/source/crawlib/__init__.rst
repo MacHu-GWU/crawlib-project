@@ -14,7 +14,6 @@ sub packages and modules
     pipeline <pipeline/__init__>
     downloader <downloader/__init__>
     url_builder <url_builder/__init__>
-    spider <spider/__init__>
     header_builder <header_builder>
     util <util>
     cache <cache>

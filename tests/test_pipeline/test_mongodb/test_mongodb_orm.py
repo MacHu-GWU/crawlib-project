@@ -2,57 +2,60 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+from mongoengine import connect, fields
+
 import rolex
 import random
-import mongomock
 from datetime import datetime
-from crawlib import Status
-from crawlib.pipeline.mongodb import query_builder
+from crawlib.status import Status
+from crawlib.pipeline.mongodb import ExtendedDocumentSingleStatus
+
+dbname = "devtest"
+try:
+    client = connect(db=dbname, alias=dbname, serverSelectionTimeoutMS=1)
+    client.server_info()
+    has_local_mongo = True
+except:
+    has_local_mongo = False
 
 
-@pytest.fixture
-def col():
-    client = mongomock.MongoClient()
-    db = client["test"]
-    col = db["test_col"]
-    return col
+class User(ExtendedDocumentSingleStatus):
+    _id = fields.IntField(primary_key=1)
+
+    _settings_UPDATE_INTERVAL_required = 24 * 3600
+
+    meta = {
+        "db_alias": dbname,
+    }
 
 
-class TestQueryBuilder(object):
-    def test_finished_unfinished(self, col):
-        status_key, edit_at_key = "status", "edit_at"
-        col.insert([
-            {
-                status_key: random.randint(Status.S0_ToDo.id, Status.S99_Finalized.id),
-                edit_at_key: rolex.add_hours(datetime.now(), random.randint(-48, 0))
-            } for _ in range(100)
-        ])
+class TestMongodbOrm(object):
+    def test(self):
+        if has_local_mongo is False:
+            return
 
-        filters = query_builder.finished(
-            finished_status=50,
-            update_interval=24 * 3600,
-            status_key=status_key,
-            edit_at_key=edit_at_key,
-        )
-        finished_count = col.find(filters).count()
-        for doc in col.find(filters):
-            status, edit_at = doc[status_key], doc[edit_at_key]
-            assert status >= 50
-            assert (datetime.now() - edit_at).total_seconds() <= 24 * 3600
+        data = [
+            User(
+                _id=_id,
+                status=random.randint(
+                    Status.S0_ToDo.id, Status.S99_Finalized.id),
+                edit_at=rolex.add_hours(
+                    datetime.now(), random.randint(-48, 0)),
+            )
+            for _id in range(1, 1 + 100)
+        ]
+        User.smart_insert(data)
 
-        filters = query_builder.unfinished(
-            finished_status=50,
-            update_interval=24 * 3600,
-            status_key=status_key,
-            edit_at_key=edit_at_key,
-        )
-        unfinished_count = col.find(filters).count(0)
-        for doc in col.find(filters):
-            status, edit_at = doc[status_key], doc[edit_at_key]
-            assert (status < 50) or (
-                (datetime.now() - edit_at).total_seconds() > 24 * 3600)
+        for user in User.get_all_finished(filters={"_id": {"$gt": 50}}):
+            assert user._id > 50
+            assert user.status >= User._settings_FINISHED_STATUS_required
+            assert (datetime.now(
+            ) - user.edit_at).total_seconds() <= User._settings_UPDATE_INTERVAL_required
 
-        assert (finished_count + unfinished_count) == 100
+        for user in User.get_all_unfinished(filters={"_id": {"$lte": 50}}):
+            assert user._id <= 50
+            assert (user.status < User._settings_FINISHED_STATUS_required) \
+                or ((datetime.now() - user.edit_at).total_seconds() > User._settings_UPDATE_INTERVAL_required)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,8 @@ def test():
     import crawlib
 
     crawlib.RequestsDownloader
+    crawlib.ChromeDownloader
+
     crawlib.BaseUrlBuilder
     crawlib.BaseHtmlParser
 
@@ -21,7 +23,7 @@ def test():
     crawlib.Headers
 
     crawlib.create_cache
-    crawlib.CacheBackedSpider
+    crawlib.CacheBackedDownloader
 
     exc = crawlib.exc
     exc.DownloadOversizeError

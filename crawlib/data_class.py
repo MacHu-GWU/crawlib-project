@@ -233,17 +233,32 @@ class ParseResult(object):
     def set_status_todo(self):
         self.status = Status.S0_ToDo.id
 
+    def set_status_url_error(self):
+        self.status = Status.S5_UrlError.id
+
+    def set_status_http_error(self):
+        self.status = Status.S10_HttpError.id
+
     def set_status_wrong_page(self):
         self.status = Status.S20_WrongPage.id
 
+    def set_status_decode_error(self):
+        self.status = Status.S25_DecodeError.id
+
     def set_status_parse_error(self):
         self.status = Status.S30_ParseError.id
+
+    def set_status_incomplete_data(self):
+        self.status = Status.S40_InCompleteData.id
 
     def set_status_finished(self):
         self.status = self._settings_FINISHED_STATUS_CODE_required
 
     def set_status_server_side_error(self):
         self.status = Status.S60_ServerSideError.id
+
+    def set_status_finalized(self):
+        self.status = Status.S99_Finalized.id
 
     def is_finished(self):
         """
