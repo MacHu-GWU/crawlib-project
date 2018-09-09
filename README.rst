@@ -26,6 +26,14 @@ Crawl library provides crawler project building block to simplify:
 3. error handling.
 4. download html and file.
 5. request cache.
+6. duplicate filter.
+7. width first crawl strategy.
+
+In addition, it is a web crawl framework for width first style crawling.
+
+For example, suppose the target data is organized in a tree structure, for instance, State -> City -> Zipcode -> Street -> Address. Then ``crawlib`` is born for it.
+
+Here is an `Example Project <https://github.com/MacHu-GWU/crawlib-project/tree/master/example/crawlib_doc-project/run_spider>`_ for scraping data from https://crawlib.readthedocs.io/_static/state-list.html.
 
 
 Quick Links

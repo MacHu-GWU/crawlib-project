@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.25"
+__version__ = "0.0.26"
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
@@ -28,6 +28,7 @@ try:
     from .decode import smart_decode, decoder
     from .header_builder import Headers
     from .logger import SpiderLogger
+    from .spider import execute_one_to_many_job
     from .status import Status, FINISHED_STATUS_CODE
     from .timestamp import epoch, x_seconds_before_now, x_seconds_after_now
 

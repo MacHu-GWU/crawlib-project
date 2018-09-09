@@ -12,6 +12,7 @@ if chromedriver_executable_path.exists():
     cache_dir = Path(__file__).change(new_basename=".cache").abspath
     dl_dst = Path(__file__).change(new_basename="python.org.html").abspath
 
+
     def reset():
         try:
             shutil.rmtree(cache_dir)
@@ -23,15 +24,14 @@ if chromedriver_executable_path.exists():
         except:
             pass
 
-    class Test(object):
+
+    class TestChromeDownloader(object):
         def test(self):
             with ChromeDownloader(
                     chromedriver_executable_path=chromedriver_executable_path.abspath,
                     cache_dir=cache_dir,
-                    read_cache_first=True,
-                    alert_when_cache_missing=True,
-                    always_update_cache=True,
                     cache_expire=24 * 3600,
+                    testmode=True,
             ) as dl:
                 url = "https://selenium-python.readthedocs.io/"
                 html = dl.get_html(url)

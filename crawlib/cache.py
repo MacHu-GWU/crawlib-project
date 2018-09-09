@@ -116,6 +116,7 @@ class CacheBackedDownloader(object):
                  cache_value_type_is_binary=None,
                  cache_compress_level=6,
                  **kwargs):
+        self.cache = None
 
         self.cache_dir = cache_dir
         self.read_cache_first = read_cache_first
@@ -145,7 +146,7 @@ class CacheBackedDownloader(object):
         if self.cache_dir is not None:
             self.cache.close()
 
-    def try_read_cache(self, url):
+    def try_read_cache(self, url, mute=False):
         cache_consumed = False
         value = None
         if self.read_cache_first:
@@ -154,8 +155,11 @@ class CacheBackedDownloader(object):
                 cache_consumed = True
             else:  # pragma: no cover
                 if self.alert_when_cache_missing:
-                    msg = "\n{} doesn't hit cache!".format(url)
-                    sys.stdout.write(msg)
+                    if mute:
+                        pass
+                    else:
+                        msg = "\n{} doesn't hit cache!".format(url)
+                        sys.stdout.write(msg)
         return cache_consumed, value
 
     def should_we_update_cache(self,

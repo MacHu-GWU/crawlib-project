@@ -34,14 +34,22 @@ class State(Thing):
         return url_builder.build_city_listpage(self._id)
 
 
+State.validate_implementation()
+
+
 class City(Thing):
     def build_url(self):
         return url_builder.build_zipcode_listpage(self._id)
 
 
+City.validate_implementation()
+
+
 class Zipcode(Thing):
     pass
 
+
+Zipcode.validate_implementation()
 
 c_state = db[State.col().name]
 c_city = db[City.col().name]

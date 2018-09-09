@@ -30,6 +30,7 @@ def test_add_params():
     params = {"q": "python"}
     assert util.add_params(
         endpoint, params) == "https://www.google.com/search?q=python"
+    assert util.add_params(endpoint, params=None) == endpoint
 
 
 if __name__ == "__main__":

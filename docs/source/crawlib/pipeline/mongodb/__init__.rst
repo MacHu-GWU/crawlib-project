@@ -13,5 +13,4 @@ sub packages and modules
     query_builder <query_builder>
     orm <orm>
     scrapy_item <scrapy_item>
-    spider <spider>
     

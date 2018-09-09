@@ -16,6 +16,7 @@ except:
 
 Base = declarative_base()
 
+
 class Thing(ExtendedBase):
     @declared_attr
     def __tablename__(cls):
@@ -25,7 +26,7 @@ class Thing(ExtendedBase):
     name = Column(String)
     n_child = Column(Integer)
     _status = Column(Integer, default=Status.S0_ToDo.id)
-    _edit_at = Column(Integer, default=datetime(1970, 1, 1))
+    _edit_at = Column(DateTime, default=datetime(1970, 1, 1))
 
     _settings_STATUS_KEY_required = "_status"
     _settings_EDIT_AT_KEY_required = "_edit_at"
@@ -36,14 +37,22 @@ class State(Thing, Base):
         return url_builder.build_city_listpage(self._id)
 
 
+State.validate_implementation()
+
+
 class City(Thing, Base):
     def build_url(self):
         return url_builder.build_zipcode_listpage(self._id)
 
 
+City.validate_implementation()
+
+
 class Zipcode(Thing, Base):
     pass
 
+
+Zipcode.validate_implementation()
 
 t_state = State.__table__
 t_city = City.__table__

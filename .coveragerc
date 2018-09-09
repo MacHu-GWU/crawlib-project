@@ -2,11 +2,12 @@
 # for more info: https://coverage.readthedocs.io/en/coverage-4.4.1/config.html
 [run]
 omit =
+    crawlib/spider.py
+    crawlib/_scrapy_item.py
     crawlib/pkg/*
     crawlib/downloader/selenium_downloader.py
     crawlib/pipeline/mongodb/scrapy_item.py
-    crawlib/pipeline/mongodb/spider.py
-    crawlib/_scrapy_item.py
+
 
 [report]
 # Regexes for lines to exclude from consideration

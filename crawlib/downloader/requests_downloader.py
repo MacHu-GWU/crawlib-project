@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-downloader middleware using ``requests``.
+url content downloader middleware using ``requests``.
 """
 
 from __future__ import unicode_literals
@@ -10,7 +10,7 @@ import os
 import requests
 import sys
 from atomicwrites import atomic_write
-from six import PY2
+
 from ..util import add_params
 from ..header_builder import Headers
 from ..cache import CacheBackedDownloader
@@ -121,8 +121,6 @@ class RequestsDownloader(DownloaderABC, CacheBackedDownloader):
             kwargs["headers"] = headers
 
         url = add_params(url, params)
-        if PY2:
-            url = unicode(url)
 
         cache_consumed, value = self.try_read_cache(url)
         if cache_consumed:
@@ -208,7 +206,7 @@ class RequestsDownloader(DownloaderABC, CacheBackedDownloader):
             **kwargs
         )
 
-        if not overwrite:
+        if not overwrite:  # pragma: no cover
             if os.path.exists(dst):
                 raise OSError("'%s' exists!" % dst)
 

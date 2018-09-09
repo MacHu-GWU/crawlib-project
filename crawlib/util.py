@@ -5,6 +5,7 @@
 url builder related utility methods.
 """
 
+from six import PY2
 from requests.compat import urlparse
 from requests.models import PreparedRequest
 
@@ -70,4 +71,7 @@ def add_params(endpoint, params):
     """
     p = PreparedRequest()
     p.prepare(url=endpoint, params=params)
-    return p.url
+    if PY2:  # pragma: no cover
+        return unicode(p.url)
+    else:  # pragma: no cover
+        return p.url

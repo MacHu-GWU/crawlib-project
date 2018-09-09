@@ -1,23 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from scrapy.crawler import CrawlerProcess
-from crawlib_doc import spiders
-from crawlib_doc.mongo_db import db
-from crawlib_doc.mongo_model import (
-    State as StateMongp,
-    City as CityMongo,
-    Zipcode as ZipcodeMongo,
-)
-from crawlib_doc.rds_db import engine
-from crawlib_doc.mongo_model import (
-    State as StateRds,
-    City as CityRds,
-    Zipcode as ZipcodeRds,
-)
-import mongomock_mate
-from pathlib_mate import Path
+"""
+Use scrapy framework.
+"""
 
+from scrapy.crawler import CrawlerProcess
+from sqlalchemy.orm import sessionmaker
+from crawlib_doc import spiders
+from crawlib_doc.rds_db import engine
+from crawlib_doc.rds_model import State, City, Zipcode
 
 if __name__ == "__main__":
     spider = spiders.StateListpage
@@ -28,5 +20,19 @@ if __name__ == "__main__":
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
 
+
     process.crawl(spider)
     process.start()
+
+    def print_result():
+        ses = sessionmaker(bind=engine)()
+        for state in ses.query(State):
+            print(state)
+        for city in ses.query(City):
+            print(city)
+        for zipcode in ses.query(Zipcode):
+            print(zipcode)
+        ses.close()
+
+
+    print_result()

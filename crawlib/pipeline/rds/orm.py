@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from sqlalchemy import Integer, DateTime
 import sqlalchemy_mate
 
 from . import query_builder
@@ -34,3 +35,25 @@ class ExtendedBase(sqlalchemy_mate.ExtendedBase):
             edit_at_column=cls.__table__.columns[cls._settings_EDIT_AT_KEY_required],
         )
         return cls.by_sql(sql, engine_or_session)
+
+    @classmethod
+    def validate_implementation(cls):
+        if cls._settings_STATUS_KEY_required is None:
+            raise NotImplementedError("you has to specify `_settings_STATUS_KEY_required`!")
+
+        try:
+            status_field = cls.__table__.columns[cls._settings_STATUS_KEY_required]
+            if not isinstance(status_field.type, Integer):
+                raise NotImplementedError("edit at field has to be a DateTimeField field!")
+        except:
+            raise NotImplementedError("status field (IntField) not found!")
+
+        if cls._settings_EDIT_AT_KEY_required is None:
+            raise NotImplementedError("you has to specify `_settings_EDIT_AT_KEY_required`!")
+
+        try:
+            edit_at_field = cls.__table__.columns[cls._settings_EDIT_AT_KEY_required]
+            if not isinstance(edit_at_field.type, DateTime):
+                raise NotImplementedError("edit at field has to be a DateTimeField field!")
+        except:
+            raise NotImplementedError("edit at field (DateTimeField) not found!")

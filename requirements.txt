@@ -11,3 +11,4 @@ pymongo_mate
 mongoengine_mate
 mongomock_mate
 atomicwrites
+loggerFactory

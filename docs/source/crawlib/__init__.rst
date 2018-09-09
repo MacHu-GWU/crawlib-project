@@ -25,5 +25,6 @@ sub packages and modules
     timestamp <timestamp>
     decode <decode>
     base <base>
+    spider <spider>
     status <status>
     
