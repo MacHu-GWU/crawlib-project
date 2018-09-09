@@ -2,11 +2,29 @@ Release and Version History
 ===========================
 
 
-0.0.26 (TODO)
+0.0.27 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
 **Minor Improvements**
+
+**Bugfixes**
+
+**Miscellaneous**
+
+
+0.0.26 (2018-09-08) Milestone
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- add a test mode for selenium downloader.
+- move the one-to-one/many job executor to ``crawlib.spider.py``.
+- add a implementation validation classmethod for orm object.
+- improve logger module.
+
+**Minor Improvements**
+
+- update example project ``crawlib_doc``.
 
 **Bugfixes**
 
@@ -93,8 +111,8 @@ Release and Version History
 - add a downloader middleware, integrate with auto rotate headers, disk cache, tor network support.
 
 
-0.0.17 (Milestone)
-~~~~~~~~~~~~~~~~~~
+0.0.17 (2018-08-06) Milestone
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
 - breaks lots of backward compatibility.
