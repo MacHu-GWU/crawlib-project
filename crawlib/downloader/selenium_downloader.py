@@ -18,7 +18,7 @@ class BaseSeleliumDownloader(DownloaderABC, CacheBackedDownloader):
     Implements common behavior for downloading url content.
 
     .. note::
-    
+
         In ``__init__(self, ...)`` method, we only save the parameters.
         The actually webdriver creation happened in
         :meth:`BaseSeleliumDownloader.create_driver`.
@@ -125,7 +125,7 @@ class BaseSeleliumDownloader(DownloaderABC, CacheBackedDownloader):
     def download(self, *args, **kwargs):
         """
         .. warning::
-        
+
             NOT IMPLEMENTED! python selenium doesn't support file and image downloading.
         """
         msg = (

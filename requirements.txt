@@ -4,6 +4,7 @@ requests
 selenium
 beautifulsoup4
 attrs
+timeout_decorator
 fake-useragent
 diskcache
 sqlalchemy_mate

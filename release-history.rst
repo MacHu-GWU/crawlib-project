@@ -2,7 +2,7 @@ Release and Version History
 ===========================
 
 
-0.0.27 (TODO)
+0.0.28 (TODO)
 ~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
@@ -11,6 +11,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.27 (TODO)
+~~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- ``fake_useragent`` grabs data from useragentstring.com, and it may fail. so we catch this exception and manually create it.
 
 
 0.0.26 (2018-09-08) Milestone

@@ -62,7 +62,8 @@ def execute_one_to_many_job(parent_class=None,
     parser_func_kwargs = prepare_kwargs(parser_func_kwargs)
     build_url_func_kwargs = prepare_kwargs(build_url_func_kwargs)
     downloader_func_kwargs = prepare_kwargs(downloader_func_kwargs)
-    post_process_response_func_kwargs = prepare_kwargs(post_process_response_func_kwargs)
+    post_process_response_func_kwargs = prepare_kwargs(
+        post_process_response_func_kwargs)
     process_item_func_kwargs = prepare_kwargs(process_item_func_kwargs)
 
     if post_process_response_func is None:
@@ -95,7 +96,8 @@ def execute_one_to_many_job(parent_class=None,
                 parser_func_kwargs["html"] = response_or_html
             else:
                 parser_func_kwargs["response"] = response_or_html
-            post_process_response_func(response_or_html, **post_process_response_func_kwargs)
+            post_process_response_func(
+                response_or_html, **post_process_response_func_kwargs)
         except Exception as e:
             logger.log_error(e)
             continue

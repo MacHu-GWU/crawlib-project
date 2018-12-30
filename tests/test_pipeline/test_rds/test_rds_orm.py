@@ -109,7 +109,7 @@ class TestQueryBuilder(object):
         unfinished_count = len(User.get_all_unfinished(engine))
         for user in User.get_all_unfinished(engine):
             assert (user.status < 50) or (
-                    (datetime.now() - user.edit_at).total_seconds() > 24 * 3600)
+                (datetime.now() - user.edit_at).total_seconds() > 24 * 3600)
 
         assert (finished_count + unfinished_count) == 100
 

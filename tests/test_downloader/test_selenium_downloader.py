@@ -12,7 +12,6 @@ if chromedriver_executable_path.exists():
     cache_dir = Path(__file__).change(new_basename=".cache").abspath
     dl_dst = Path(__file__).change(new_basename="python.org.html").abspath
 
-
     def reset():
         try:
             shutil.rmtree(cache_dir)
@@ -23,7 +22,6 @@ if chromedriver_executable_path.exists():
             os.remove(dl_dst)
         except:
             pass
-
 
     class TestChromeDownloader(object):
         def test(self):

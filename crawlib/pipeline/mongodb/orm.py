@@ -47,24 +47,30 @@ class ExtendedDocument(mongoengine_mate.ExtendedDocument):
     def validate_implementation(cls):
         if cls._meta.get("abstract", False) is False:
             if cls._settings_STATUS_KEY_required is None:
-                raise NotImplementedError("you has to specify `_settings_STATUS_KEY_required`!")
+                raise NotImplementedError(
+                    "you has to specify `_settings_STATUS_KEY_required`!")
 
             try:
                 status_field = getattr(cls, cls._settings_STATUS_KEY_required)
                 if not isinstance(status_field, fields.IntField):
-                    raise NotImplementedError("edit at field has to be a DateTimeField field!")
+                    raise NotImplementedError(
+                        "edit at field has to be a DateTimeField field!")
             except:
                 raise NotImplementedError("status field (IntField) not found!")
 
             if cls._settings_EDIT_AT_KEY_required is None:
-                raise NotImplementedError("you has to specify `_settings_EDIT_AT_KEY_required`!")
+                raise NotImplementedError(
+                    "you has to specify `_settings_EDIT_AT_KEY_required`!")
 
             try:
-                edit_at_field = getattr(cls, cls._settings_EDIT_AT_KEY_required)
+                edit_at_field = getattr(
+                    cls, cls._settings_EDIT_AT_KEY_required)
                 if not isinstance(edit_at_field, fields.DateTimeField):
-                    raise NotImplementedError("edit at field has to be a DateTimeField field!")
+                    raise NotImplementedError(
+                        "edit at field has to be a DateTimeField field!")
             except:
-                raise NotImplementedError("edit at field (DateTimeField) not found!")
+                raise NotImplementedError(
+                    "edit at field (DateTimeField) not found!")
 
 
 ExtendedDocument.__doc__ = mongoengine_mate.ExtendedDocument.__doc__

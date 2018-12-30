@@ -78,7 +78,7 @@ class TestMongodbOrm(object):
         for user in User.get_all_unfinished(filters={"_id": {"$lte": 50}}):
             assert user._id <= 50
             assert (user.status < User._settings_FINISHED_STATUS_required) \
-                   or ((datetime.now() - user.edit_at).total_seconds() > User._settings_UPDATE_INTERVAL_required)
+                or ((datetime.now() - user.edit_at).total_seconds() > User._settings_UPDATE_INTERVAL_required)
 
 
 if __name__ == "__main__":
