@@ -7,24 +7,24 @@
 """
 
 import math
+
 from flask import Flask, Blueprint, render_template
 
 bp = Blueprint("movie", __name__, template_folder="templates")
-
-app = Flask("movie")
 
 n_movie = 98
 n_movie_each_page = 10
 max_page_id = math.ceil(n_movie * 1.0 / n_movie_each_page)
 
 
-@bp.route("/movie", methods=["GET", ])
+@bp.route("/", methods=["GET", ])
 def index():
-    return render_template("index.html")
+    print("Hello")
+    return render_template("movie/index.html")
 
 
-@bp.route("/movie/listpage/", methods=["GET", ])
-@bp.route("/movie/listpage/<page_id>", methods=["GET", ])
+@bp.route("/listpage/", methods=["GET", ])
+@bp.route("/listpage/<page_id>", methods=["GET", ])
 def movie_listpage(page_id=None):
     if page_id is None:
         return movie_listpage(page_id=1)
@@ -52,7 +52,7 @@ def movie_listpage(page_id=None):
             ))
             next_page_id = max_page_id
         return render_template(
-            "movie-listpage.html",
+            "movie/movie-listpage.html",
             movie_id_list=movie_id_list,
             prev_page_id=prev_page_id,
             next_page_id=next_page_id,
@@ -60,14 +60,14 @@ def movie_listpage(page_id=None):
         )
 
 
-@bp.route("/movie/<movie_id>", methods=["GET", ])
+@bp.route("/<movie_id>", methods=["GET", ])
 def movie_detail(movie_id):
-    return render_template("movie.html", movie_id=movie_id)
+    return render_template("movie/movie.html", movie_id=movie_id)
 
 
 if __name__ == "__main__":
     from crawlib.tests.dummy_site.config import PORT
 
     app = Flask("movie")
-    app.register_blueprint(bp)
+    app.register_blueprint(bp, url_prefix="/movie")
     app.run(port=PORT, debug=True)

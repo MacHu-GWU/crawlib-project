@@ -3,9 +3,11 @@
 import random
 from collections import OrderedDict
 
+from pathlib_mate import Path
 from flask import Flask, Blueprint, render_template
 
-bp = Blueprint("music", __name__, template_folder="templates")
+dir_templates = Path(__file__).change(new_basename="templates")
+bp = Blueprint("music", __name__, template_folder=dir_templates.abspath)
 
 n_artist = 50
 n_genre = 30
@@ -44,36 +46,37 @@ for music_id, music in musics.items():
 n_random_music = 10
 
 
-@bp.route("/music", methods=["GET", ])
+@bp.route("/", methods=["GET", ])
 def index():
-    return render_template("index.html")
+    print("Music page")
+    return render_template("music/index.html")
 
 
-@bp.route("/music/random", methods=["GET", ])
+@bp.route("/random", methods=["GET", ])
 def random_music():
     _music_id_list = random.sample(music_id_list, n_random_music)
     _music_id_list.sort()
-    return render_template("random.html", music_id_list=_music_id_list)
+    return render_template("music/random.html", music_id_list=_music_id_list)
 
 
-@bp.route("/music/<music_id>", methods=["GET", ])
+@bp.route("/<music_id>", methods=["GET", ])
 def music_detail(music_id):
-    return render_template("music.html", music=musics[int(music_id)])
+    return render_template("music/music.html", music=musics[int(music_id)])
 
 
-@bp.route("/music/artist/<artist_id>", methods=["GET", ])
+@bp.route("/artist/<artist_id>", methods=["GET", ])
 def artist_detail(artist_id):
-    return render_template("artist.html", artist=artists[int(artist_id)])
+    return render_template("music/artist.html", artist=artists[int(artist_id)])
 
 
-@bp.route("/music/genre/<genre_id>", methods=["GET", ])
+@bp.route("/genre/<genre_id>", methods=["GET", ])
 def genre_detail(genre_id):
-    return render_template("genre.html", genre=genres[int(genre_id)])
+    return render_template("music/genre.html", genre=genres[int(genre_id)])
 
 
 if __name__ == "__main__":
     from crawlib.tests.dummy_site.config import PORT
 
     app = Flask("music")
-    app.register_blueprint(bp)
+    app.register_blueprint(bp, url_prefix="/music")
     app.run(port=PORT, debug=True)
