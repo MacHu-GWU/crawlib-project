@@ -115,6 +115,9 @@ req-info: ## Show requirements information
 	bash ./bin/py/req-info.sh
 
 
+run-test-webapp: ## Run test webapp for crawler
+	bash ./bin/py/run-test-webapp.sh
+
 
 #--- AWS Lambda ---
 lbd-build-deploy-pkg: ## Build lambda deployment package

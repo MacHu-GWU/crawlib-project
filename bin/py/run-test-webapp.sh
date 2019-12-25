@@ -11,4 +11,4 @@ dir_project_root=$(dirname "${dir_bin}")
 
 source ${dir_bin}/py/python-env.sh
 
-$bin_python
+$bin_python "$dir_bin/py/run_test_webapp.py"
