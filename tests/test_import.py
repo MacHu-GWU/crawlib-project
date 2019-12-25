@@ -1,38 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pytest
+from pytest import raises, approx
 
 
 def test():
     import crawlib
-
-    crawlib.RequestsDownloader
-    crawlib.ChromeDownloader
-
-    crawlib.BaseUrlBuilder
-    crawlib.BaseHtmlParser
-
-    crawlib.ExtendedItem
-    crawlib.OneToManyRdsItem
-    crawlib.OneToManyRdsItem
-    crawlib.ParseResult
-
-    crawlib.util
-    crawlib.Status
-    crawlib.Headers
-
-    crawlib.create_cache
-    crawlib.CacheBackedDownloader
-
-    exc = crawlib.exc
-    exc.DownloadOversizeError
-    exc.TimeoutError
-    exc.SoupError
-    exc.CaptchaError
-    exc.WrongHtmlError
-    exc.ParseError
-    exc.DecodeError
+    pass
 
 
 if __name__ == "__main__":

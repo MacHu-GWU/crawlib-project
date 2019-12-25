@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>Random 10 Music</title>
+</head>
+<body>
+<div id="listpage">
+    {% for music_id in music_id_list %}
+    <p><a href="/music/{{ music_id }}">Music {{ music_id }} details</a></p>
+    {% endfor %}
+</div>
+</body>
+</html>

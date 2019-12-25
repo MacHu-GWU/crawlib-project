@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>Genre {{ genre["id"] }}</title>
+</head>
+<body>
+<div id="detail">
+    <strong>Genre {{ genre["id"] }}</strong>
+    {% for music_id in genre["music_id_list"] %}
+    <p><a href="/music/{{ music_id }}">music {{ music_id }}</a></p>
+    {% endfor %}
+</div>
+</body>
+</html>

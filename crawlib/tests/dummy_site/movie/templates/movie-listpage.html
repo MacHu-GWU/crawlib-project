@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Movie Listpage</title>
+</head>
+<body>
+<div id="listpage">
+    {% for movie_id in movie_id_list %}
+    <p><a href="/movie/{{ movie_id }}">Movie {{ movie_id }} details</a></p>
+    {% endfor %}
+</div>
+<div id="pagination">
+    <a href="/movie/listpage/{{ prev_page_id }}">previous page</a> ||
+    <a href="/movie/listpage/{{ next_page_id }}">next page</a> ||
+    <a href="/movie/listpage/{{ last_page_id }}">last page</a>
+</div>
+</body>
+</html>

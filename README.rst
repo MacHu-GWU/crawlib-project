@@ -1,3 +1,8 @@
+
+.. image:: https://readthedocs.org/projects/crawlib/badge/?version=latest
+    :target: https://crawlib.readthedocs.io/index.html
+    :alt: Documentation Status
+
 .. image:: https://travis-ci.org/MacHu-GWU/crawlib-project.svg?branch=master
     :target: https://travis-ci.org/MacHu-GWU/crawlib-project?branch=master
 
@@ -13,49 +18,41 @@
 .. image:: https://img.shields.io/pypi/pyversions/crawlib.svg
     :target: https://pypi.python.org/pypi/crawlib
 
-.. image:: https://img.shields.io/badge/Star_Me_on_GitHub!--None.svg?style=social
+.. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
     :target: https://github.com/MacHu-GWU/crawlib-project
+
+------
+
+
+.. image:: https://img.shields.io/badge/Link-Document-blue.svg
+      :target: https://crawlib.readthedocs.io/index.html
+
+.. image:: https://img.shields.io/badge/Link-API-blue.svg
+      :target: https://crawlib.readthedocs.io/py-modindex.html
+
+.. image:: https://img.shields.io/badge/Link-Source_Code-blue.svg
+      :target: https://crawlib.readthedocs.io/py-modindex.html
+
+.. image:: https://img.shields.io/badge/Link-Install-blue.svg
+      :target: `install`_
+
+.. image:: https://img.shields.io/badge/Link-GitHub-blue.svg
+      :target: https://github.com/MacHu-GWU/crawlib-project
+
+.. image:: https://img.shields.io/badge/Link-Submit_Issue-blue.svg
+      :target: https://github.com/MacHu-GWU/crawlib-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Request_Feature-blue.svg
+      :target: https://github.com/MacHu-GWU/crawlib-project/issues
+
+.. image:: https://img.shields.io/badge/Link-Download-blue.svg
+      :target: https://pypi.org/pypi/crawlib#files
 
 
 Welcome to ``crawlib`` Documentation
 ==============================================================================
-Crawl library provides crawler project building block to simplify:
 
-1. url encoding.
-2. html parse.
-3. error handling.
-4. download html and file.
-5. request cache.
-6. duplicate filter.
-7. width first crawl strategy.
-
-In addition, it is a web crawl framework for width first style crawling.
-
-For example, suppose the target data is organized in a tree structure, for instance, State -> City -> Zipcode -> Street -> Address. Then ``crawlib`` is born for it.
-
-Here is an `Example Project <https://github.com/MacHu-GWU/crawlib-project/tree/master/example/crawlib_doc-project/run_spider>`_ for scraping data from https://crawlib.readthedocs.io/_static/state-list.html.
-
-
-Quick Links
-------------------------------------------------------------------------------
-
-- .. image:: https://img.shields.io/badge/Link-Document-red.svg
-      :target: https://crawlib.readthedocs.io/index.html
-
-- .. image:: https://img.shields.io/badge/Link-API_Reference_and_Source_Code-red.svg
-      :target: API reference and source code <https://crawlib.readthedocs.io/py-modindex.html
-
-- .. image:: https://img.shields.io/badge/Link-Install-red.svg
-      :target: `install`_
-
-- .. image:: https://img.shields.io/badge/Link-GitHub-blue.svg
-      :target: https://github.com/MacHu-GWU/crawlib-project
-
-- .. image:: https://img.shields.io/badge/Link-Submit_Issue_and_Feature_Request-blue.svg
-      :target: https://github.com/MacHu-GWU/crawlib-project/issues
-
-- .. image:: https://img.shields.io/badge/Link-Download-blue.svg
-      :target: https://pypi.python.org/pypi/crawlib#downloads
+Documentation for ``crawlib``.
 
 
 .. _install:
