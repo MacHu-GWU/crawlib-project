@@ -39,17 +39,18 @@ def movie_listpage(page_id=None):
 
         # next_page_id
         if page_id < max_page_id:
-            movie_id_list = [
-                (page_id - 1) * n_movie_each_page + 1 + i
-                for i in range(n_movie_each_page)
-            ]
+            movie_id_list = list(range(
+                n_movie - page_id * n_movie_each_page + 1,
+                n_movie - (page_id - 1) * n_movie_each_page + 1,
+            ))[::-1]
             next_page_id = page_id + 1
         elif page_id > max_page_id:
             raise ValueError
         else:
             movie_id_list = list(range(
-                (page_id - 1) * n_movie_each_page + 1, n_movie + 1
-            ))
+                1,
+                n_movie - n_movie_each_page * (max_page_id - 1) + 1,
+            ))[::-1]
             next_page_id = max_page_id
         return render_template(
             "movie/movie-listpage.html",
