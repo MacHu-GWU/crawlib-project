@@ -6,3 +6,9 @@ flask
 scrapy
 mongoengine_mate
 pymongo_mate
+requests
+beautifulsoup4
+constant2
+attrs_mate
+diskcache
+atomicwrites
