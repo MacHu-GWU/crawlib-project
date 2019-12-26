@@ -8,6 +8,10 @@ mongoengine_mate
 pymongo_mate
 requests
 beautifulsoup4
+
+requests
+requests_html
+
 rolex==0.0.8
 constant2==0.0.13
 attrs_mate==0.0.5
