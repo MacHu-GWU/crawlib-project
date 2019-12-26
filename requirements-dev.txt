@@ -8,7 +8,9 @@ mongoengine_mate
 pymongo_mate
 requests
 beautifulsoup4
-constant2
-attrs_mate
-diskcache
-atomicwrites
+rolex==0.0.8
+constant2==0.0.13
+attrs_mate==0.0.5
+diskcache==4.1.0
+atomicwrites==1.3.0
+loggerFactory==0.0.5
