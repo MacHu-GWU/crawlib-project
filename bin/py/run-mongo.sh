@@ -6,5 +6,5 @@ docker run --rm --name crawlib-test-mongo-db \
     -p 43346:27017 \
     -e MONGO_INITDB_ROOT_USERNAME=username \
     -e MONGO_INITDB_ROOT_PASSWORD=password \
-    mongo:3.6 \
+    mongo:3.6
 sleep 1
