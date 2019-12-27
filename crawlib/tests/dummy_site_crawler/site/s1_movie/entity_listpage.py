@@ -10,7 +10,7 @@ from ...config import Config
 
 
 class ListPage(MovieWebsiteEntity):
-    CONF_UPDATE_INTERVAL = 24 * 3600
+    CONF_UPDATE_INTERVAL = 1
     CONF_UPDATE_FIELDS = (
         "n_movie",
     )

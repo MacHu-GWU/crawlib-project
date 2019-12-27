@@ -513,7 +513,9 @@ class Entity(EntityExtendScheduler):
             self.logger.info(msg, indent)
 
     @classmethod
-    def start_all(cls, detailed_log=False):
+    def start_all(cls,
+                  detailed_log=False,
+                  **kwargs):
         indent = 0
         n_unfinished = cls.count_unfinished()
         left_counter = n_unfinished
