@@ -122,12 +122,13 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         }
         return entity_data_to_update
 
-    def process_pr(self, pres, **kwargs):
+    def process_pr(self,
+                   pres: ParseResult,
+                   **kwargs):
         """
         Process ParseRequest
 
-        :type pres: ParseResult
-        :param pres:
+        :param pres: parse result object to process
 
         :return:
         """

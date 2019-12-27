@@ -536,10 +536,12 @@ class Entity(EntityExtendScheduler):
 @attr.s
 class ParseResult(object):
     """
-
-    :param entity:
-
     **中文文档**
+
+    ParseResult 是 crawlib 广度优先框架中所使用的类, 用于包装从 html 抓取的数据.
+    在 crawlib 中一个 url 对应着一个 entity, 而 html 中可能会抓取到其他 child entity
+    的信息. 对于当前 entity 的信息, 我们将其存储在 :attr:`ParseResult.entity` 中.
+    对于 child entity 的信息, 我们将其存储在 :attr:`ParseResult.children` 中.
 
     :param entity: 由于 html 背后必然对应一个 url, 而在 crawlib2 框架里, 每一个 url
         都对应着一个 ORM Entity. 此属性保存的就是这个从 html 中提取出来的,
@@ -548,8 +550,8 @@ class ParseResult(object):
         ``Entity.process_pr`` 方法中, 会根据 child entity 的类型进行归类, 然后对
         每类进行处理.
     :param data: 额外的数据
-    :param status:
-    :param endit_at:
+    :param status: 表示当前的抓取状态
+    :param enit_at: 表示最新更新的时间
     """
     entity = attr.ib(default=None)  # type: Optional[Entity]
     children = attr.ib(factory=list)  # type: Optional[List[Entity]]

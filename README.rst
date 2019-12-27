@@ -52,7 +52,14 @@
 Welcome to ``crawlib`` Documentation
 ==============================================================================
 
-Documentation for ``crawlib``.
+``crawlib`` is a board-first-search crawler framework for targeting-crawler (For those you know where's your data located and how's been organized). You just need to focus on the data model and html extraction logic, and let the framework do the rest of things like:
+
+- duplicate filter
+- recursive crawling
+- status tracking
+- periodical update
+
+Currently it supports mongodb as backend storage only.
 
 
 .. _install:
