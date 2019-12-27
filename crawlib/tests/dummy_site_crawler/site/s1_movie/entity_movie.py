@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
 from mongoengine import fields
-from crawlib2 import Status, ParseResult, resolve_arg
-from .url_builder import url_builder
+
+from crawlib import Status, ParseResult, resolve_arg
 from .entity_base import MovieWebsiteEntity
+from .url_builder import url_builder
 from ...config import Config
 
 

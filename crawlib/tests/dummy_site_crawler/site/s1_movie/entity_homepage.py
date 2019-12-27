@@ -35,7 +35,6 @@ class HomePage(MovieWebsiteEntity):
         a_tag_list = div_pagination.find_all("a")
         href = a_tag_list[-1]["href"]
         max_page_num = int(href.split("/")[-1])
-
         entity = HomePage(max_page_num=max_page_num)
 
         children = list()

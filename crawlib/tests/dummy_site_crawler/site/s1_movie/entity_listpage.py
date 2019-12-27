@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from mongoengine import fields
-from crawlib2 import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig
+from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig
 
 from .url_builder import url_builder
 from .entity_base import MovieWebsiteEntity
