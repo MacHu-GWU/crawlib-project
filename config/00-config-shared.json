@@ -1,0 +1,9 @@
+{
+    "PROJECT_NAME": "crawlib",
+    "AWS_PROFILE_FOR_DOC_DEPLOY": "an-aws-project-name",
+    "S3_BUCKET_FOR_DOC_HOST": "a-s3-bucket-name",
+    
+    "AWS_PROFILE_FOR_DEPLOY": "eq_sanhe",
+    "S3_BUCKET_FOR_DEPLOY": "eq-sanhe-for-everything"
+    
+}

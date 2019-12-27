@@ -1,16 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
 Exceptions.
 """
 
-from requests import Timeout as TimeoutError
-
-try:
-    from .status import Status
-except:  # pragma: no cover
-    from crawlib.status import Status
+from .status import Status
 
 
 # HtmlParser error
@@ -24,7 +18,7 @@ class CaptchaError(Exception):
 
     遭遇反爬虫验证页面。
     """
-    code = Status.S20_WrongPage.id
+    status_code = Status.S20_WrongPage.id
 
 
 class ForbiddenError(Exception):
@@ -37,7 +31,7 @@ class ForbiddenError(Exception):
 
     被服务器禁止访问。
     """
-    code = Status.S20_WrongPage.id
+    status_code = Status.S20_WrongPage.id
 
 
 class WrongHtmlError(Exception):
@@ -52,14 +46,14 @@ class WrongHtmlError(Exception):
     2. 服务器要求验证码, 返回了验证码页面。
     3. 页面暂时因为各种奇怪的原因不是我们需要的页面。
     """
-    code = Status.S20_WrongPage.id
+    status_code = Status.S20_WrongPage.id
 
 
 class DecodeError(Exception):
     """
     Failed to decode binary response.
     """
-    code = Status.S25_DecodeError.id
+    status_code = Status.S25_DecodeError.id
 
 
 class SoupError(Exception):
@@ -72,7 +66,7 @@ class SoupError(Exception):
 
     html成功获得了, 但是格式有错误, 不能转化为soup。
     """
-    code = Status.S30_ParseError.id
+    status_code = Status.S30_ParseError.id
 
 
 class ParseError(Exception):
@@ -91,7 +85,7 @@ class IncompleteDataError(Exception):
     Successfully parse data from html, but we can't accept the result due to
     missing data.
     """
-    code = Status.S40_InCompleteData.id
+    status_code = Status.S40_InCompleteData.id
 
 
 class ServerSideError(Exception):
@@ -105,7 +99,7 @@ class ServerSideError(Exception):
     1. 因为服务器的缘故该页面无法正常访问, 也可能已经不存在了, 但以后可能会回来。
     2. 因为服务器的缘故, 上面的数据不是我们想要的, 但是我们可以暂时用着, 以后可能要重新抓取。
     """
-    code = Status.S60_ServerSideError.id
+    status_code = Status.S60_ServerSideError.id
 
 
 # Other errors

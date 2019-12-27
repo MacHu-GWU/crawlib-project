@@ -1,10 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
 This module provide extended power to decode HTML you crawled.
 """
 
+import six
 import chardet
 from . import util
 
@@ -13,14 +13,18 @@ def smart_decode(binary, errors="strict"):
     """
     Automatically find the right codec to decode binary data to string.
 
+    :type binary: six.binary_type
     :param binary: binary data
+
+    :type errors: str
     :param errors: one of 'strict', 'ignore' and 'replace'
-    :return: string
+
+    :rtype: str
+    :return: decoded string
     """
     d = chardet.detect(binary)
     encoding = d["encoding"]
     confidence = d["confidence"]
-
     text = binary.decode(encoding, errors=errors)
     return text, encoding, confidence
 

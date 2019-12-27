@@ -1,38 +1,28 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pytest
+from pytest import raises, approx
 
 
 def test():
     import crawlib
 
-    crawlib.RequestsDownloader
-    crawlib.ChromeDownloader
-
-    crawlib.BaseUrlBuilder
-    crawlib.BaseHtmlParser
-
-    crawlib.ExtendedItem
-    crawlib.OneToManyRdsItem
-    crawlib.OneToManyRdsItem
-    crawlib.ParseResult
-
-    crawlib.util
-    crawlib.Status
-    crawlib.Headers
-
-    crawlib.create_cache
-    crawlib.CacheBackedDownloader
-
-    exc = crawlib.exc
-    exc.DownloadOversizeError
-    exc.TimeoutError
-    exc.SoupError
-    exc.CaptchaError
-    exc.WrongHtmlError
-    exc.ParseError
-    exc.DecodeError
+    _ = crawlib.Status
+    _ = crawlib.StatusDetail
+    _ = crawlib.BaseUrlBuilder
+    _ = crawlib.resolve_arg
+    _ = crawlib.decoder
+    _ = crawlib.epoch
+    _ = crawlib.utc_now
+    _ = crawlib.create_cache
+    _ = crawlib.create_cache_here
+    _ = crawlib.CachedRequest
+    _ = crawlib.exc
+    _ = crawlib.RelationshipConfig
+    _ = crawlib.Relationship
+    _ = crawlib.ParseResult
+    _ = crawlib.MongodbEntity
+    _ = crawlib.MongodbEntitySingleStatus
 
 
 if __name__ == "__main__":

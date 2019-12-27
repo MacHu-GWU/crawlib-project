@@ -1,48 +1,66 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.27"
+"""
+tool set for crawler project.
+"""
+
+from ._version import __version__
+
 __short_description__ = "tool set for crawler project."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
 __author_email__ = "husanhe@gmail.com"
-__maintainer__ = "Sanhe Hu"
-__maintainer_email__ = "husanhe@gmail.com"
 __github_username__ = "MacHu-GWU"
 
 try:
     import scrapy
 
     _has_scrapy = True
-except:  # pragma: no cover
+except ImportError:  # pragma: no cover
     _has_scrapy = False
 
 try:
-    from . import exc, util
-    from .cache import create_cache, CacheBackedDownloader
-    from .data_class import ExtendedItem, ParseResult, Field
-    from .data_class import (
-        OneToManyMongoEngineItem,
-        OneToManyRdsItem,
-    )
-    from .decode import smart_decode, decoder
-    from .logger import SpiderLogger
-    from .header_builder import Headers
-    from .spider import execute_one_to_many_job
-    from .status import Status, FINISHED_STATUS_CODE
-    from .timestamp import epoch, x_seconds_before_now, x_seconds_after_now
+    from .status import Status, StatusDetail
+except ImportError:  # pragma: no cover
+    pass
 
-    # subpackage
-    from .downloader import (
-        RequestsDownloader,
-        ChromeDownloader,
+try:
+    from .middleware.url_builder import BaseUrlBuilder
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .decorator import resolve_arg
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .decode import decoder
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .entity import (
+        RelationshipConfig, Relationship, ParseResult,
+        MongodbEntity, MongodbEntitySingleStatus,
     )
-    from .html_parser import (
-        BaseHtmlParser,
-        soupify, access_binary, auto_decode_and_soupify,
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .time_util import epoch, utc_now
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .cache import create_cache, create_cache_here
+    from .cached_request import CachedRequest
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from . import (
+        exc,
     )
-    from .url_builder.builder import BaseUrlBuilder
-    from .pipeline import mongodb, rds
-except ImportError as e:  # pragma: no cover
-    print(e)
+except ImportError:  # pragma: no cover
     pass

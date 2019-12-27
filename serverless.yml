@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+# all available properties in serverless.yml when provider is aws
+# https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+
+service:
+  name: crawlib
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: us-east-1
+  profile: eq_sanhe
+  memorySize: 128
+  timeout: 3
+  deploymentBucket:
+    name: eq-sanhe-for-everything
+  deploymentPrefix: serverless
+  role: "<put-your-own-lambda-iam-role-arn-here>"
+  versionFunctions: false
+
+package:
+  artifact: ./build/lambda/source.zip
+
+functions:
+  my_func:
+    handler: crawlib.handlers.my_func.handler
+    description:
+    layers:
+      - "<put-your-own-lambda-layers-arn-here>"

@@ -1,15 +1,16 @@
 language: python
 
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
   - "3.6"
 
 install:
   - pip install --editable . # Install it self
   - pip install -r requirements-test.txt # Install test dependencies
   - pip install codecov # Install coveralls
+
+before_script:
+  - python ./bin/py/run_test_webapp.py > /dev/null &
+  - sleep 10
 
 script:
   - pytest tests --cov=crawlib # Run unittest
