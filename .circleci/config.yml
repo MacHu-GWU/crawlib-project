@@ -18,14 +18,12 @@ jobs:
             make req-dev
             make req-test
           no_output_timeout: "60s"
+      # in circleci runtime, we use circleci/mongo:3.6 docker image
+      # there's no need to call make run-mongo to use the official mongo:3.6 image
       - run:
+          name: run unittest, integration test
           command: |
-            make run-test-webapp
-          background: true
-      - run:
-          # in circleci runtime, we use circleci/mongo:3.6 docker image
-          # there's no need to call make run-mongo to use the official mongo:3.6 image
-          command: |
+            make run-test-webapp &
             make cov-only
 
 workflows:
