@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pymongo
 from mongoengine import connect
 try:
     from .config import Config

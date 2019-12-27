@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List
+from typing import Dict, List, Type
+
 import mongoengine_mate
 from mongoengine import fields, queryset
 
 from . import query_builder
-from ..base import Entity, ParseResult
-from ...time_util import epoch
+from ..base import Entity, ParseResult, Relationship
 from ...status import Status
+from ...time_util import epoch
 
 
 class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
@@ -16,7 +17,10 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
     }
 
     @classmethod
-    def get_unfinished(cls, filters=None, **kwargs):  # pragma: no cover
+    def get_unfinished(cls,
+                       filters=None,
+                       only_fields=None,
+                       **kwargs):  # pragma: no cover
         """
         Execute a query to get all **Not Finished** web page ORM entity
 
@@ -34,7 +38,10 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         )
         if (filters is not None) and isinstance(filters, dict):
             query_filters.update(filters)
-        return cls.by_filter(query_filters)
+        resultset = cls.by_filter(query_filters)
+        if only_fields is not None:
+            resultset = resultset.only(*only_fields)
+        return resultset
 
     @classmethod
     def count_unfinished(cls, filters=None, **kwargs):
@@ -68,11 +75,9 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
     @classmethod
     def validate_implementation_additional(cls):
         """
-
-        :return:
         """
         try:
-            status_field = getattr(cls, cls.CONF_STATUS_KEY)
+            status_field = getattr(cls, cls.CONF_STATUS_KEY)  # type: str
             if not isinstance(status_field, fields.IntField):
                 raise NotImplementedError(
                     "`{}.{}` field has to be a `IntField` field!".format(
@@ -93,14 +98,29 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 "edit at field (a DateTimeField) not found!")
 
         for klass in cls.CONF_RELATIONSHIP.mapping:
-            n_child_key = cls.CONF_RELATIONSHIP.get_n_child_key(klass)
-            if hasattr(cls, n_child_key) is False:
-                msg = "{} does not define '{}' field!".format(cls, n_child_key)
-                raise NotImplementedError(msg)
-            n_child_field = getattr(cls, n_child_key)
-            if not isinstance(n_child_field, fields.IntField):
-                raise NotImplementedError(
-                    "`n_child` field has to be a `IntField` field!")
+            if cls.CONF_RELATIONSHIP.get_relationship(klass) == Relationship.Option.many:
+                n_child_key = cls.CONF_RELATIONSHIP.get_n_child_key(klass)
+                if hasattr(cls, n_child_key) is False:
+                    msg = "{} does not define '{}' field!".format(cls, n_child_key)
+                    raise NotImplementedError(msg)
+                n_child_field = getattr(cls, n_child_key)
+                if not isinstance(n_child_field, fields.IntField):
+                    raise NotImplementedError(
+                        "`n_child` field has to be a `IntField` field!")
+
+    def filter_update_data(self):
+        """
+        **中文文档**
+
+        使用 `CONF_UPDATE_FIELDS` 中定义的属性过滤数据, 只保存那些需要被更新的属性.
+        """
+        entity_data = self.to_dict()
+        entity_data_to_update = {
+            field: entity_data[field]
+            for field in self.CONF_UPDATE_FIELDS
+            if field in entity_data
+        }
+        return entity_data_to_update
 
     def process_pr(self, pres, **kwargs):
         """
@@ -113,7 +133,8 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         """
         if pres.is_finished():
             # disaggregate child entiity, group them by class
-            entity_bags = dict()  # type: Dict[MongodbEntity, List[MongodbEntity]]
+            # CN doc: pres.children 中可能有多余两类的对象, 我们首先将其按照类分组
+            entity_bags = dict()  # type: Dict[Type[MongodbEntity], List[MongodbEntity]]
             for child in pres.children:
                 try:
                     entity_bags[child.__class__].append(child)
@@ -121,6 +142,7 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                     entity_bags[child.__class__] = [child, ]
 
             # insert child entity, update n_child_key attribute in parent entity
+            # 将新获得的 child entity 插入数据库, 并更新 n_child_key
             for entity_klass, entity_list in entity_bags.items():
                 entity_klass.smart_insert(entity_list)
                 n_child = len(entity_list)
@@ -133,14 +155,22 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 setattr(pres.entity, self.id_field_name(), getattr(self, self.id_field_name()))
                 setattr(pres.entity, self.CONF_STATUS_KEY, pres.status)
                 setattr(pres.entity, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                self.smart_update(pres.entity)
+                entity_data_to_update = pres.entity.filter_update_data()
+                update_one_response = self.col().update_one(
+                    {"_id": entity_data_to_update["_id"]},
+                    {"$set": entity_data_to_update},
+                )
 
         else:
             # update parent entity status and edit_at field in db
             if pres.entity is not None:
                 setattr(pres.entity, self.CONF_STATUS_KEY, pres.status)
                 setattr(pres.entity, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                self.smart_update(pres.entity)
+                entity_data_to_update = pres.entity.filter_update_data()
+                update_one_response = self.col().update_one(
+                    {"_id": entity_data_to_update["_id"]},
+                    {"$set": entity_data_to_update},
+                )
 
 
 class MongodbEntitySingleStatus(MongodbEntity):
@@ -193,4 +223,4 @@ class MongodbEntitySingleStatus(MongodbEntity):
     CONF_EDIT_AT_KEY = "edit_at"
 
     status = fields.IntField(default=Status.S0_ToDo.id)
-    edit_at = fields.DateTimeField(default=epoch)
+    edit_at = fields.DateTimeField(default=lambda: epoch)

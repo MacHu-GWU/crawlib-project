@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from crawlib2.cache import create_cache_here
-from crawlib2.cached_request import CachedRequest
-from crawlib2.tests.dummy_site_crawler.site.s1_movie.entity_movie import MoviePage
+
+from crawlib.cache import create_cache_here
+from crawlib.cached_request import CachedRequest
+from crawlib.tests.dummy_site_crawler.site.s1_movie.entity_movie import MoviePage
 
 cache = create_cache_here(__file__)
 spider = CachedRequest(cache=cache, log_cache_miss=True, expire=24 * 3600)

@@ -55,6 +55,76 @@ class TestRelationshipConfig(object):
         assert len(list(config.iter_recursive_child_class())) == 1
 
 
+class TestEntityExtendScheduler(object):
+    def test_validate_implementation_bad_case(self):
+        class Movie(Entity):
+            _id = "_id"
+            title = "title"
+            status = "status"
+            edit_at = "edit_at"
+
+            CONF_STATUS_KEY = "status"
+            CONF_EDIT_AT_KEY = "edit_at"
+
+        with pytest.raises(NotImplementedError) as e:
+            Movie.validate_implementation()
+            assert "you have to specify" in str(e)
+            assert "CONF_UPDATE_FIELDS" in str(e)
+
+        class Movie(Entity):
+            _id = "_id"
+            title = "title"
+            status = "status"
+            edit_at = "edit_at"
+
+            CONF_STATUS_KEY = "status"
+            CONF_UPDATE_FIELDS = ("title",)
+
+        with pytest.raises(NotImplementedError):
+            Movie.validate_implementation()
+
+        class Movie(Entity):
+            _id = "_id"
+            title = "title"
+            status = "status"
+            edit_at = "edit_at"
+
+            CONF_EDIT_AT_KEY = "edit_at"
+            CONF_UPDATE_FIELDS = ("title",)
+
+        with pytest.raises(NotImplementedError) as e:
+            Movie.validate_implementation()
+
+        class Movie(Entity):
+            _id = "_id"
+            title = "title"
+            status = "status"
+            edit_at = "edit_at"
+
+            CONF_STATUS_KEY = "status"
+            CONF_EDIT_AT_KEY = "edit_at"
+            CONF_UPDATE_FIELDS = ("director",)
+
+        with pytest.raises(NotImplementedError) as e:
+            Movie.validate_implementation()
+            assert "not found" in str(e)
+
+    def test_validate_implementation_good_case(self):
+        class Movie(Entity):
+            _id = "_id"
+            title = "title"
+            status = "status"
+            edit_at = "edit_at"
+
+            CONF_STATUS_KEY = "status"
+            CONF_EDIT_AT_KEY = "edit_at"
+            CONF_UPDATE_FIELDS = ("title",)
+
+        Movie.validate_implementation()
+        for field in ("title", "_id", "status", "edit_at"):
+            assert field in Movie.CONF_UPDATE_FIELDS
+
+
 class TestEntity(object):
     def test_check_subclass_implementation_goodcase1(self):
         class Country(Entity):

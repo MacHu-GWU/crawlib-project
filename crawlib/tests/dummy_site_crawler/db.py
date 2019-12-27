@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from mongoengine import connect
-from .config import Config
+try:
+    from .config import Config
+except:
+    from crawlib.example.scrapy_movie.config import Config
 
 
 def connect_mongomock():
@@ -15,15 +18,23 @@ def connect_mongomock():
     return client, db
 
 
-def connect_local():
+def connect_cloud():
     client = connect(
-        Config.MongoDB.database,
+        db=Config.MongoDB.database,
+        host="mongodb://{username}:{password}@{host}:{port}/{database}".format(
+            database=Config.MongoDB.database,
+            host=Config.MongoDB.host,
+            port=Config.MongoDB.port,
+            username=Config.MongoDB.username,
+            password=Config.MongoDB.password,
+        ),
         alias=Config.MongoDB.database,
+        retryWrites=False,
     )
-    client.drop_database(Config.MongoDB.database)
+    # client.drop_database(Config.MongoDB.database)
     db = client[Config.MongoDB.database]
     return client, db
 
 
-client, db = connect_mongomock()
-# client, db = connect_local()
+# client, db = connect_mongomock()
+client, db = connect_cloud()

@@ -11,9 +11,13 @@ from ...config import Config
 
 class HomePage(MovieWebsiteEntity):
     CONF_UPDATE_INTERVAL = 1
-
+    CONF_UPDATE_FIELDS = (
+        "description",
+        "max_page_num",
+        "n_listpage",
+    )
     CONF_RELATIONSHIP = RelationshipConfig([
-        Relationship(ListPage, Relationship.Option.many, "n_listpage")
+        Relationship(ListPage, Relationship.Option.many, "n_listpage", recursive=True)
     ])
 
     _id = fields.IntField(primary_key=True)
@@ -43,7 +47,6 @@ class HomePage(MovieWebsiteEntity):
             children.append(listpage)
 
         status = Status.S50_Finished.id
-
         pres = ParseResult(
             entity=entity,
             children=children,

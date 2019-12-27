@@ -12,8 +12,8 @@ from flask import Flask, Blueprint, render_template
 
 bp = Blueprint("movie", __name__, template_folder="templates")
 
-n_movie = 98
-n_movie_each_page = 10
+n_movie = 18
+n_movie_each_page = 5
 max_page_id = math.ceil(n_movie * 1.0 / n_movie_each_page)
 
 

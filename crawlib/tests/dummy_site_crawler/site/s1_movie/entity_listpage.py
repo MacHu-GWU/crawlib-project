@@ -11,9 +11,12 @@ from ...config import Config
 
 class ListPage(MovieWebsiteEntity):
     CONF_UPDATE_INTERVAL = 24 * 3600
+    CONF_UPDATE_FIELDS = (
+        "n_movie",
+    )
 
     CONF_RELATIONSHIP = RelationshipConfig([
-        Relationship(MoviePage, Relationship.Option.many, "n_movie")
+        Relationship(MoviePage, Relationship.Option.many, "n_movie", recursive=True)
     ])
 
     _id = fields.IntField(primary_key=True)
