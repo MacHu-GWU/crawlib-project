@@ -13,9 +13,7 @@ def test_utc_now():
     delta = abs((now - utc_now).total_seconds())
 
     assert utc_now.tzinfo is None
-    if "GMT" not in tzname:
-        assert delta >= 3599
-    else:
+    if "GMT" in tzname:
         assert delta <= 0.001
 
 
