@@ -22,10 +22,10 @@ jobs:
             make run-test-webapp
           background: true
       - run:
+          # in circleci runtime, we use circleci/mongo:3.6 docker image
+          # there's no need to call make run-mongo to use the official mongo:3.6 image
           command: |
-            make run-mongo
             make cov
-            make stop-mongo
 
 workflows:
   version: 2
