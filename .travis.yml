@@ -9,7 +9,7 @@ install:
   - pip install codecov # Install coveralls
 
 before_script:
-  - python ./bin/py/run_test_webapp.py
+  - python ./bin/py/run_test_webapp.py > /dev/null &
   - sleep 10
 
 script:
