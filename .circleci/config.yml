@@ -24,3 +24,9 @@ jobs:
           command: |
             make cov
           no_output_timeout: "60s"
+
+workflows:
+  version: 2
+  test_workflow:
+    jobs:
+      - test_crawlib
