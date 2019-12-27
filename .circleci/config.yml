@@ -18,7 +18,8 @@ jobs:
             make req-test
           no_output_timeout: "60s"
       - run:
-          command: make run-test-webapp
+          command: |
+            make run-test-webapp
           background: true
       - run:
           command: |
