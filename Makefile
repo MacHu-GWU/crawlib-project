@@ -115,7 +115,7 @@ req-info: ## Show requirements information
 	bash ./bin/py/req-info.sh
 
 
-run-test-webapp: req-test ## Run test webapp for crawler
+run-test-webapp: ## Run test webapp for crawler
 	bash ./bin/py/run-test-webapp.sh
 
 

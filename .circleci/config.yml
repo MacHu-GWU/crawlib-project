@@ -21,9 +21,11 @@ jobs:
       # in circleci runtime, we use circleci/mongo:3.6 docker image
       # there's no need to call make run-mongo to use the official mongo:3.6 image
       - run:
-          name: run unittest, integration test
           command: |
-            make run-test-webapp &
+            make run-test-webapp
+          background: true
+      - run:
+          command: |
             make cov-only
 
 workflows:
