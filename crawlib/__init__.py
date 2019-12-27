@@ -42,6 +42,12 @@ except ImportError:  # pragma: no cover
 try:
     from .entity import (
         RelationshipConfig, Relationship, ParseResult,
+    )
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .entity import (
         MongodbEntity, MongodbEntitySingleStatus,
     )
 except ImportError:  # pragma: no cover

@@ -5,3 +5,7 @@ pytest-cov==2.5.1   # coverage test
 pathlib_mate
 flask
 scrapy
+mongoengine_mate==0.0.5
+pymongo_mate==0.0.4
+sqlalchemy_mate==0.0.10
+psycopg2-binary==2.8.4

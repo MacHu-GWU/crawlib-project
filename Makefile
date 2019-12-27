@@ -119,6 +119,14 @@ run-test-webapp: req-test ## Run test webapp for crawler
 	bash ./bin/py/run-test-webapp.sh
 
 
+run-psql: ## Run postgresql db in container locally for test
+	bash ./bin/py/run-postgres.sh
+
+
+stop-psql: ## Stop postgresql db container
+	bash ./bin/py/stop-postgres.sh
+
+
 #--- AWS Lambda ---
 lbd-build-deploy-pkg: ## Build lambda deployment package
 	bash ./bin/lbd/build-lbd-deploy-pkg.sh
