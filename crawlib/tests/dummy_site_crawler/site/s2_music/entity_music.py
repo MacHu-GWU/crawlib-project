@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from mongoengine import fields
 from bs4 import BeautifulSoup
+from mongoengine import fields
 
 from crawlib import resolve_arg
 from crawlib.entity.base import RelationshipConfig, Relationship, ParseResult
