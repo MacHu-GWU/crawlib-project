@@ -22,7 +22,9 @@ jobs:
           background: true
       - run:
           command: |
+            make run-mongo
             make cov
+            make stop-mongo
           no_output_timeout: "60s"
 
 workflows:
