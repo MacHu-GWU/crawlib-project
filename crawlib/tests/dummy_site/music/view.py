@@ -9,12 +9,12 @@ from flask import Flask, Blueprint, render_template
 dir_templates = Path(__file__).change(new_basename="templates")
 bp = Blueprint("music", __name__, template_folder=dir_templates.abspath)
 
-n_artist = 50
-n_genre = 30
-n_music = 500
+n_artist = 15
+n_genre = 10
+n_music = 50
 
-max_n_artist = 2
-max_n_genre = 3
+max_n_artist = 3
+max_n_genre = 2
 
 artists = OrderedDict([
     (artist_id, {"id": artist_id, "music_id_list": []})
@@ -43,7 +43,7 @@ for music_id, music in musics.items():
         music["genre_id_list"].append(genre_id)
         genres[genre_id]["music_id_list"].append(music_id)
 
-n_random_music = 10
+n_random_music = 5
 
 
 @bp.route("/", methods=["GET", ])

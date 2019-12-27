@@ -14,9 +14,9 @@ spider = CachedRequest(cache=cache, log_cache_miss=True, expire=24 * 3600)
 spider.use_requests()
 
 
-class TestMoviePage(object):
+class TestMusicPage(object):
     def test_parse_response(self):
-        music_id = 100
+        music_id = 20
         music = MusicPage(_id=music_id)
         url = music.build_url()
         html = spider.request_for_html(url)

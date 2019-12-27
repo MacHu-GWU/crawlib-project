@@ -7,7 +7,9 @@ omit =
     crawlib/pkg/*
     crawlib/docs/*
     crawlib/tests/*
+    crawlib/devops/*
     crawlib/handlers/*
+    crawlib/example/*
 
 [report]
 # Regexes for lines to exclude from consideration
