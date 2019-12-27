@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from crawlib2.entity.mongodb.entity import MongodbEntitySingleStatus
+from crawlib.entity.mongodb.entity import MongodbEntitySingleStatus
 
 
 class MusicWebsiteEntity(MongodbEntitySingleStatus):
