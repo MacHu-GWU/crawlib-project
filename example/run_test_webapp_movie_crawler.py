@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from crawlib.tests.dummy_site_crawler.db import db
-from crawlib.tests.dummy_site_crawler.site.s1_movie import (
-    HomePage, ListPage, MoviePage, MovieCoverImagePage,
-)
+from crawlib.tests.dummy_site_crawler.mongo_backend.s1_movie import (
+    ListPage, MoviePage, )
 
 # HomePage.smart_insert(HomePage(_id=1))
 # HomePage.start_all()

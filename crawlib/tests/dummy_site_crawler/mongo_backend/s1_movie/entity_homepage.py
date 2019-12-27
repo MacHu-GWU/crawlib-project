@@ -6,7 +6,7 @@ from crawlib import Status, ParseResult, resolve_arg, Relationship, Relationship
 from .url_builder import url_builder
 from .entity_base import MovieWebsiteEntity
 from .entity_listpage import ListPage
-from ...config import Config
+from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
 
 
 class HomePage(MovieWebsiteEntity):
@@ -27,7 +27,7 @@ class HomePage(MovieWebsiteEntity):
 
     meta = dict(
         collection="site_movie_homepage",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     def build_url(self, **kwargs):

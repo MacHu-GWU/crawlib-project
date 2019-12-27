@@ -6,7 +6,7 @@ from mongoengine import fields
 from crawlib import Status, ParseResult, resolve_arg, time_util, Relationship, RelationshipConfig
 from crawlib.entity.mongodb import MongodbEntity
 from .url_builder import url_builder
-from ...config import Config
+from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
 
 
 class MoviePageBase(MongodbEntity):
@@ -45,7 +45,7 @@ class MovieCoverImagePage(MoviePageBase):
 
     meta = dict(
         collection="site_movie_movie",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     def build_url(self):
@@ -82,7 +82,7 @@ class MoviePage(MoviePageBase):
 
     meta = dict(
         collection="site_movie_movie",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     def build_url(self):

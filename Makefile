@@ -119,6 +119,14 @@ run-test-webapp: req-test ## Run test webapp for crawler
 	bash ./bin/py/run-test-webapp.sh
 
 
+run-mongo: ## Run mongodb db in container locally for test
+	bash ./bin/py/run-mongo.sh
+
+
+stop-mongo: ## Stop mongodb db container
+	bash ./bin/py/stop-mongo.sh
+
+
 run-psql: ## Run postgresql db in container locally for test
 	bash ./bin/py/run-postgres.sh
 

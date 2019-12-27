@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  test_crawlib:
+    docker:
+      - image: circleci/python:3.6.8-stretch-browsers
+      - image: circleci/mongo:3.6
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: username
+          MONGO_INITDB_ROOT_PASSWORD: password
+    context:
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          command: |
+            make up
+            make pip-dev-install
+            make req-test
+          no_output_timeout: "60s"
+      - run:
+          command: make run-test-webapp
+          background: true
+      - run:
+          command: |
+            make cov
+          no_output_timeout: "60s"
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - test_crawlib:

@@ -5,8 +5,8 @@ import pytest
 from crawlib.tests.dummy_site.movie.view import (
     n_movie, max_page_id, n_movie_each_page,
 )
-from crawlib.tests.dummy_site_crawler.db import db
-from crawlib.tests.dummy_site_crawler.site.s1_movie import (
+from crawlib.tests.dummy_site_crawler.mongo_backend.db import db
+from crawlib.tests.dummy_site_crawler.mongo_backend.s1_movie import (
     HomePage,
     ListPage,
     MoviePage,

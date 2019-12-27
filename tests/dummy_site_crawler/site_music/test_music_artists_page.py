@@ -4,7 +4,7 @@ import pytest
 
 from crawlib.cache import create_cache_here
 from crawlib.cached_request import CachedRequest
-from crawlib.tests.dummy_site_crawler.site.s2_music.entity_music import ArtistPage
+from crawlib.tests.dummy_site_crawler.mongo_backend.s2_music import ArtistPage
 
 cache = create_cache_here(__file__)
 spider = CachedRequest(cache=cache, log_cache_miss=True, expire=24 * 3600)

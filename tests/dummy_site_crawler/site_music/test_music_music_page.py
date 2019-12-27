@@ -7,7 +7,7 @@ from crawlib.cached_request import CachedRequest
 from crawlib.tests.dummy_site.music.view import (
     max_n_artist, max_n_genre,
 )
-from crawlib.tests.dummy_site_crawler.site.s2_music.entity_music import MusicPage
+from crawlib.tests.dummy_site_crawler.mongo_backend.s2_music import MusicPage
 
 cache = create_cache_here(__file__)
 spider = CachedRequest(cache=cache, log_cache_miss=True, expire=24 * 3600)

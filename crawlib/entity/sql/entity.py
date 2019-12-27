@@ -2,18 +2,18 @@
 
 from typing import Dict, List, Type
 
-import mongoengine_mate
-from mongoengine import fields, queryset
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy_mate import ExtendedBase
 
-from ..base import Entity, ParseResult, Relationship
+from ..base import ParseResult, Relationship
 from ...status import Status
 from ...time_util import epoch
 
+Base = declarative_base()
 
-class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
-    meta = {
-        "abstract": True,
-    }
+
+class SqlEntity(Base, ExtendedBase):
+    __abstract__ = True
 
     @classmethod
     def get_unfinished(cls,

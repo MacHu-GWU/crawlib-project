@@ -8,7 +8,7 @@ from crawlib.entity.base import RelationshipConfig, Relationship, ParseResult
 from crawlib.status import Status
 from .entity_base import MusicWebsiteEntity
 from .url_builder import url_builder
-from ...config import Config
+from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
 
 
 class MusicPage(MusicWebsiteEntity):
@@ -28,7 +28,7 @@ class MusicPage(MusicWebsiteEntity):
 
     meta = dict(
         collection="site_music_music",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     @property
@@ -83,7 +83,7 @@ class ArtistPage(MusicWebsiteEntity):
 
     meta = dict(
         collection="site_music_artist",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     @property
@@ -135,7 +135,7 @@ class GenrePage(MusicWebsiteEntity):
 
     meta = dict(
         collection="site_music_genre",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     @property
@@ -187,7 +187,7 @@ class RandomMusicPage(MusicWebsiteEntity):
 
     meta = dict(
         collection="site_music_random_music",
-        db_alias=Config.MongoDB.database,
+        db_alias=config.DB_DATABASE.get_value(),
     )
 
     def build_url(self, **kwargs):

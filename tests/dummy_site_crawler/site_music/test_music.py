@@ -7,8 +7,8 @@ from crawlib.tests.dummy_site.music.view import (
     n_genre,
     n_music,
 )
-from crawlib.tests.dummy_site_crawler.db import db
-from crawlib.tests.dummy_site_crawler.site.s2_music import (
+from crawlib.tests.dummy_site_crawler.mongo_backend.db import db
+from crawlib.tests.dummy_site_crawler.mongo_backend.s2_music import (
     RandomMusicPage,
     ArtistPage,
     GenrePage,
