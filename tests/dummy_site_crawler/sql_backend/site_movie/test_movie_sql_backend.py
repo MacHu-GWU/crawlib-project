@@ -8,7 +8,9 @@ from crawlib.tests.dummy_site_crawler.sql_backend.s1_movie import (
     HomePage,
     ListPage,
     MoviePage,
+    MovieCoverImagePage,
 )
+from crawlib.tests.dummy_site.movie.view import max_page_id, n_movie, n_movie_each_page
 
 
 def setup_module():
@@ -34,20 +36,20 @@ def test():
         get_unfinished_session=session,
         start_process_pr_kwargs={"engine": engine},
     )
-    #
-    # assert HomePage.col().find().count() == 1
-    # assert ListPage.col().find().count() == max_page_id
-    # assert MoviePage.col().find().count() == n_movie
-    #
-    # assert HomePage.col().find_one()[HomePage.n_listpage.name] == max_page_id
-    # for doc in ListPage.col().find():
-    #     assert doc[ListPage.n_movie.name] <= n_movie_each_page
-    #
-    # for doc in MoviePage.col().find():
-    #     assert doc[MoviePage.title.name] == "Movie %s Title" % doc[MoviePage._id.name]
-    #
-    # assert MovieCoverImagePage.col().find({MovieCoverImagePage.image_content.name: {"$exists": True}}).count() \
-    #        == n_movie
+
+    assert session.query(HomePage).count() == 1
+    assert session.query(ListPage).count() == max_page_id
+    assert session.query(MoviePage).count() == n_movie
+
+    assert session.query(HomePage).one().to_dict()[HomePage.n_listpage.name] == max_page_id
+    for listpage in session.query(ListPage):
+        assert listpage.to_dict()[ListPage.n_movie.name] <= n_movie_each_page
+
+    for moviepage in session.query(MoviePage):
+        assert moviepage.to_dict()[MoviePage.title.name] == "Movie %s Title" % moviepage.to_dict()[MoviePage.id.name]
+
+    assert session.query(MovieCoverImagePage).filter(MovieCoverImagePage.image_content!=None).count() \
+           == n_movie
 
     session.close()
 

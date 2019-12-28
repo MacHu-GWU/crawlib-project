@@ -214,5 +214,5 @@ class SqlEntitySingleStatus(SqlEntity):
     CONF_STATUS_KEY = "status"
     CONF_EDIT_AT_KEY = "edit_at"
 
-    status = sa.Column(sa.Integer, default=lambda: Status.S0_ToDo.id)
-    edit_at = sa.Column(sa.DateTime, default=lambda: epoch)
+    status = sa.Column(sa.Integer, default=Status.S0_ToDo.id)
+    edit_at = sa.Column(sa.DateTime, default=epoch)

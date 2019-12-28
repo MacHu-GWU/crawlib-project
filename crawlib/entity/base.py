@@ -441,6 +441,9 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| crawling %s, %s url left ..." % (indent, url, left_counter)
             self.logger.info(msg, indent)
         except Exception as e:
+            indent = 2
+            msg = "|%s| Failed to build url! Error: %s" % (indent, e)
+            self.logger.info(msg, indent)
             pres = ParseResult(
                 entity=self,
                 data={"errors": str(e)},
@@ -458,7 +461,7 @@ class Entity(EntityExtendScheduler):
             request = self.build_request(url, **build_request_kwargs)
         except Exception as e:
             indent = 2
-            msg = "|%s| Failed to build HTTP Request object!" % indent
+            msg = "|%s| Failed to build HTTP Request object! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
                 entity=self,
@@ -477,7 +480,7 @@ class Entity(EntityExtendScheduler):
             response = self.send_request(request, **send_request_kwargs)
         except Exception as e:
             indent = 2
-            msg = "|%s| Failed to get HTTP response!" % indent
+            msg = "|%s| Failed to get HTTP response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
                 entity=self,
@@ -501,7 +504,7 @@ class Entity(EntityExtendScheduler):
             )
         except Exception as e:
             indent = 2
-            msg = "|%s| Failed to parse http response!" % indent
+            msg = "|%s| Failed to parse http response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
                 entity=self,
@@ -528,8 +531,16 @@ class Entity(EntityExtendScheduler):
                 self.logger.info(msg, indent)
         except Exception as e:
             indent = 2
-            msg = "|%s| Failed to process parse result!" % indent
+            msg = "|%s| Failed to process parse result! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
+            pres = ParseResult(
+                entity=self,
+                data={"errors": str(e)},
+                status=Status.S30_ParseError.id
+            )
+            self.process_pr(pres, **process_pr_kwargs)
+            return
+
 
     @classmethod
     def start_all(cls,

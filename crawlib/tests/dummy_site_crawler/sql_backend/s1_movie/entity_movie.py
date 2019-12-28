@@ -3,9 +3,11 @@
 import requests
 import sqlalchemy as sa
 
-from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig
+from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig, epoch
 from crawlib.entity.sql import Base, SqlEntity, SqlEntitySingleStatus
-from .url_builder import url_builder
+from ...movie_url_builder import url_builder
+
+_ = Base
 
 
 class MoviePageBase(SqlEntity):
@@ -13,12 +15,12 @@ class MoviePageBase(SqlEntity):
 
     id = sa.Column(sa.Integer, primary_key=True)
     title = sa.Column(sa.String)
-    status_movie_info = sa.Column(sa.Integer)
-    edit_at_movie_info = sa.Column(sa.DateTime)
+    status_movie_info = sa.Column(sa.Integer, default=Status.S0_ToDo.id)
+    edit_at_movie_info = sa.Column(sa.DateTime, default=epoch)
 
     image_content = sa.Column(sa.String)
-    status_cover_image = sa.Column(sa.Integer)
-    edit_at_cover_image = sa.Column(sa.DateTime)
+    status_cover_image = sa.Column(sa.Integer, default=Status.S0_ToDo.id)
+    edit_at_cover_image = sa.Column(sa.DateTime, default=epoch)
 
     @property
     def movie_id(self):
@@ -102,7 +104,18 @@ class MoviePage(MoviePageBase):
 MoviePage.validate_implementation()
 
 
-class ListPage(SqlEntitySingleStatus):
+class SingleStatusEntityBase(SqlEntitySingleStatus):
+    __abstract__ = True
+
+    def build_request(self, url, **kwargs):
+        request = url
+        return request
+
+    def send_request(self, request, **kwargs):
+        return requests.get(request)
+
+
+class ListPage(SingleStatusEntityBase):
     __tablename__ = "site_movie_listpage"
 
     CONF_UPDATE_INTERVAL = 1
@@ -153,7 +166,7 @@ class ListPage(SqlEntitySingleStatus):
 ListPage.validate_implementation()
 
 
-class HomePage(SqlEntitySingleStatus):
+class HomePage(SingleStatusEntityBase):
     __tablename__ = "site_movie_homepage"
 
     CONF_UPDATE_INTERVAL = 1
