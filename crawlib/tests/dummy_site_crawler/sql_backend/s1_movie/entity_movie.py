@@ -4,7 +4,7 @@ import requests
 import sqlalchemy as sa
 
 from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig
-from crawlib.entity.sql import SqlEntity, SqlEntitySingleStatus
+from crawlib.entity.sql import Base, SqlEntity, SqlEntitySingleStatus
 from .url_builder import url_builder
 
 
@@ -40,6 +40,7 @@ class MovieCoverImagePage(MoviePageBase):
     CONF_STATUS_KEY = "status_cover_image"
     CONF_EDIT_AT_KEY = "edit_at_cover_image"
     CONF_UPDATE_FIELDS = (
+        "id",
         "image_content",
     )
 
@@ -71,6 +72,7 @@ class MoviePage(MoviePageBase):
     CONF_STATUS_KEY = "status_movie_info"
     CONF_EDIT_AT_KEY = "edit_at_movie_info"
     CONF_UPDATE_FIELDS = (
+        "id",
         "title",
     )
 
@@ -105,6 +107,7 @@ class ListPage(SqlEntitySingleStatus):
 
     CONF_UPDATE_INTERVAL = 1
     CONF_UPDATE_FIELDS = (
+        "id",
         "n_movie",
     )
 
@@ -155,6 +158,7 @@ class HomePage(SqlEntitySingleStatus):
 
     CONF_UPDATE_INTERVAL = 1
     CONF_UPDATE_FIELDS = (
+        "id",
         "description",
         "max_page_num",
         "n_listpage",

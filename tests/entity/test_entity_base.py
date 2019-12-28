@@ -66,6 +66,8 @@ class TestEntityExtendScheduler(object):
             CONF_STATUS_KEY = "status"
             CONF_EDIT_AT_KEY = "edit_at"
 
+            _ORM_FRAMEWORK = "mongoengine"
+
         with pytest.raises(NotImplementedError) as e:
             Movie.validate_implementation()
             assert "you have to specify" in str(e)
@@ -80,6 +82,8 @@ class TestEntityExtendScheduler(object):
             CONF_STATUS_KEY = "status"
             CONF_UPDATE_FIELDS = ("title",)
 
+            _ORM_FRAMEWORK = "mongoengine"
+
         with pytest.raises(NotImplementedError):
             Movie.validate_implementation()
 
@@ -91,6 +95,8 @@ class TestEntityExtendScheduler(object):
 
             CONF_EDIT_AT_KEY = "edit_at"
             CONF_UPDATE_FIELDS = ("title",)
+
+            _ORM_FRAMEWORK = "mongoengine"
 
         with pytest.raises(NotImplementedError) as e:
             Movie.validate_implementation()
@@ -104,6 +110,8 @@ class TestEntityExtendScheduler(object):
             CONF_STATUS_KEY = "status"
             CONF_EDIT_AT_KEY = "edit_at"
             CONF_UPDATE_FIELDS = ("director",)
+
+            _ORM_FRAMEWORK = "mongoengine"
 
         with pytest.raises(NotImplementedError) as e:
             Movie.validate_implementation()
@@ -119,6 +127,8 @@ class TestEntityExtendScheduler(object):
             CONF_STATUS_KEY = "status"
             CONF_EDIT_AT_KEY = "edit_at"
             CONF_UPDATE_FIELDS = ("title",)
+
+            _ORM_FRAMEWORK = "mongoengine"
 
         Movie.validate_implementation()
         for field in ("title", "_id", "status", "edit_at"):

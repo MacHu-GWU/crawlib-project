@@ -7,7 +7,6 @@ from crawlib import resolve_arg
 from crawlib.entity.base import RelationshipConfig, Relationship, ParseResult
 from crawlib.status import Status
 from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
-
 from .entity_base import MusicWebsiteEntity
 from ...music_url_builder import url_builder
 

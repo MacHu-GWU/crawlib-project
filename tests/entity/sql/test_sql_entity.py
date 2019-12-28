@@ -56,6 +56,9 @@ class TestSqlEntity(object):
                                                    only_fields=[DummyEntityForTest.id, DummyEntityForTest.value]):
             assert len(row) == 2
 
+        session.commit()
+        session.close()
+
 
 if __name__ == "__main__":
     import os

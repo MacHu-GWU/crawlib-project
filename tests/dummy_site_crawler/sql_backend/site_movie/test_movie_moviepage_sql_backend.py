@@ -4,11 +4,10 @@ import pytest
 
 from crawlib.cache import create_cache_here
 from crawlib.cached_request import CachedRequest
+from crawlib.tests.dummy_site.movie.view import n_movie_each_page, max_page_id
 from crawlib.tests.dummy_site_crawler.sql_backend.s1_movie import (
     MovieCoverImagePage, MoviePage, ListPage, HomePage,
 )
-from crawlib.tests.dummy_site.movie.view import n_movie_each_page, max_page_id
-
 
 cache = create_cache_here(__file__)
 spider = CachedRequest(cache=cache, log_cache_miss=True, expire=24 * 3600)

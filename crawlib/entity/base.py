@@ -144,9 +144,11 @@ class EntityExtendScheduler(EntityBase):
     CONF_FINISHED_STATUS = FINISHED_STATUS_CODE  # Default 50
     CONF_UPDATE_INTERVAL = 365 * 24 * 60 * 60  # Default 1 Day
 
-    CONF_UPDATE_FIELDS = None # type: tuple
-    CONF_ONLY_FIELDS = None # type: tuple
+    CONF_UPDATE_FIELDS = None  # type: tuple
+    CONF_ONLY_FIELDS = None  # type: tuple
     CONF_RELATIONSHIP = None  # type: RelationshipConfig
+
+    _ORM_FRAMEWORK = None # type: str
 
     @classmethod
     @abstractmethod
@@ -232,8 +234,9 @@ class EntityExtendScheduler(EntityBase):
                     raise NotImplementedError(msg)
 
             tmp_lst = list(cls.CONF_UPDATE_FIELDS)
-            if "_id" not in tmp_lst:
-                tmp_lst.append("_id")
+            if cls._ORM_FRAMEWORK == "mongoengine":
+                if "_id" not in tmp_lst:
+                    tmp_lst.append("_id")
             if cls.CONF_STATUS_KEY not in tmp_lst:
                 tmp_lst.append(cls.CONF_STATUS_KEY)
             if cls.CONF_EDIT_AT_KEY not in tmp_lst:
@@ -532,21 +535,31 @@ class Entity(EntityExtendScheduler):
     def start_all(cls,
                   detailed_log=False,
                   **kwargs):
+        get_unfinished_kwargs = {
+            k.replace("get_unfinished_", ""): v
+            for k, v in kwargs.items() if k.startswith("get_unfinished_")
+        }
+
+        start_kwargs = {
+            k.replace("start_", ""): v
+            for k, v in kwargs.items() if k.startswith("start_")
+        }
+
         indent = 0
-        n_unfinished = cls.count_unfinished()
+        n_unfinished = cls.count_unfinished(**get_unfinished_kwargs)
         left_counter = n_unfinished
         msg = "|%s| Working on Entity(%s), got %s url to crawl ..." % (indent, cls, n_unfinished)
         cls.logger.info(msg, indent)
 
         # crawl current unfinished entity
-        for entity in list(cls.get_unfinished()):
+        for entity in list(cls.get_unfinished(**get_unfinished_kwargs)):
             # entity.start(detailed_log=detailed_log, left_counter=0)
             left_counter -= 1
-            entity.start(detailed_log=detailed_log, left_counter=left_counter)
+            entity.start(detailed_log=detailed_log, left_counter=left_counter, **start_kwargs)
 
         # crawl related entity
         for klass in cls.CONF_RELATIONSHIP.iter_recursive_child_class():
-            klass.start_all(detailed_log=detailed_log)
+            klass.start_all(detailed_log=detailed_log, **kwargs)
 
 
 @attr.s

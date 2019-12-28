@@ -16,6 +16,8 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         "abstract": True,
     }
 
+    _ORM_FRAMEWORK = "mongoengine"
+
     @classmethod
     def get_unfinished(cls,
                        filters=None,

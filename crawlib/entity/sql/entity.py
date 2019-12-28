@@ -21,6 +21,8 @@ Base = declarative_base()
 class SqlEntity(Base, ExtendedBase, Entity):
     __abstract__ = True
 
+    _ORM_FRAMEWORK = "sqlalchemy"
+
     @classmethod
     def get_unfinished(cls,
                        session: Session,
@@ -165,6 +167,7 @@ class SqlEntity(Base, ExtendedBase, Entity):
 
     def process_pr(self,
                    pres: ParseResult,
+                   engine,
                    **kwargs):
         """
         Process ParseRequest
@@ -186,7 +189,7 @@ class SqlEntity(Base, ExtendedBase, Entity):
             # insert child entity, update n_child_key attribute in parent entity
             # 将新获得的 child entity 插入数据库, 并更新 n_child_key
             for entity_klass, entity_list in entity_bags.items():
-                entity_klass.smart_insert(entity_list)
+                entity_klass.smart_insert(engine, entity_list)
                 n_child = len(entity_list)
                 n_child_key = self.CONF_RELATIONSHIP.get_n_child_key(entity_klass)
                 if pres.entity is not None:
@@ -199,7 +202,7 @@ class SqlEntity(Base, ExtendedBase, Entity):
             setattr(pres.entity, self.CONF_EDIT_AT_KEY, pres.edit_at)
             entity_data_to_update = pres.entity.filter_update_data()
             update_one_response = update_all(
-                engine=kwargs["engine"],
+                engine=engine,
                 table=self.__table__,
                 data=[entity_data_to_update, ],
             )
