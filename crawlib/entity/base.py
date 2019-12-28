@@ -178,6 +178,22 @@ class EntityExtendScheduler(EntityBase):
     def get_all_subclass(cls) -> Set['EntityExtendScheduler']:
         return get_all_subclass(cls)
 
+    def filter_update_data(self):
+        """
+        :rtype: dict
+
+        **中文文档**
+
+        使用 `CONF_UPDATE_FIELDS` 中定义的属性过滤数据, 只保存那些需要被更新的属性.
+        """
+        entity_data = self.to_dict()
+        entity_data_to_update = {
+            field: entity_data[field]
+            for field in self.CONF_UPDATE_FIELDS
+            if field in entity_data
+        }
+        return entity_data_to_update
+
     @classmethod
     def validate_implementation_additional(cls):
         """

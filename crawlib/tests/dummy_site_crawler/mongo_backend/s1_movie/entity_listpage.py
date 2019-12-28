@@ -2,11 +2,11 @@
 
 from mongoengine import fields
 from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig
+from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
 
-from .url_builder import url_builder
 from .entity_base import MovieWebsiteEntity
 from .entity_movie import MoviePage
-from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
+from ...movie_url_builder import url_builder
 
 
 class ListPage(MovieWebsiteEntity):

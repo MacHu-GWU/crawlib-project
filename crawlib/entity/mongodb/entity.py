@@ -77,7 +77,7 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         """
         """
         try:
-            status_field = getattr(cls, cls.CONF_STATUS_KEY)  # type: str
+            status_field = getattr(cls, cls.CONF_STATUS_KEY)  # type: fields.BaseField
             if not isinstance(status_field, fields.IntField):
                 raise NotImplementedError(
                     "`{}.{}` field has to be a `IntField` field!".format(
@@ -106,21 +106,7 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 n_child_field = getattr(cls, n_child_key)
                 if not isinstance(n_child_field, fields.IntField):
                     raise NotImplementedError(
-                        "`n_child` field has to be a `IntField` field!")
-
-    def filter_update_data(self):
-        """
-        **中文文档**
-
-        使用 `CONF_UPDATE_FIELDS` 中定义的属性过滤数据, 只保存那些需要被更新的属性.
-        """
-        entity_data = self.to_dict()
-        entity_data_to_update = {
-            field: entity_data[field]
-            for field in self.CONF_UPDATE_FIELDS
-            if field in entity_data
-        }
-        return entity_data_to_update
+                        "`{}` field has to be a `IntField` field!".format(n_child_key))
 
     def process_pr(self,
                    pres: ParseResult,

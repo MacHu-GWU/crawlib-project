@@ -5,8 +5,8 @@ from mongoengine import fields
 
 from crawlib import Status, ParseResult, resolve_arg, time_util, Relationship, RelationshipConfig
 from crawlib.entity.mongodb import MongodbEntity
-from .url_builder import url_builder
 from crawlib.tests.dummy_site_crawler.mongo_backend.config_init import config
+from ...movie_url_builder import url_builder
 
 
 class MoviePageBase(MongodbEntity):
