@@ -7,6 +7,10 @@ jobs:
         environment:
           MONGO_INITDB_ROOT_USERNAME: username
           MONGO_INITDB_ROOT_PASSWORD: password
+      - image: circleci/postgres:10.6-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
     context:
     steps:
       - checkout
