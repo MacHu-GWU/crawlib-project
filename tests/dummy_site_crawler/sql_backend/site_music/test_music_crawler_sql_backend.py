@@ -2,11 +2,7 @@
 
 import pytest
 
-from crawlib.tests.dummy_site.music.view import (
-    n_artist,
-    n_genre,
-    n_music,
-)
+from crawlib.tests.dummy_site.music.view import n_music, n_artist, n_genre
 from crawlib.tests.dummy_site_crawler.sql_backend.db import engine, Session
 from crawlib.tests.dummy_site_crawler.sql_backend.s2_music import (
     Base,
@@ -37,21 +33,14 @@ def test():
     assert session.query(GenrePage).count() == 0
 
     RandomMusicPage.smart_insert(session, RandomMusicPage(id=1))
-    RandomMusicPage.start_all(
-        detailed_log=True,
-        get_unfinished_session=session,
-        start_process_pr_kwargs={"engine": engine},
-    )
-    RandomMusicPage.start_all(
-        detailed_log=True,
-        get_unfinished_session=session,
-        start_process_pr_kwargs={"engine": engine},
-    )
-    RandomMusicPage.start_all(
-        detailed_log=True,
-        get_unfinished_session=session,
-        start_process_pr_kwargs={"engine": engine},
-    )
+
+    repeat_times = 3
+    for i in range(repeat_times):
+        RandomMusicPage.start_recursive_crawler(
+            detailed_log=False,
+            get_unfinished_session=session,
+            start_process_pr_kwargs={"engine": engine},
+        )
 
     assert session.query(ArtistPage).count() == n_artist
     assert session.query(GenrePage).count() == n_genre

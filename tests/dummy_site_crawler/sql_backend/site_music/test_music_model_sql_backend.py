@@ -23,7 +23,7 @@ class TestMusicPage(object):
         url = music.build_url()
         html = spider.request_for_html(url)
         pres = music.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity.title == "Music {} Title".format(music_id)
+        assert pres.entity_data["title"] == "Music {} Title".format(music_id)
         assert len(pres.children) == (max_n_artist + max_n_genre)
 
 
@@ -34,8 +34,8 @@ class TestArtistPage(object):
         url = artist_page.build_url()
         html = spider.request_for_html(url)
         pres = artist_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity.musics) > 0
-        assert len(pres.entity.musics) == len(pres.children)
+        assert len(pres.entity_data["musics"]) > 0
+        assert len(pres.entity_data["musics"]) == len(pres.children)
 
 
 class TestGenrePage(object):
@@ -46,8 +46,8 @@ class TestGenrePage(object):
         print(url)
         html = spider.request_for_html(url)
         pres = genre_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity.musics) > 0
-        assert len(pres.entity.musics) == len(pres.children)
+        assert len(pres.entity_data["musics"]) > 0
+        assert len(pres.entity_data["musics"]) == len(pres.children)
 
 
 class TestHomePage(object):
@@ -56,8 +56,8 @@ class TestHomePage(object):
         url = rand_music_page.build_url()
         html = spider.request_for_html(url)
         pres = rand_music_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity.musics) == n_random_music
-        assert len(pres.entity.musics) == len(pres.children)
+        assert len(pres.entity_data["musics"]) == n_random_music
+        assert len(pres.entity_data["musics"]) == len(pres.children)
 
 
 if __name__ == "__main__":

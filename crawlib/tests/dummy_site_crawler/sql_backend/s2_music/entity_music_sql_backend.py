@@ -10,7 +10,7 @@ from crawlib.entity.sql import Base, SqlEntitySingleStatus
 from ...music_url_builder import url_builder
 
 
-class MusicPageBase(SqlEntitySingleStatus):
+class MusicPageBase(Base, SqlEntitySingleStatus):
     __abstract__ = True
 
     def build_request(self, url, **kwargs):
@@ -28,6 +28,7 @@ class MusicPage(MusicPageBase):
     CONF_UPDATE_FIELDS = (
         "id", "title", "artists", "n_artist", "genres", "n_genre",
     )
+    CONF_ONLY_FIELDS = ("id",)
 
     id = sa.Column(sa.Integer, primary_key=True)  # type: int
     title = sa.Column(sa.String)  # type: title
@@ -58,7 +59,7 @@ class MusicPage(MusicPageBase):
             for a in div_detail.find("div", class_="genres").find_all("a")
         ]
 
-        entity = MusicPage(title=title, artists=artists, genres=genres)
+        entity_data = dict(title=title, artists=artists, genres=genres)
         children = list()
         for artist_id in artists:
             children.append(ArtistPage(id=artist_id))
@@ -68,9 +69,9 @@ class MusicPage(MusicPageBase):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -81,9 +82,15 @@ class ArtistPage(MusicPageBase):
 
     CONF_UPDATE_INTERVAL = 3600
     CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
+    CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([
-        Relationship(MusicPage, Relationship.Option.many, "n_music", recursive=False)
+        Relationship(
+            child_klass=MusicPage,
+            relationship=Relationship.Option.many,
+            n_child_key="n_music",
+            recursive=False,
+        )
     ])
 
     id = sa.Column(sa.Integer, primary_key=True)  # type: int
@@ -104,7 +111,7 @@ class ArtistPage(MusicPageBase):
             int(a["href"].split("/")[-1])
             for a in div.find_all("a")
         ]
-        entity = ArtistPage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -114,9 +121,9 @@ class ArtistPage(MusicPageBase):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -124,11 +131,18 @@ class ArtistPage(MusicPageBase):
 
 class GenrePage(MusicPageBase):
     __tablename__ = "site_music_genre"
+
     CONF_UPDATE_INTERVAL = 3600
     CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
+    CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([
-        Relationship(MusicPage, Relationship.Option.many, "n_music", recursive=False)
+        Relationship(
+            child_klass=MusicPage,
+            relationship=Relationship.Option.many,
+            n_child_key="n_music",
+            recursive=False,
+        )
     ])
 
     id = sa.Column(sa.Integer, primary_key=True)  # type: int
@@ -149,7 +163,7 @@ class GenrePage(MusicPageBase):
             int(a["href"].split("/")[-1])
             for a in div.find_all("a")
         ]
-        entity = GenrePage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -159,9 +173,9 @@ class GenrePage(MusicPageBase):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -169,11 +183,18 @@ class GenrePage(MusicPageBase):
 
 class RandomMusicPage(MusicPageBase):
     __tablename__ = "site_music_random_music"
+
     CONF_UPDATE_INTERVAL = 1
     CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
+    CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([
-        Relationship(MusicPage, Relationship.Option.many, "n_music")
+        Relationship(
+            child_klass=MusicPage,
+            relationship=Relationship.Option.many,
+            n_child_key="n_music",
+            recursive=True,
+        )
     ])
 
     id = sa.Column(sa.Integer, primary_key=True)  # type: int
@@ -189,7 +210,7 @@ class RandomMusicPage(MusicPageBase):
             int(a["href"].split("/")[-1])
             for a in soup.find_all("a")
         ]
-        entity = RandomMusicPage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -199,17 +220,27 @@ class RandomMusicPage(MusicPageBase):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
 
 
 MusicPage.CONF_RELATIONSHIP = RelationshipConfig([
-    Relationship(ArtistPage, Relationship.Option.many, "n_artist"),
-    Relationship(GenrePage, Relationship.Option.many, "n_genre"),
+    Relationship(
+        child_klass=ArtistPage,
+        relationship=Relationship.Option.many,
+        n_child_key="n_artist",
+        recursive=True,
+    ),
+    Relationship(
+        child_klass=GenrePage,
+        relationship=Relationship.Option.many,
+        n_child_key="n_genre",
+        recursive=True,
+    ),
 ])
 
 MusicPage.validate_implementation()

@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_mate import ExtendedBase
 
-from crawlib.tests.dummy_site_crawler.sql_backend.db import engine
+from crawlib.tests.dummy_site_crawler.sql_backend.db import engine, Session
 
 Base = declarative_base()
 
@@ -17,7 +17,7 @@ class DummyForTest(Base, ExtendedBase):
     value = sa.Column(sa.String)
 
 
-def test():
+def test_db_connect():
     Base.metadata.create_all(engine)
     DummyForTest.smart_insert(engine, DummyForTest(id=1, value="Hello!"))
 

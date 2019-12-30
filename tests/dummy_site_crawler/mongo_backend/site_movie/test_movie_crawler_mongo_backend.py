@@ -28,7 +28,7 @@ def test():
     assert MoviePage.col().find().count() == 0
 
     HomePage(_id=1).save()
-    HomePage.start_all(detailed_log=True)
+    HomePage.start_recursive_crawler(detailed_log=True)
 
     assert HomePage.col().find().count() == 1
     assert ListPage.col().find().count() == max_page_id

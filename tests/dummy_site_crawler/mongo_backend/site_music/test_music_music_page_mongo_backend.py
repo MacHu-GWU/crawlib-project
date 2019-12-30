@@ -21,7 +21,7 @@ class TestMusicPage(object):
         url = music.build_url()
         html = spider.request_for_html(url)
         pres = music.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity.title == "Music {} Title".format(music_id)
+        assert pres.entity_data.title == "Music {} Title".format(music_id)
         assert len(pres.children) == (max_n_artist + max_n_genre)
 
 

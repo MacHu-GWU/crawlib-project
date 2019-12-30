@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+
 import pytest
 from pytest import raises
 
-from crawlib.entity.base import Relationship, RelationshipConfig, Entity
+from crawlib.entity.base import Relationship, RelationshipConfig, Entity, ParseResult
 
 
 class TestRelationship(object):
@@ -170,8 +172,20 @@ class TestEntity(object):
 
 
 class TestParseResult(object):
-    def test(self):
-        pass
+    def test_init_validator(self):
+        pr = ParseResult()
+        assert isinstance(pr.children, list)
+        assert isinstance(pr.additional_data, dict)
+        assert isinstance(pr.status, int)
+        assert isinstance(pr.edit_at, datetime)
+
+        with raises(TypeError) as e:
+            ParseResult(entity_data=[1, 2, 3])
+        assert "ParseResult.entity_data" in str(e)
+
+        with raises(TypeError) as e:
+            ParseResult(children=[1, 2, 3])
+        assert "ParseResult.children" in str(e)
 
 
 if __name__ == "__main__":

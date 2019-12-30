@@ -18,8 +18,8 @@ class TestArtistPage(object):
         url = artist_page.build_url()
         html = spider.request_for_html(url)
         pres = artist_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity.musics) > 0
-        assert len(pres.entity.musics) == len(pres.children)
+        assert len(pres.entity_data.musics) > 0
+        assert len(pres.entity_data.musics) == len(pres.children)
 
 
 if __name__ == "__main__":

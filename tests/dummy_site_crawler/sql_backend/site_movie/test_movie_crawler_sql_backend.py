@@ -31,7 +31,7 @@ def test():
     assert session.query(MoviePage).count() == 0
 
     HomePage.smart_insert(session, HomePage(id=1))
-    HomePage.start_all(
+    HomePage.start_recursive_crawler(
         detailed_log=True,
         get_unfinished_session=session,
         start_process_pr_kwargs={"engine": engine},

@@ -14,5 +14,5 @@ msg = "|%s| Working on Entity(%s), got %s url to crawl ..." % (indent, ListPage,
 ListPage.logger.info(msg, indent)
 for listpage in list(ListPage.get_unfinished(filters=unfinished_filters)):
     left_counter -= 1
-    listpage.start(left_counter=left_counter)
-MoviePage.start_all()
+    listpage.start_crawler(left_counter=left_counter)
+MoviePage.start_recursive_crawler()

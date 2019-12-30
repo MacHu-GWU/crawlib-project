@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+Entity Class represent an URL and its detailed data.
+"""
+
 import random
 import string
+import traceback
 from abc import abstractmethod
 from datetime import datetime
 from typing import List, Dict, Set, Optional, Type, Union, Iterable
@@ -15,6 +20,9 @@ from ..util import get_all_subclass
 
 
 class EntityBase(object):
+    """
+    Abstract Entity class.
+    """
     logger = StreamOnlyLogger(name="".join(random.sample(string.hexdigits, 16)))
 
     @classmethod
@@ -22,7 +30,7 @@ class EntityBase(object):
         return cls.__module__ + "." + cls.__name__
 
     @abstractmethod
-    def build_url(self, **kwargs):
+    def build_url(self, **kwargs) -> str:
         """
         Build ``url`` endpoint based on the current ORM Entity object.
 
@@ -36,7 +44,7 @@ class EntityBase(object):
                "it build the url endpoint based on the current ORM entity object.")
         raise NotImplementedError(msg)
 
-    def _build_url(self, **kwargs):
+    def _build_url(self, **kwargs) -> str:
         """
         :rtype: str
         """
@@ -131,24 +139,28 @@ class EntityExtendScheduler(EntityBase):
 
     **中文文档**
 
-    :parram CONF_STATUS_KEY:
-    :parram CONF_EDIT_AT_KEY:
+    :parram CONF_STATUS_KEY: the attribute name for the field representing the status code
+    :parram CONF_EDIT_AT_KEY: the attribute name for the field representing the last edit time
     :parram CONF_FINISHED_STATUS:
-    :parram CONF_UPDATE_INTERVAL:
+    :parram CONF_UPDATE_INTERVAL: if it has not been updated for certain time period,
+        we treat it as a "unfinished" entity.
+    :parram CONF_SLEEP_TIME: sleep for N seconds before making http request
     :parram CONF_UPDATE_FIELDS: 如果不为 None, 则在更新此 Entity 时, 只更新部分的值,
         其中 ``CONF_STATUS_KEY``, ``CONF_EDIT_AT_KEY`` 永远被更新.
     :parram CONF_ONLY_FIELDS:
+    :parram CONF_RELATIONSHIP:
     """
     CONF_STATUS_KEY = None  # type: str # usually it is "status"
     CONF_EDIT_AT_KEY = None  # usually it is "edit_at"
     CONF_FINISHED_STATUS = FINISHED_STATUS_CODE  # Default 50
     CONF_UPDATE_INTERVAL = 365 * 24 * 60 * 60  # Default 1 Day
 
+    CONF_SLEEP_TIME = 0  # type: int
     CONF_UPDATE_FIELDS = None  # type: tuple
     CONF_ONLY_FIELDS = None  # type: tuple
     CONF_RELATIONSHIP = None  # type: RelationshipConfig
 
-    _ORM_FRAMEWORK = None # type: str
+    _ORM_FRAMEWORK = None  # type: str
 
     @classmethod
     @abstractmethod
@@ -180,26 +192,10 @@ class EntityExtendScheduler(EntityBase):
     def get_all_subclass(cls) -> Set['EntityExtendScheduler']:
         return get_all_subclass(cls)
 
-    def filter_update_data(self):
-        """
-        :rtype: dict
-
-        **中文文档**
-
-        使用 `CONF_UPDATE_FIELDS` 中定义的属性过滤数据, 只保存那些需要被更新的属性.
-        """
-        entity_data = self.to_dict()
-        entity_data_to_update = {
-            field: entity_data[field]
-            for field in self.CONF_UPDATE_FIELDS
-            if field in entity_data
-        }
-        return entity_data_to_update
-
     @classmethod
     def validate_implementation_additional(cls):
         """
-        Run ORM framework specified implementation validation
+        Run ORM framework specified implementation validation.
         """
         pass
 
@@ -207,6 +203,8 @@ class EntityExtendScheduler(EntityBase):
     def validate_implementation(cls):
         """
         Check if the subclass of :class:`EntityOrm` is correctly implemented.
+
+        **中文文档**
         """
         if cls.CONF_STATUS_KEY is None:
             raise NotImplementedError("you have to specify `CONF_STATUS_KEY`!")
@@ -396,14 +394,15 @@ EntityExtendScheduler.CONF_RELATIONSHIP = RelationshipConfig()
 
 
 class Entity(EntityExtendScheduler):
-    def start(self,
-              build_url_kwargs=None,
-              build_request_kwargs=None,
-              send_request_kwargs=None,
-              parse_response_kwargs=None,
-              process_pr_kwargs=None,
-              detailed_log=False,
-              left_counter=None):
+    def start_crawler(self,
+                      build_url_kwargs=None,
+                      build_request_kwargs=None,
+                      send_request_kwargs=None,
+                      parse_response_kwargs=None,
+                      process_pr_kwargs=None,
+                      detailed_log=False,
+                      debug_mode=False,
+                      left_counter=None):
         """
 
         **VERY IMPORTANT METHOD**:
@@ -445,11 +444,13 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| Failed to build url! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
-                entity=self,
-                data={"errors": str(e)},
+                entity_data=dict(),
+                additional_data={"errors": str(e)},
                 status=Status.S5_UrlError.id
             )
             self.process_pr(pres, **process_pr_kwargs)
+            if debug_mode:
+                traceback.print_last()
             return
 
         # build request
@@ -464,11 +465,13 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| Failed to build HTTP Request object! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
-                entity=self,
-                data={"errors": str(e)},
+                entity_data=dict(),
+                additional_data={"errors": str(e)},
                 status=Status.S10_HttpError.id
             )
             self.process_pr(pres, **process_pr_kwargs)
+            if debug_mode:
+                traceback.print_last()
             return
 
         # send request
@@ -483,11 +486,13 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| Failed to get HTTP response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
-                entity=self,
-                data={"errors": str(e)},
+                entity_data=dict(),
+                additional_data={"errors": str(e)},
                 status=Status.S10_HttpError.id
             )
             self.process_pr(pres, **process_pr_kwargs)
+            if debug_mode:
+                traceback.print_last()
             return
 
         # parse response
@@ -507,11 +512,13 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| Failed to parse http response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
-                entity=self,
-                data={"errors": str(e)},
+                entity_data=dict(),
+                additional_data={"errors": str(e)},
                 status=Status.S30_ParseError.id
             )
             self.process_pr(pres, **process_pr_kwargs)
+            if debug_mode:
+                traceback.print_last()
             return
 
         # process parse_result
@@ -534,18 +541,20 @@ class Entity(EntityExtendScheduler):
             msg = "|%s| Failed to process parse result! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
             pres = ParseResult(
-                entity=self,
-                data={"errors": str(e)},
+                entity_data=dict(),
+                additional_data={"errors": str(e)},
                 status=Status.S30_ParseError.id
             )
             self.process_pr(pres, **process_pr_kwargs)
+            if debug_mode:
+                traceback.print_last()
             return
 
-
     @classmethod
-    def start_all(cls,
-                  detailed_log=False,
-                  **kwargs):
+    def start_recursive_crawler(cls,
+                                detailed_log=False,
+                                debug_mode=False,
+                                **kwargs):
         get_unfinished_kwargs = {
             k.replace("get_unfinished_", ""): v
             for k, v in kwargs.items() if k.startswith("get_unfinished_")
@@ -561,21 +570,21 @@ class Entity(EntityExtendScheduler):
         left_counter = n_unfinished
         msg = "|%s| Working on Entity(%s), got %s url to crawl ..." % (indent, cls, n_unfinished)
         cls.logger.info(msg, indent)
-
         # crawl current unfinished entity
         for entity in list(cls.get_unfinished(**get_unfinished_kwargs)):
-            # entity.start(detailed_log=detailed_log, left_counter=0)
             left_counter -= 1
-            entity.start(detailed_log=detailed_log, left_counter=left_counter, **start_kwargs)
+            entity.start_crawler(detailed_log=detailed_log, left_counter=left_counter, **start_kwargs)
 
         # crawl related entity
         for klass in cls.CONF_RELATIONSHIP.iter_recursive_child_class():
-            klass.start_all(detailed_log=detailed_log, **kwargs)
+            klass.start_recursive_crawler(detailed_log=detailed_log, **kwargs)
 
 
 @attr.s
 class ParseResult(object):
     """
+    A data container to hold scraped data.
+
     **中文文档**
 
     ParseResult 是 crawlib 广度优先框架中所使用的类, 用于包装从 html 抓取的数据.
@@ -583,35 +592,35 @@ class ParseResult(object):
     的信息. 对于当前 entity 的信息, 我们将其存储在 :attr:`ParseResult.entity` 中.
     对于 child entity 的信息, 我们将其存储在 :attr:`ParseResult.children` 中.
 
-    :param entity: 由于 html 背后必然对应一个 url, 而在 crawlib2 框架里, 每一个 url
+    :param entity_data: 由于 html 背后必然对应一个 url, 而在 crawlib2 框架里, 每一个 url
         都对应着一个 ORM Entity. 此属性保存的就是这个从 html 中提取出来的,
-        跟 html 唯一对应的 Entity 的其他属性.
+        跟 html 唯一对应的 Entity 的其他属性的值. 这些值会被写入数据库中.
     :param children: 从 entity 所对应的 url 页面上抓取下来的其他 entity 实例. 在
         ``Entity.process_pr`` 方法中, 会根据 child entity 的类型进行归类, 然后对
         每类进行处理.
-    :param data: 额外的数据
-    :param status: 表示当前的抓取状态
-    :param enit_at: 表示最新更新的时间
+    :param additional_data: 与 crawlib 框架无关的额外的数据, 用于扩展 crawlib 的功能.
+    :param status: 表示当前的抓取状态码
+    :param enit_at: 表示最新更新的时间.
     """
-    entity = attr.ib(default=None)  # type: Optional[Entity]
+    entity_data = attr.ib(default=None)  # type: Optional[dict]
     children = attr.ib(factory=list)  # type: Optional[List[Entity]]
-    data = attr.ib(factory=dict)  # type: Dict
+    additional_data = attr.ib(factory=dict)  # type: Dict
     status = attr.ib(
         default=Status.S30_ParseError.id,
         validator=attr.validators.instance_of(int)
     )  # type: int
     edit_at = attr.ib(default=datetime.utcnow())  # type: datetime
 
-    @entity.validator
-    def check_entity(self, attribute, value):
+    @entity_data.validator
+    def check_entity_data(self, attribute, value):
         """
         - :attr:`ParseResult.entity` could be None, it means the SELF entity
             will not be updated.
         - :attr:`ParseResult.entity` should be Any subclass of :class:`Entity`
         """
         if value is not None:
-            if not isinstance(value, Entity):
-                raise TypeError("ParseResult.entity has to be an Entity")
+            if not isinstance(value, dict):
+                raise TypeError("ParseResult.entity_data has to be a dictionary")
 
     @children.validator
     def check_children(self, attribute, value):

@@ -136,15 +136,15 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 entity_klass.smart_insert(entity_list)
                 n_child = len(entity_list)
                 n_child_key = self.CONF_RELATIONSHIP.get_n_child_key(entity_klass)
-                if pres.entity is not None:
-                    setattr(pres.entity, n_child_key, n_child)
+                if pres.entity_data is not None:
+                    setattr(pres.entity_data, n_child_key, n_child)
 
             # update parent entity in db
-            if pres.entity is not None:
-                setattr(pres.entity, self.id_field_name(), getattr(self, self.id_field_name()))
-                setattr(pres.entity, self.CONF_STATUS_KEY, pres.status)
-                setattr(pres.entity, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                entity_data_to_update = pres.entity.filter_update_data()
+            if pres.entity_data is not None:
+                setattr(pres.entity_data, self.id_field_name(), getattr(self, self.id_field_name()))
+                setattr(pres.entity_data, self.CONF_STATUS_KEY, pres.status)
+                setattr(pres.entity_data, self.CONF_EDIT_AT_KEY, pres.edit_at)
+                entity_data_to_update = pres.entity_data.filter_update_data()
                 update_one_response = self.col().update_one(
                     {"_id": entity_data_to_update["_id"]},
                     {"$set": entity_data_to_update},
@@ -152,10 +152,10 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
 
         else:
             # update parent entity status and edit_at field in db
-            if pres.entity is not None:
-                setattr(pres.entity, self.CONF_STATUS_KEY, pres.status)
-                setattr(pres.entity, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                entity_data_to_update = pres.entity.filter_update_data()
+            if pres.entity_data is not None:
+                setattr(pres.entity_data, self.CONF_STATUS_KEY, pres.status)
+                setattr(pres.entity_data, self.CONF_EDIT_AT_KEY, pres.edit_at)
+                entity_data_to_update = pres.entity_data.filter_update_data()
                 update_one_response = self.col().update_one(
                     {"_id": entity_data_to_update["_id"]},
                     {"$set": entity_data_to_update},
