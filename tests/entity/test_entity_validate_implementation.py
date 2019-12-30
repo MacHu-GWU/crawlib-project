@@ -3,7 +3,7 @@
 import pytest
 from pytest import raises
 
-from crawlib.entity.base import Entity
+from crawlib.entity.base import Entity, RelationshipConfig, Relationship
 
 
 def test_validate_implementation():
@@ -80,6 +80,41 @@ def test_validate_implementation():
             pass
 
     Country.validate_implementation()
+
+
+def test_check_subclass_implementation_goodcase1():
+    class Country(Entity):
+        n_state = "n_state_field"
+
+    class State(Entity):
+        n_zipcode = "n_zipcode_field"
+
+    class Zipcode(Entity): pass
+
+    Country.CONF_RELATIONSHIP = RelationshipConfig([
+        Relationship(State, Relationship.Option.many, "n_state"),
+    ])
+
+    State.CONF_RELATIONSHIP = RelationshipConfig([
+        Relationship(Zipcode, Relationship.Option.many, "n_zipcode"),
+    ])
+
+    Entity._validate_relationship_config()
+
+
+def test_check_subclass_implementation_goodcase2():
+    class ImagePage(Entity):
+        id = "image_page_id"
+
+    class ImageDownload(Entity):
+        id = "image_page_id"
+
+    ImagePage.CONF_RELATIONSHIP = RelationshipConfig([
+        Relationship(ImageDownload, Relationship.Option.one, None),
+    ])
+
+    Entity._validate_relationship_config()
+
 
 
 if __name__ == "__main__":
