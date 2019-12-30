@@ -116,9 +116,9 @@ class EntityBase(object):
 
         根据你使用的 http 库自行编写该函数.
         """
-        msg = ("implement `Entity.send_request(request, **kwargs)` method yourself, "
-               "it send the http Request object and get a Response object, "
-               "you can choose any http library, such as `requests` or ``aiohttp`")
+        msg = ("implement `Entity.parse_response(url, request, response, **kwargs)` "
+               "method yourself, it parse data from the html. Should returns a "
+               "`ParseResult` object.")
         raise NotImplementedError(msg)
 
     @abstractmethod
@@ -131,7 +131,58 @@ class EntityBase(object):
 
         :return:
         """
-        raise NotImplementedError
+        msg = ("implement `Entity.process_pr(pres, **kwargs)` method yourself, "
+               "it processes your `ParseResult` object. For example, store "
+               "data to the database. Normally you don't need to implement it "
+               "handy, this framework comes with built-in implementation for "
+               "mongoengine and sqlalchemy")
+        raise NotImplementedError(msg)
+
+    @classmethod
+    @abstractmethod
+    def make_test_entity(cls, **kwargs):
+        msg = ("To use ``Entity.validate_implementation()`` method, you have to "
+               "implement a factory class method `Entity.make_test_entity()` that "
+               "create a temp object for testing. Any valid object is fine.")
+        raise NotImplementedError(msg)
+
+    @classmethod
+    def _validate_abstract_methods(cls):
+        obj = cls.make_test_entity()
+        try:
+            obj.build_url()
+        except NotImplementedError:
+            raise
+        except:
+            pass
+
+        try:
+            obj.build_request("http://www.example.com")
+        except NotImplementedError:
+            raise
+        except:
+            pass
+
+        try:
+            obj.send_request("http://www.example.com")
+        except NotImplementedError:
+            raise
+        except:
+            pass
+
+        try:
+            obj.parse_response("http://www.example.com", None, None)
+        except NotImplementedError:
+            raise
+        except:
+            pass
+
+        try:
+            obj.process_pr(None)
+        except NotImplementedError:
+            raise
+        except:
+            pass
 
 
 class EntityExtendScheduler(EntityBase):
@@ -153,10 +204,9 @@ class EntityExtendScheduler(EntityBase):
     CONF_STATUS_KEY = None  # type: str # usually it is "status"
     CONF_EDIT_AT_KEY = None  # usually it is "edit_at"
     CONF_FINISHED_STATUS = FINISHED_STATUS_CODE  # Default 50
-    CONF_UPDATE_INTERVAL = 365 * 24 * 60 * 60  # Default 1 Day
+    CONF_UPDATE_INTERVAL = 24 * 60 * 60  # Default 1 Day
 
     CONF_SLEEP_TIME = 0  # type: int
-    CONF_UPDATE_FIELDS = None  # type: tuple
     CONF_ONLY_FIELDS = None  # type: tuple
     CONF_RELATIONSHIP = None  # type: RelationshipConfig
 
@@ -193,14 +243,14 @@ class EntityExtendScheduler(EntityBase):
         return get_all_subclass(cls)
 
     @classmethod
-    def validate_implementation_additional(cls):
+    def validate_implementation_orm_related(cls):
         """
         Run ORM framework specified implementation validation.
         """
         pass
 
     @classmethod
-    def validate_implementation(cls):
+    def _validate_configuration(cls):
         """
         Check if the subclass of :class:`EntityOrm` is correctly implemented.
 
@@ -215,7 +265,6 @@ class EntityExtendScheduler(EntityBase):
             raise NotImplementedError("you have to specify `CONF_EDIT_AT_KEY`!")
         if not isinstance(cls.CONF_EDIT_AT_KEY, six.string_types):
             raise TypeError("`CONF_EDIT_AT_KEY` has to be a str!")
-
 
         # msg = ("you have to specify `CONF_UPDATE_FIELDS`!"
         #        "it is the tuple of field name that you want to update "
@@ -243,7 +292,7 @@ class EntityExtendScheduler(EntityBase):
         # else:
         #     raise ValueError(msg)
 
-        cls.validate_implementation_additional()
+        cls.validate_implementation_orm_related()
 
     @classmethod
     def validate_relationship_config(cls):
@@ -578,6 +627,16 @@ class Entity(EntityExtendScheduler):
         # crawl related entity
         for klass in cls.CONF_RELATIONSHIP.iter_recursive_child_class():
             klass.start_recursive_crawler(detailed_log=detailed_log, **kwargs)
+
+    @classmethod
+    def _validate_orm_related(cls):
+        raise NotImplementedError
+
+    @classmethod
+    def validate_implementation(cls):
+        cls._validate_abstract_methods()
+        cls._validate_configuration()
+        cls._validate_orm_related()
 
 
 @attr.s

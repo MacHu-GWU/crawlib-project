@@ -27,6 +27,10 @@ class SqlEntity(ExtendedBase, Entity):
     _ORM_FRAMEWORK = "sqlalchemy"
 
     @classmethod
+    def make_test_entity(cls):
+        return cls()
+
+    @classmethod
     def _pre_process_only_fields_arg(cls,
                                      only_fields: List[Union[sa.Column, str]]) -> Tuple[
         bool, List[str], List[sa.Column]]:
@@ -245,7 +249,7 @@ class SqlEntity(ExtendedBase, Entity):
         )[1].count()
 
     @classmethod
-    def validate_implementation_additional(cls):
+    def _validate_orm_related(cls):
         """
         SQL Backend specified implementation check.
 
@@ -288,13 +292,17 @@ class SqlEntity(ExtendedBase, Entity):
     def set_db_values(self,
                       data: dict,
                       engine: sa.engine.Engine,
-                      upsert: bool = True,
+                      upsert: bool = False,
                       **kwargs) -> None:
         """
-        :param data:
-        :param session:
-        :param kwargs:
-        :return:
+        Use the primary key value of the current entity to locate the row,
+        and apply update based on the `data` provided.
+
+        :param data: the column: value pair you want to update
+        :param engine: the sqlalchemy.engine.Engine object used to execute raw
+            sql
+        :param upsert: optional flag if you want to use upsert.
+        :return: Nothing
 
         **中文文档**
 
@@ -323,7 +331,7 @@ class SqlEntity(ExtendedBase, Entity):
                    engine,
                    **kwargs):
         """
-        Process ParseRequest
+        Process :class:`crawlib.entity.base.ParseRequest`
 
         :param pres: parse result object to process
 

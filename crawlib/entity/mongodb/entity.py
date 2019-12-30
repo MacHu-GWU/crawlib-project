@@ -75,7 +75,7 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         return cls.get_finished(filters=filters, **kwargs).count()
 
     @classmethod
-    def validate_implementation_additional(cls):
+    def validate_implementation_orm_related(cls):
         """
         """
         try:
