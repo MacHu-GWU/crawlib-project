@@ -2,17 +2,20 @@
 
 import requests
 import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
 
 from crawlib import Status, ParseResult, resolve_arg, Relationship, RelationshipConfig, epoch
-from crawlib.entity.sql import Base, SqlEntity, SqlEntitySingleStatus
+from crawlib.entity.sql import SqlEntity, SqlEntitySingleStatus
 from ...movie_url_builder import url_builder
 
-_ = Base
+
+# due to sqlalchemy design, single Base can not has two subclass having the same
+# table name
+Base1 = declarative_base()
+Base2 = declarative_base()
 
 
 class MoviePageBase(SqlEntity):
-    __abstract__ = True
-
     id = sa.Column(sa.Integer, primary_key=True)
     title = sa.Column(sa.String)
     status_movie_info = sa.Column(sa.Integer, default=Status.S0_ToDo.id)
@@ -34,30 +37,23 @@ class MoviePageBase(SqlEntity):
         return requests.get(request)
 
 
-class MovieCoverImagePage(MoviePageBase):
+class MovieCoverImagePage(Base1, MoviePageBase):
     __tablename__ = "site_movie_movie"
-    __table_args__ = {"extend_existing": True}
 
     CONF_UPDATE_INTERVAL = 24 * 3600
     CONF_STATUS_KEY = "status_cover_image"
     CONF_EDIT_AT_KEY = "edit_at_cover_image"
-    CONF_UPDATE_FIELDS = (
-        "id",
-        "image_content",
-    )
 
     def build_url(self):
         return url_builder.url_movie_detail(self.id)
 
     @resolve_arg()
     def parse_response(self, url, request, response=None, html=None, soup=None, **kwargs):
-        entity = self.__class__(image_content=html)
-
         status = Status.S50_Finished.id
-
+        entity_data = dict(image_content=html)
         pres = ParseResult(
-            entity=entity,
-            data={},
+            entity_data=entity_data,
+            additional_data={},
             status=status,
         )
         return pres
@@ -66,17 +62,12 @@ class MovieCoverImagePage(MoviePageBase):
 MovieCoverImagePage.validate_implementation()
 
 
-class MoviePage(MoviePageBase):
+class MoviePage(Base2, MoviePageBase):
     __tablename__ = "site_movie_movie"
-    __table_args__ = {"extend_existing": True}
 
     CONF_UPDATE_INTERVAL = 24 * 3600
     CONF_STATUS_KEY = "status_movie_info"
     CONF_EDIT_AT_KEY = "edit_at_movie_info"
-    CONF_UPDATE_FIELDS = (
-        "id",
-        "title",
-    )
 
     CONF_RELATIONSHIP = RelationshipConfig([
         Relationship(MovieCoverImagePage, Relationship.Option.one, recursive=True)
@@ -89,13 +80,13 @@ class MoviePage(MoviePageBase):
     def parse_response(self, url, request, response=None, html=None, soup=None, **kwargs):
         span_title = soup.find("span", class_="title")
         title = span_title.text
-        entity = MoviePage(title=title)
+        entity_data = dict(title=title)
 
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
-            data={},
+            entity_data=entity_data,
+            additional_data={},
             status=status,
         )
         return pres
@@ -104,7 +95,7 @@ class MoviePage(MoviePageBase):
 MoviePage.validate_implementation()
 
 
-class SingleStatusEntityBase(SqlEntitySingleStatus):
+class SingleStatusEntityBase(Base1, SqlEntitySingleStatus):
     __abstract__ = True
 
     def build_request(self, url, **kwargs):
@@ -119,10 +110,6 @@ class ListPage(SingleStatusEntityBase):
     __tablename__ = "site_movie_listpage"
 
     CONF_UPDATE_INTERVAL = 1
-    CONF_UPDATE_FIELDS = (
-        "id",
-        "n_movie",
-    )
 
     CONF_RELATIONSHIP = RelationshipConfig([
         Relationship(MoviePage, Relationship.Option.many, "n_movie", recursive=True)
@@ -143,7 +130,7 @@ class ListPage(SingleStatusEntityBase):
         div_listpage = soup.find("div", id="listpage")
         a_tag_list = div_listpage.find_all("a")
 
-        entity = ListPage()
+        entity_data = {}
 
         children = list()
         for a in a_tag_list:
@@ -155,9 +142,9 @@ class ListPage(SingleStatusEntityBase):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -170,12 +157,6 @@ class HomePage(SingleStatusEntityBase):
     __tablename__ = "site_movie_homepage"
 
     CONF_UPDATE_INTERVAL = 1
-    CONF_UPDATE_FIELDS = (
-        "id",
-        "description",
-        "max_page_num",
-        "n_listpage",
-    )
     CONF_RELATIONSHIP = RelationshipConfig([
         Relationship(ListPage, Relationship.Option.many, "n_listpage", recursive=True)
     ])
@@ -194,7 +175,7 @@ class HomePage(SingleStatusEntityBase):
         a_tag_list = div_pagination.find_all("a")
         href = a_tag_list[-1]["href"]
         max_page_num = int(href.split("/")[-1])
-        entity = HomePage(max_page_num=max_page_num)
+        entity_data = dict(max_page_num=max_page_num)
 
         children = list()
         for page_num in range(1, 1 + max_page_num):
@@ -203,9 +184,9 @@ class HomePage(SingleStatusEntityBase):
 
         status = Status.S50_Finished.id
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres

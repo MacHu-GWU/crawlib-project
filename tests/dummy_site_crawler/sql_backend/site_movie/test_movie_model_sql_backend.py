@@ -21,8 +21,7 @@ class TestMovieCoverImagePage(object):
         url = movie_cover_image.build_url()
         html = spider.request_for_html(url)
         pres = movie_cover_image.parse_response(url, request=None, response=None, html=html)
-
-        assert "<div" in pres.entity_data.image_content
+        assert "<div" in pres.entity_data["image_content"]
         assert len(pres.children) == 0
 
 
@@ -33,7 +32,7 @@ class TestMoviePage(object):
         url = movie.build_url()
         html = spider.request_for_html(url)
         pres = movie.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity_data.title == "Movie {} Title".format(movie_id)
+        assert pres.entity_data["title"] == "Movie {} Title".format(movie_id)
         assert len(pres.children) == 0
 
 
@@ -53,7 +52,7 @@ class TestHomePage(object):
         url = homepage.build_url()
         html = spider.request_for_html(url)
         pres = homepage.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity_data.max_page_num == max_page_id
+        assert pres.entity_data["max_page_num"] == max_page_id
         assert len(pres.children) == max_page_id
         assert pres.children[-1].id == max_page_id
 

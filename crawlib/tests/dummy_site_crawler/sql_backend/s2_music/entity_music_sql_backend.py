@@ -25,9 +25,6 @@ class MusicPage(MusicPageBase):
     __tablename__ = "site_music_music"
 
     CONF_UPDATE_INTERVAL = 24 * 3600
-    CONF_UPDATE_FIELDS = (
-        "id", "title", "artists", "n_artist", "genres", "n_genre",
-    )
     CONF_ONLY_FIELDS = ("id",)
 
     id = sa.Column(sa.Integer, primary_key=True)  # type: int
@@ -81,7 +78,6 @@ class ArtistPage(MusicPageBase):
     __tablename__ = "site_music_artist"
 
     CONF_UPDATE_INTERVAL = 3600
-    CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
     CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([
@@ -133,7 +129,6 @@ class GenrePage(MusicPageBase):
     __tablename__ = "site_music_genre"
 
     CONF_UPDATE_INTERVAL = 3600
-    CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
     CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([
@@ -185,7 +180,6 @@ class RandomMusicPage(MusicPageBase):
     __tablename__ = "site_music_random_music"
 
     CONF_UPDATE_INTERVAL = 1
-    CONF_UPDATE_FIELDS = ("id", "musics", "n_music")
     CONF_ONLY_FIELDS = ("id",)
 
     CONF_RELATIONSHIP = RelationshipConfig([

@@ -5,7 +5,7 @@ import pytest
 from crawlib.tests.dummy_site.movie.view import max_page_id, n_movie, n_movie_each_page
 from crawlib.tests.dummy_site_crawler.sql_backend.db import engine, Session
 from crawlib.tests.dummy_site_crawler.sql_backend.s1_movie import (
-    Base,
+    Base1, Base2,
     HomePage,
     ListPage,
     MoviePage,
@@ -14,7 +14,8 @@ from crawlib.tests.dummy_site_crawler.sql_backend.s1_movie import (
 
 
 def setup_module():
-    Base.metadata.create_all(engine)
+    Base1.metadata.create_all(engine)
+    Base2.metadata.create_all(engine)
 
     session = Session()
     session.query(HomePage).delete()
