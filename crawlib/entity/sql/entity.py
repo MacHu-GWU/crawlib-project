@@ -8,7 +8,6 @@ from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql.elements import BinaryExpression
 from sqlalchemy_mate import ExtendedBase
-from sqlalchemy_mate.crud.updating import update_all
 
 from ..base import Entity, ParseResult, Relationship
 from ...status import FINISHED_STATUS_CODE
@@ -138,12 +137,27 @@ class SqlEntity(ExtendedBase, Entity):
         return (is_partial_load, query)
 
     @classmethod
+    def _get_unfinished(cls,
+                        session: Session,
+                        filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
+                        only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
+                        limit: int = None,
+                        **kwargs) -> List['SqlEntity']:
+        return cls.get_unfinished(
+            session=session,
+            filters=filters,
+            only_fields=only_fields,
+            limit=limit,
+            **kwargs
+        )
+
+    @classmethod
     def get_unfinished(cls,
                        session: Session,
                        filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
                        only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
                        limit: int = None,
-                       **kwargs) -> Union[Query, Iterable['SqlEntity']]:
+                       **kwargs) -> List['SqlEntity']:
         """
         Execute a query to get all **Not Finished** web page ORM entity
 
@@ -179,15 +193,6 @@ class SqlEntity(ExtendedBase, Entity):
                          only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
                          limit: int = None,
                          **kwargs) -> int:
-        """
-        Just count
-        :param session:
-        :param filters:
-        :param only_fields:
-        :param limit:
-        :param kwargs:
-        :return:
-        """
         return cls._build_query_to_get_unfinished_or_finished(
             is_finished=False,
             session=session,
@@ -203,7 +208,7 @@ class SqlEntity(ExtendedBase, Entity):
                      filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
                      only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
                      limit: int = None,
-                     **kwargs) -> Union[Query, Iterable]:  # pragma: no cover
+                     **kwargs) -> List['SqlEntity']:
         """
         Execute a query to get all **Finished** web page ORM entity
 

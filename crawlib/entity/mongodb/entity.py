@@ -19,10 +19,27 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
     _ORM_FRAMEWORK = "mongoengine"
 
     @classmethod
+    def make_test_entity(cls):
+        return cls()
+
+    @classmethod
+    def _get_unfinished(cls,
+                        filters: dict=None,
+                        only_fields: List[str]=None,
+                        **kwargs):  # pragma: no cover
+        return list(cls.get_unfinished(
+            filters=filters,
+            only_fields=only_fields,
+            **kwargs
+        ))
+
+    @classmethod
     def get_unfinished(cls,
-                       filters=None,
-                       only_fields=None,
-                       **kwargs):  # pragma: no cover
+                       filters: dict = None,
+                       only_fields: List[str] = None,
+                       order_by: List[str] = None,
+                       limit: int = None,
+                       **kwargs) -> queryset.QuerySet:
         """
         Execute a query to get all **Not Finished** web page ORM entity
 
@@ -40,17 +57,36 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         )
         if (filters is not None) and isinstance(filters, dict):
             query_filters.update(filters)
-        resultset = cls.by_filter(query_filters)
+        query_set = cls.by_filter(query_filters)
         if only_fields is not None:
-            resultset = resultset.only(*only_fields)
-        return resultset
+            query_set = query_set.only(*only_fields)
+        else:
+            if cls.CONF_ONLY_FIELDS is not None:
+                query_set = query_set.only(*cls.CONF_ONLY_FIELDS)
+        if order_by is not None:
+            query_set = query_set.order_by(*order_by)
+        if limit is not None:
+            query_set = query_set.limit(limit)
+        return query_set
 
     @classmethod
-    def count_unfinished(cls, filters=None, **kwargs):
-        return cls.get_unfinished(filters=filters, **kwargs).count()
+    def count_unfinished(cls,
+                         filters: dict = None,
+                         limit: int = None,
+                         **kwargs) -> int:
+        return cls.get_unfinished(
+            filters=filters,
+            limit=limit,
+            **kwargs
+        ).count(with_limit_and_skip=True)
 
     @classmethod
-    def get_finished(cls, filters=None, **kwargs):  # pragma: no cover
+    def get_finished(cls,
+                     filters: dict = None,
+                     only_fields: List[str] = None,
+                     order_by: List[str] = None,
+                     limit: int = None,
+                     **kwargs) -> queryset.QuerySet:
         """
         Execute a query to get all **Finished** web page ORM entity
 
@@ -68,14 +104,31 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
         )
         if (filters is not None) and isinstance(filters, dict):
             query_filters.update(filters)
-        return cls.by_filter(query_filters)
+        query_set = cls.by_filter(query_filters)
+        if only_fields is not None:
+            query_set = query_set.only(*only_fields)
+        else:
+            if cls.CONF_ONLY_FIELDS is not None:
+                query_set = query_set.only(*cls.CONF_ONLY_FIELDS)
+        if order_by is not None:
+            query_set = query_set.order_by(*order_by)
+        if limit is not None:
+            query_set = query_set.limit(limit)
+        return query_set
 
     @classmethod
-    def count_finished(cls, filters=None, **kwargs):
-        return cls.get_finished(filters=filters, **kwargs).count()
+    def count_finished(cls,
+                       filters: dict=None,
+                       limit: int=None,
+                       **kwargs) -> int:
+        return cls.get_finished(
+            filters=filters,
+            limit=limit,
+            **kwargs
+        ).count(with_limit_and_skip=True)
 
     @classmethod
-    def validate_implementation_orm_related(cls):
+    def _validate_orm_related(cls):
         """
         """
         try:
@@ -137,29 +190,16 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 n_child = len(entity_list)
                 n_child_key = self.CONF_RELATIONSHIP.get_n_child_key(entity_klass)
                 if pres.entity_data is not None:
-                    setattr(pres.entity_data, n_child_key, n_child)
+                    pres.entity_data[n_child_key] = n_child
 
-            # update parent entity in db
-            if pres.entity_data is not None:
-                setattr(pres.entity_data, self.id_field_name(), getattr(self, self.id_field_name()))
-                setattr(pres.entity_data, self.CONF_STATUS_KEY, pres.status)
-                setattr(pres.entity_data, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                entity_data_to_update = pres.entity_data.filter_update_data()
-                update_one_response = self.col().update_one(
-                    {"_id": entity_data_to_update["_id"]},
-                    {"$set": entity_data_to_update},
-                )
-
-        else:
-            # update parent entity status and edit_at field in db
-            if pres.entity_data is not None:
-                setattr(pres.entity_data, self.CONF_STATUS_KEY, pres.status)
-                setattr(pres.entity_data, self.CONF_EDIT_AT_KEY, pres.edit_at)
-                entity_data_to_update = pres.entity_data.filter_update_data()
-                update_one_response = self.col().update_one(
-                    {"_id": entity_data_to_update["_id"]},
-                    {"$set": entity_data_to_update},
-                )
+        # update parent entity status and edit_at field in db
+        if pres.entity_data is not None:
+            pres.entity_data[self.CONF_STATUS_KEY] = pres.status
+            pres.entity_data[self.CONF_EDIT_AT_KEY] = pres.edit_at
+            self.col().update_one(
+                {"_id": getattr(self, self.id_field_name())},
+                {"$set": pres.entity_data},
+            )
 
 
 class MongodbEntitySingleStatus(MongodbEntity):

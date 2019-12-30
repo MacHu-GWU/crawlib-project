@@ -18,7 +18,7 @@ class TestMoviePage(object):
         url = movie.build_url()
         html = spider.request_for_html(url)
         pres = movie.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity_data.title == "Movie {} Title".format(movie_id)
+        assert pres.entity_data["title"] == "Movie {} Title".format(movie_id)
         assert len(pres.children) == 0
 
 

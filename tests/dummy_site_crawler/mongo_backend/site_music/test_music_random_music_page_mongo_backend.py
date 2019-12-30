@@ -18,8 +18,8 @@ class TestHomePage(object):
         url = rand_music_page.build_url()
         html = spider.request_for_html(url)
         pres = rand_music_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity_data.musics) == n_random_music
-        assert len(pres.entity_data.musics) == len(pres.children)
+        assert len(pres.entity_data["musics"]) == n_random_music
+        assert len(pres.entity_data["musics"]) == len(pres.children)
 
 
 if __name__ == "__main__":

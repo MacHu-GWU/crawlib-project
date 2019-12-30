@@ -16,11 +16,10 @@ class TestGenrePage(object):
         genre_id = 5
         genre_page = GenrePage(_id=genre_id)
         url = genre_page.build_url()
-        print(url)
         html = spider.request_for_html(url)
         pres = genre_page.parse_response(url, request=None, response=None, html=html)
-        assert len(pres.entity_data.musics) > 0
-        assert len(pres.entity_data.musics) == len(pres.children)
+        assert len(pres.entity_data["musics"]) > 0
+        assert len(pres.entity_data["musics"]) == len(pres.children)
 
 
 if __name__ == "__main__":

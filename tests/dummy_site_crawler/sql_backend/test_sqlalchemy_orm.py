@@ -28,6 +28,9 @@ class User(Base, UserAttributeMixin, ExtendedBase):
 
 class Test(object):
     def test(self):
+        user = User()
+        assert user.id is None
+
         user = User(id=1)
         assert user.name is None
         assert user.status is None

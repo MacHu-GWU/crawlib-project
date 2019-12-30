@@ -13,9 +13,6 @@ from ...music_url_builder import url_builder
 
 class MusicPage(MusicWebsiteEntity):
     CONF_UPDATE_INTERVAL = 24 * 3600
-    CONF_UPDATE_FIELDS = (
-        "title", "artists", "n_artist", "genres", "n_genre",
-    )
 
     _id = fields.IntField(primary_key=True)
     title = fields.StringField()
@@ -51,7 +48,7 @@ class MusicPage(MusicWebsiteEntity):
             for a in div_detail.find("div", class_="genres").find_all("a")
         ]
 
-        entity = MusicPage(title=title, artists=artists, genres=genres)
+        entity_data = dict(title=title, artists=artists, genres=genres)
         children = list()
         for artist_id in artists:
             children.append(ArtistPage(_id=artist_id))
@@ -61,9 +58,9 @@ class MusicPage(MusicWebsiteEntity):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -103,7 +100,7 @@ class ArtistPage(MusicWebsiteEntity):
             int(a["href"].split("/")[-1])
             for a in div.find_all("a")
         ]
-        entity = ArtistPage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -113,9 +110,9 @@ class ArtistPage(MusicWebsiteEntity):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -155,7 +152,7 @@ class GenrePage(MusicWebsiteEntity):
             int(a["href"].split("/")[-1])
             for a in div.find_all("a")
         ]
-        entity = GenrePage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -165,9 +162,9 @@ class GenrePage(MusicWebsiteEntity):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
@@ -199,7 +196,7 @@ class RandomMusicPage(MusicWebsiteEntity):
             int(a["href"].split("/")[-1])
             for a in soup.find_all("a")
         ]
-        entity = RandomMusicPage(musics=musics)
+        entity_data = dict(musics=musics)
 
         children = list()
         for music_id in musics:
@@ -209,9 +206,9 @@ class RandomMusicPage(MusicWebsiteEntity):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres

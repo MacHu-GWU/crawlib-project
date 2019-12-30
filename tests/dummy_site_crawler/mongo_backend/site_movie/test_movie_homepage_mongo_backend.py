@@ -18,7 +18,7 @@ class TestHomePage(object):
         url = homepage.build_url()
         html = spider.request_for_html(url)
         pres = homepage.parse_response(url, request=None, response=None, html=html)
-        assert pres.entity_data.max_page_num == max_page_id
+        assert pres.entity_data["max_page_num"] == max_page_id
         assert len(pres.children) == max_page_id
         assert pres.children[-1]._id == max_page_id
 

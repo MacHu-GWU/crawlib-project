@@ -32,9 +32,9 @@ def test():
     assert MusicPage.col().find().count() == 0
 
     RandomMusicPage(_id=1).save()
-    RandomMusicPage.start_recursive_crawler(detailed_log=True)
-    RandomMusicPage.start_recursive_crawler(detailed_log=True)
-    RandomMusicPage.start_recursive_crawler(detailed_log=True)
+    repeat_times = 3
+    for _ in range(repeat_times):
+        RandomMusicPage.start_recursive_crawler(detailed_log=True, debug_mode=True)
 
     assert ArtistPage.col().find().count() == n_artist
     assert GenrePage.col().find().count() == n_genre

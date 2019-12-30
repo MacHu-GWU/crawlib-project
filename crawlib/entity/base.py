@@ -622,7 +622,12 @@ class Entity(EntityExtendScheduler):
         # crawl current unfinished entity
         for entity in list(cls.get_unfinished(**get_unfinished_kwargs)):
             left_counter -= 1
-            entity.start_crawler(detailed_log=detailed_log, left_counter=left_counter, **start_kwargs)
+            entity.start_crawler(
+                detailed_log=detailed_log,
+                debug_mode=debug_mode,
+                left_counter=left_counter,
+                **start_kwargs
+            )
 
         # crawl related entity
         for klass in cls.CONF_RELATIONSHIP.iter_recursive_child_class():

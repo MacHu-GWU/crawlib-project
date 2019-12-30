@@ -11,11 +11,6 @@ from ...movie_url_builder import url_builder
 
 class HomePage(MovieWebsiteEntity):
     CONF_UPDATE_INTERVAL = 1
-    CONF_UPDATE_FIELDS = (
-        "description",
-        "max_page_num",
-        "n_listpage",
-    )
     CONF_RELATIONSHIP = RelationshipConfig([
         Relationship(ListPage, Relationship.Option.many, "n_listpage", recursive=True)
     ])
@@ -39,7 +34,7 @@ class HomePage(MovieWebsiteEntity):
         a_tag_list = div_pagination.find_all("a")
         href = a_tag_list[-1]["href"]
         max_page_num = int(href.split("/")[-1])
-        entity = HomePage(max_page_num=max_page_num)
+        entity_data = dict(max_page_num=max_page_num)
 
         children = list()
         for page_num in range(1, 1 + max_page_num):
@@ -48,9 +43,9 @@ class HomePage(MovieWebsiteEntity):
 
         status = Status.S50_Finished.id
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres

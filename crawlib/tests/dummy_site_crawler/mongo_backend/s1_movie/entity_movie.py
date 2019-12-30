@@ -53,13 +53,13 @@ class MovieCoverImagePage(MoviePageBase):
 
     @resolve_arg()
     def parse_response(self, url, request, response=None, html=None, soup=None, **kwargs):
-        entity = MovieCoverImagePage(image_content=html)
+        entity_data = dict(image_content=html)
 
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
-            data={},
+            entity_data=entity_data,
+            additional_data={},
             status=status,
         )
         return pres
@@ -92,13 +92,13 @@ class MoviePage(MoviePageBase):
     def parse_response(self, url, request, response=None, html=None, soup=None, **kwargs):
         span_title = soup.find("span", class_="title")
         title = span_title.text
-        entity = MoviePage(title=title)
+        entity_data = dict(title=title)
 
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
-            data={},
+            entity_data=entity_data,
+            additional_data={},
             status=status,
         )
         return pres

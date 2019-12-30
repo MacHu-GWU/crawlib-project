@@ -11,7 +11,6 @@ uri = "mongodb://{username}:{password}@{host}:{port}/{database}".format(
     username=config.DB_USERNAME.get_value(),
     password=config.DB_PASSWORD.get_value(),
 )
-print(uri)
 client = connect(
     db=config.DB_DATABASE.get_value(),
     host=uri,

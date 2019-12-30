@@ -11,10 +11,6 @@ from ...movie_url_builder import url_builder
 
 class ListPage(MovieWebsiteEntity):
     CONF_UPDATE_INTERVAL = 1
-    CONF_UPDATE_FIELDS = (
-        "n_movie",
-    )
-
     CONF_RELATIONSHIP = RelationshipConfig([
         Relationship(MoviePage, Relationship.Option.many, "n_movie", recursive=True)
     ])
@@ -39,7 +35,7 @@ class ListPage(MovieWebsiteEntity):
         div_listpage = soup.find("div", id="listpage")
         a_tag_list = div_listpage.find_all("a")
 
-        entity = ListPage()
+        entity_data = dict()
 
         children = list()
         for a in a_tag_list:
@@ -51,9 +47,9 @@ class ListPage(MovieWebsiteEntity):
         status = Status.S50_Finished.id
 
         pres = ParseResult(
-            entity=entity,
+            entity_data=entity_data,
             children=children,
-            data={},
+            additional_data={},
             status=status,
         )
         return pres
