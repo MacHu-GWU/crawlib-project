@@ -115,8 +115,24 @@ req-info: ## Show requirements information
 	bash ./bin/py/req-info.sh
 
 
-run-test-webapp: req-test ## Run test webapp for crawler
+run-test-webapp: ## Run test webapp for crawler
 	bash ./bin/py/run-test-webapp.sh
+
+
+run-mongo: ## Run mongodb db in container locally for test
+	bash ./bin/py/run-mongo.sh
+
+
+stop-mongo: ## Stop mongodb db container
+	bash ./bin/py/stop-mongo.sh
+
+
+run-psql: ## Run postgresql db in container locally for test
+	bash ./bin/py/run-postgres.sh
+
+
+stop-psql: ## Stop postgresql db container
+	bash ./bin/py/stop-postgres.sh
 
 
 #--- AWS Lambda ---

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from pytest import raises, approx
 
 
 def test():
@@ -23,6 +22,9 @@ def test():
     _ = crawlib.ParseResult
     _ = crawlib.MongodbEntity
     _ = crawlib.MongodbEntitySingleStatus
+    _ = crawlib.SqlEntity
+    _ = crawlib.SqlEntitySingleStatus
+    _ = crawlib.SqlDeclarativeBase
 
 
 if __name__ == "__main__":

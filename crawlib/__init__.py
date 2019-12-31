@@ -42,13 +42,26 @@ except ImportError:  # pragma: no cover
 try:
     from .entity import (
         RelationshipConfig, Relationship, ParseResult,
+    )
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .entity import (
         MongodbEntity, MongodbEntitySingleStatus,
     )
 except ImportError:  # pragma: no cover
     pass
 
 try:
-    from .time_util import epoch, utc_now
+    from .entity import (
+        SqlEntity, SqlEntitySingleStatus, Base as SqlDeclarativeBase
+    )
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from .time_util import epoch, utc_now, x_seconds_before_now, x_seconds_after_now
 except ImportError:  # pragma: no cover
     pass
 

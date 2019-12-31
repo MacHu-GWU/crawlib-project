@@ -5,4 +5,9 @@ wheel>=0.33.1   # make pre-compiled distribution package
 pathlib_mate
 flask
 scrapy
+configirl==0.0.7
+mongoengine_mate==0.0.5
+pymongo_mate==0.0.4
+sqlalchemy_mate==0.0.10
+psycopg2-binary==2.8.4
 

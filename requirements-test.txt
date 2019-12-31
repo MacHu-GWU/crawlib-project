@@ -1,7 +1,13 @@
 # dependencies for test
-pytest==3.2.3       # test framework
-pytest-cov==2.5.1   # coverage test
+pytest==3.2.3           # test framework
+pytest-cov==2.5.1       # coverage test
+pytest-ordering==0.5  # run test in order
 
 pathlib_mate
 flask
 scrapy
+configirl==0.0.7
+mongoengine_mate==0.0.5
+pymongo_mate==0.0.4
+sqlalchemy_mate==0.0.10
+psycopg2-binary==2.8.4

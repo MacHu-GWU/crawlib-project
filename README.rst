@@ -3,11 +3,8 @@
     :target: https://crawlib.readthedocs.io/index.html
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/MacHu-GWU/crawlib-project.svg?branch=master
-    :target: https://travis-ci.org/MacHu-GWU/crawlib-project?branch=master
-
-.. image:: https://codecov.io/gh/MacHu-GWU/crawlib-project/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/MacHu-GWU/crawlib-project
+.. image:: https://circleci.com/gh/MacHu-GWU/crawlib-project.svg?style=svg
+    :target: https://circleci.com/gh/MacHu-GWU/crawlib-project
 
 .. image:: https://img.shields.io/pypi/v/crawlib.svg
     :target: https://pypi.python.org/pypi/crawlib
