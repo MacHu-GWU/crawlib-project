@@ -25,7 +25,8 @@ def setup_module():
     MusicPage.col().delete_many({})
 
 
-def test():
+@pytest.mark.order1
+def test_start_recursive_crawler():
     assert RandomMusicPage.col().find().count() == 0
     assert ArtistPage.col().find().count() == 0
     assert GenrePage.col().find().count() == 0
@@ -39,6 +40,11 @@ def test():
     assert ArtistPage.col().find().count() == n_artist
     assert GenrePage.col().find().count() == n_genre
     assert MusicPage.col().find().count() == n_music
+
+
+@pytest.mark.order2
+def test_statistics():
+    RandomMusicPage.print_statistics(seconds=3600)
 
 
 if __name__ == "__main__":

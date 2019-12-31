@@ -1,6 +1,7 @@
 # dependencies for test
-pytest==3.2.3       # test framework
-pytest-cov==2.5.1   # coverage test
+pytest==3.2.3           # test framework
+pytest-cov==2.5.1       # coverage test
+pytest-ordering==0.5  # run test in order
 
 pathlib_mate
 flask

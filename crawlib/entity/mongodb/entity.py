@@ -4,10 +4,11 @@ from typing import Dict, List, Type
 
 import mongoengine_mate
 from mongoengine import fields, queryset
+from datetime import datetime, timedelta
 
 from . import query_builder
 from ..base import Entity, ParseResult, Relationship
-from ...status import Status
+from ...status import Status, StatusDetail
 from ...time_util import epoch
 
 
@@ -200,6 +201,35 @@ class MongodbEntity(mongoengine_mate.ExtendedDocument, Entity):
                 {"_id": getattr(self, self.id_field_name())},
                 {"$set": pres.entity_data},
             )
+
+    @classmethod
+    def statistics(cls, seconds=3600, **kwargs):
+        data = []
+
+        status_list = [
+            Status.S0_ToDo,
+            Status.S5_UrlError,
+            Status.S10_HttpError,
+            Status.S20_WrongPage,
+            Status.S25_DecodeError,
+            Status.S30_ParseError,
+            Status.S40_InCompleteData,
+            Status.S50_Finished,
+            Status.S60_ServerSideError,
+        ] # type: List[StatusDetail]
+
+        now = datetime.utcnow()
+        x_seconds_before_now = now - timedelta(seconds=seconds)
+        for status in status_list:
+            filters = {
+                cls.CONF_STATUS_KEY: status.id,
+                cls.CONF_EDIT_AT_KEY: {"$gte": x_seconds_before_now}
+            }
+            counts = cls.col().find(filters).count()
+            row = (cls.__name__, status.id, status.description, counts)
+            data.append(row)
+
+        return data
 
 
 class MongodbEntitySingleStatus(MongodbEntity):

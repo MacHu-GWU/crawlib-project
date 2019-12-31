@@ -11,10 +11,11 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import List, Dict, Set, Optional, Type, Union, Iterable
 
+import time
 import attr
 import six
 from loggerFactory import StreamOnlyLogger
-
+from tabulate import tabulate
 from ..status import Status, FINISHED_STATUS_CODE
 from ..util import get_all_subclass
 
@@ -65,13 +66,6 @@ class EntityBase(object):
                "you can choose any http library, such as `requests` or ``aiohttp`")
         raise NotImplementedError(msg)
 
-    def _build_request(self, url, **kwargs):
-        url = self._build_request(url, **kwargs)
-        indent = 1
-        msg = "|%s| crawling %s ..." % (indent, url)
-        self.logger.info(msg, indent)
-        return url
-
     @abstractmethod
     def send_request(self, request, **kwargs):
         """
@@ -87,9 +81,6 @@ class EntityBase(object):
                "it send the http Request object and get a Response object, "
                "you can choose any http library, such as `requests` or ``aiohttp`")
         raise NotImplementedError(msg)
-
-    def _send_request(self, request, **kwargs):
-        return self.send_request(request, **kwargs)
 
     @abstractmethod
     def parse_response(self, url, request, response, **kwargs) -> 'ParseResult':
@@ -453,7 +444,7 @@ class Entity(EntityExtendScheduler):
             indent = 1
             msg = "|%s| crawling %s, %s url left ..." % (indent, url, left_counter)
             self.logger.info(msg, indent)
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             indent = 2
             msg = "|%s| Failed to build url! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
@@ -474,7 +465,7 @@ class Entity(EntityExtendScheduler):
                 msg = "|%s| build Request object ..." % indent
                 self.logger.info(msg, indent)
             request = self.build_request(url, **build_request_kwargs)
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             indent = 2
             msg = "|%s| Failed to build HTTP Request object! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
@@ -494,8 +485,10 @@ class Entity(EntityExtendScheduler):
                 indent = 2
                 msg = "|%s| make HTTP request ..." % indent
                 self.logger.info(msg, indent)
+            if self.CONF_SLEEP_TIME:
+                time.sleep(self.CONF_SLEEP_TIME)
             response = self.send_request(request, **send_request_kwargs)
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             indent = 2
             msg = "|%s| Failed to get HTTP response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
@@ -521,7 +514,7 @@ class Entity(EntityExtendScheduler):
                 response=response,
                 **parse_response_kwargs,
             )
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             indent = 2
             msg = "|%s| Failed to parse http response! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
@@ -550,7 +543,7 @@ class Entity(EntityExtendScheduler):
                 indent = 2
                 msg = "|%s| %s" % (indent, Status.GetFirst("id", pres.status).description)
                 self.logger.info(msg, indent)
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             indent = 2
             msg = "|%s| Failed to process parse result! Error: %s" % (indent, e)
             self.logger.info(msg, indent)
@@ -608,6 +601,25 @@ class Entity(EntityExtendScheduler):
         cls._validate_configuration()
         cls._validate_orm_related()
         cls._validate_relationship_config()
+
+    @classmethod
+    def print_statistics(cls, seconds: int=3600, _data: list=None, **kwargs) -> List[List]:
+        if _data is None:
+            _data = list()
+            to_print = True
+        else:
+            to_print = False
+        _data.extend(cls.statistics(seconds=seconds, **kwargs))
+        for klass in cls.CONF_RELATIONSHIP.iter_recursive_child_class():
+            klass.print_statistics(seconds=seconds, _data=_data, **kwargs)
+        if to_print:
+            headers = ["class", "status code", "status description", "count"]
+            print(tabulate(_data, headers=headers, tablefmt="grid"))
+        return _data
+
+    @classmethod
+    def statistics(cls, seconds: int=3600, **kwargs) -> List[List]:
+        raise NotImplementedError
 
 
 @attr.s
@@ -699,3 +711,8 @@ class ParseResult(object):
             return self.status >= FINISHED_STATUS_CODE
         except:  # pragma: no cover
             return False
+
+
+def monitor(entity_class):
+    pass
+

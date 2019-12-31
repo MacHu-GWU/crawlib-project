@@ -25,7 +25,8 @@ def setup_module():
     session.close()
 
 
-def test():
+@pytest.mark.order1
+def test_start_recursive_crawler():
     session = Session()
     assert session.query(RandomMusicPage).count() == 0
     assert session.query(MusicPage).count() == 0
@@ -45,6 +46,13 @@ def test():
     assert session.query(ArtistPage).count() == n_artist
     assert session.query(GenrePage).count() == n_genre
     assert session.query(MusicPage).count() == n_music
+
+
+@pytest.mark.order2
+def test_statistics():
+    session = Session()
+    RandomMusicPage.print_statistics(seconds=3600, session=session)
+    session.close()
 
 
 if __name__ == "__main__":

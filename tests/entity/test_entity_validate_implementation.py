@@ -12,7 +12,7 @@ def test_validate_implementation():
         pass
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.make_test_entity" in str(e)
 
     class Country(Country):
@@ -21,7 +21,7 @@ def test_validate_implementation():
             return cls()
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.build_url" in str(e)
 
     class Country(Country):
@@ -29,7 +29,7 @@ def test_validate_implementation():
             return "http://www.example.com/{}".format(self.id)
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.build_request" in str(e)
 
     class Country(Country):
@@ -37,7 +37,7 @@ def test_validate_implementation():
             return url
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.send_request" in str(e)
 
     class Country(Country):
@@ -45,7 +45,7 @@ def test_validate_implementation():
             return "<html>Hello World</html>"
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.parse_response" in str(e)
 
     class Country(Country):
@@ -53,7 +53,7 @@ def test_validate_implementation():
             return {"data": None}
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_abstract_methods()
     assert "Entity.process_pr" in str(e)
 
     # validate configuration
@@ -62,14 +62,14 @@ def test_validate_implementation():
             pass
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_configuration()
     assert "CONF_STATUS_KEY" in str(e)
 
     class Country(Country):
         CONF_STATUS_KEY = "status"
 
     with raises(NotImplementedError) as e:
-        Country.validate_implementation()
+        Country._validate_configuration()
     assert "CONF_EDIT_AT_KEY" in str(e)
 
     class Country(Country):
@@ -82,7 +82,7 @@ def test_validate_implementation():
     Country.validate_implementation()
 
 
-def test_check_subclass_implementation_goodcase1():
+def test_validate_relationship_config_goodcase1():
     class Country(Entity):
         n_state = "n_state_field"
 
@@ -102,7 +102,7 @@ def test_check_subclass_implementation_goodcase1():
     Entity._validate_relationship_config()
 
 
-def test_check_subclass_implementation_goodcase2():
+def test_validate_relationship_config_goodcase2():
     class ImagePage(Entity):
         id = "image_page_id"
 
@@ -114,7 +114,6 @@ def test_check_subclass_implementation_goodcase2():
     ])
 
     Entity._validate_relationship_config()
-
 
 
 if __name__ == "__main__":

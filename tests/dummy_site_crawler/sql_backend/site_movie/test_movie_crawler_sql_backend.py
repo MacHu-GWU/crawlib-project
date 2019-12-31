@@ -25,7 +25,8 @@ def setup_module():
     session.close()
 
 
-def test():
+@pytest.mark.order1
+def test_start_recursive_crawler():
     session = Session()
     assert session.query(HomePage).count() == 0
     assert session.query(ListPage).count() == 0
@@ -52,6 +53,13 @@ def test():
     assert session.query(MovieCoverImagePage).filter(MovieCoverImagePage.image_content != None).count() \
            == n_movie
 
+    session.close()
+
+
+@pytest.mark.order2
+def test_statistics():
+    session = Session()
+    HomePage.print_statistics(seconds=3600, session=session)
     session.close()
 
 

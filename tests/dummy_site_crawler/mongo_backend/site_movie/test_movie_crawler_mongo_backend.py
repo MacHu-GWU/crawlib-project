@@ -22,7 +22,8 @@ def setup_module():
     MoviePage.col().delete_many({})
 
 
-def test():
+@pytest.mark.order1
+def test_start_recursive_crawler():
     assert HomePage.col().find().count() == 0
     assert ListPage.col().find().count() == 0
     assert MoviePage.col().find().count() == 0
@@ -43,6 +44,11 @@ def test():
 
     assert MovieCoverImagePage.col().find({MovieCoverImagePage.image_content.name: {"$exists": True}}).count() \
            == n_movie
+
+
+@pytest.mark.order2
+def test_statistics():
+    HomePage.print_statistics(seconds=3600)
 
 
 if __name__ == "__main__":
