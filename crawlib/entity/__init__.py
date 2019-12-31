@@ -5,3 +5,8 @@ try:
     from .mongodb import MongodbEntity, MongodbEntitySingleStatus
 except ImportError:
     pass
+
+try:
+    from .sql import Base, SqlEntity, SqlEntitySingleStatus
+except ImportError:
+    pass

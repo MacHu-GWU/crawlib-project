@@ -129,6 +129,12 @@ class TestSqlEntity(object):
         assert DummyEntityForTest.count_unfinished(session) == 3
         assert DummyEntityForTest.count_unfinished(session, filters=(DummyEntityForTest.id <= 3,)) == 1
         assert DummyEntityForTest.count_unfinished(session, filters=(DummyEntityForTest.id > 3,)) == 2
+        assert DummyEntityForTest.count_unfinished(session, filters=(DummyEntityForTest.id > 3,), limit=1) == 1
+        assert [
+                   entity.id
+                   for entity in
+                   DummyEntityForTest.get_unfinished(session, order_by=DummyEntityForTest.id.desc(), limit=2)
+               ] == [5, 4]
 
         for dummy_entity in DummyEntityForTest.get_unfinished(session):
             assert dummy_entity.status is None
@@ -152,6 +158,12 @@ class TestSqlEntity(object):
         assert DummyEntityForTest.count_finished(session) == 4
         assert DummyEntityForTest.count_finished(session, filters=(DummyEntityForTest.id <= 3,)) == 2
         assert DummyEntityForTest.count_finished(session, filters=(DummyEntityForTest.id > 3,)) == 2
+        assert DummyEntityForTest.count_finished(session, filters=(DummyEntityForTest.id > 3,), limit=1) == 1
+        assert [
+                   entity.id
+                   for entity in
+                   DummyEntityForTest.get_finished(session, order_by=[DummyEntityForTest.id.desc(), ], limit=2)
+               ] == [7, 6]
         for dummy_entity in DummyEntityForTest.get_finished(session):
             assert dummy_entity.status is None
             assert dummy_entity.edit_at is None

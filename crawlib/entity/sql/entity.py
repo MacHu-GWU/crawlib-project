@@ -3,7 +3,6 @@
 from typing import Dict, List, Tuple, Type, Union, Iterable
 from datetime import datetime, timedelta
 
-from tabulate import tabulate
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Query
@@ -99,6 +98,7 @@ class SqlEntity(ExtendedBase, Entity):
                                                        List[BinaryExpression], Tuple[BinaryExpression]] = None,
                                                    only_fields: Union[
                                                        List[sa.Column], Tuple[sa.Column]] = None,
+                                                   order_by: List = None,
                                                    limit: int = None,
                                                    **kwargs) -> Tuple[bool, Query]:
         """
@@ -133,7 +133,11 @@ class SqlEntity(ExtendedBase, Entity):
             for criterion in filters:
                 final_filters.append(criterion)
         query = query.filter(sa.and_(*final_filters))
-
+        if order_by is not None:
+            if isinstance(order_by, (list, tuple)):
+                query = query.order_by(*order_by)
+            else:
+                query = query.order_by(order_by)
         if limit is not None:
             query = query.limit(limit)
         return (is_partial_load, query)
@@ -157,7 +161,8 @@ class SqlEntity(ExtendedBase, Entity):
     def get_unfinished(cls,
                        session: Session,
                        filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
-                       only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
+                       only_fields: Union[List[sa.Column], List[str]] = None,
+                       order_by: List = None,
                        limit: int = None,
                        **kwargs) -> List['SqlEntity']:
         """
@@ -167,6 +172,7 @@ class SqlEntity(ExtendedBase, Entity):
         :param filters: additional sqlalchemy ORM filter. By default it use
             AND operator.
         :param only_fields: if specified, only returns seleted columns.
+        :param order_by: sort data by a field or multiple fields.
         :param limit: limit the number of entity to return
 
         :return: an iterable object of ORM entities
@@ -176,6 +182,7 @@ class SqlEntity(ExtendedBase, Entity):
             session=session,
             filters=filters,
             only_fields=only_fields,
+            order_by=order_by,
             limit=limit,
             **kwargs
         )
@@ -192,14 +199,13 @@ class SqlEntity(ExtendedBase, Entity):
     def count_unfinished(cls,
                          session: Session,
                          filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
-                         only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
                          limit: int = None,
                          **kwargs) -> int:
         return cls._build_query_to_get_unfinished_or_finished(
             is_finished=False,
             session=session,
             filters=filters,
-            only_fields=only_fields,
+            only_fields=None,
             limit=limit,
             **kwargs
         )[1].count()
@@ -208,7 +214,8 @@ class SqlEntity(ExtendedBase, Entity):
     def get_finished(cls,
                      session: Session,
                      filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
-                     only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
+                     only_fields: Union[List[sa.Column], List[str]] = None,
+                     order_by: List = None,
                      limit: int = None,
                      **kwargs) -> List['SqlEntity']:
         """
@@ -218,6 +225,7 @@ class SqlEntity(ExtendedBase, Entity):
         :param filters: additional sqlalchemy ORM filter. By default it use
             AND operator.
         :param only_fields: if specified, only returns seleted columns.
+        :param order_by: sort data by a field or multiple fields.
         :param limit: limit the number of entity to return
 
         :return: an iterable object of ORM entities
@@ -227,6 +235,7 @@ class SqlEntity(ExtendedBase, Entity):
             session=session,
             filters=filters,
             only_fields=only_fields,
+            order_by=order_by,
             limit=limit,
             **kwargs
         )
@@ -243,14 +252,13 @@ class SqlEntity(ExtendedBase, Entity):
     def count_finished(cls,
                        session: Session,
                        filters: Union[List[BinaryExpression], Tuple[BinaryExpression]] = None,
-                       only_fields: Union[List[sa.Column], Tuple[sa.Column]] = None,
                        limit: int = None,
                        **kwargs) -> int:
         return cls._build_query_to_get_unfinished_or_finished(
             is_finished=True,
             session=session,
             filters=filters,
-            only_fields=only_fields,
+            only_fields=None,
             limit=limit,
             **kwargs
         )[1].count()
